@@ -10,6 +10,7 @@
 | `decode_raw.py` | independent decoder: V1 (region references), V2 (offsets and pools); also a CLI |
 | `spine_worker.py` | the only code that imports SPINE: builds objects, runs the writer / `litify_hdf5` / `HDF5Reader` of one SPINE version |
 | `content.py` | the synthetic events as plain Python (no SPINE import) |
+| `make_member_list.py` | writes `tests/golden_members.inc`, the member names of every model class, from `schema/`; `--check` is a ctest |
 
 ## Regenerating
 

@@ -288,13 +288,13 @@ def comment_lines(text, indent):
 
 def clean_comment(text):
     text = text.replace("*/", "* /").rstrip("\\ ")
-    if not text.isascii():
+    if not all(ord(c) < 128 for c in text):
         raise GenerationError(f"non-ASCII text in a comment: {text!r}")
     return text
 
 
 def cpp_string(text):
-    if not text.isascii():
+    if not all(ord(c) < 128 for c in text):
         raise GenerationError(f"non-ASCII string literal: {text!r}")
     out = text.replace("\\", "\\\\").replace('"', '\\"').replace("??", "?\\?")
     out = out.replace("\n", "\\n").replace("\t", "\\t")

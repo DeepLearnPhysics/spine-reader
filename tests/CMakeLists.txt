@@ -26,3 +26,20 @@ if(SPINE_READER_REAL_FILES)
   set_tests_properties(spine_reader_real_files PROPERTIES
     ENVIRONMENT "SPINE_READER_REAL_FILES=${SPINE_READER_REAL_FILES}")
 endif()
+
+# The generated model (include/spine/model, src/model) must be what tools/gen produces from the
+# committed schema, which was dumped from SPINE: this is what ties every default value, field
+# type and assign pointer of the model to SPINE. It needs only a Python 3 interpreter.
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+  add_test(NAME spine_reader_generated_model
+           COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/gen/generate.py --check
+                   --root ${PROJECT_SOURCE_DIR})
+  # tests/golden_members.inc, the member list test_golden.cpp compares object by object, comes
+  # from the same schema
+  add_test(NAME spine_reader_golden_members
+           COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/fixtures/make_member_list.py
+                   --check)
+else()
+  message(WARNING "No Python 3 interpreter: the generated-model checks are not registered")
+endif()
