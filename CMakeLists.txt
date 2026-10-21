@@ -9,9 +9,21 @@ endif()
 
 option(SPINE_READER_BUILD_TESTS "Build the spine-reader unit tests" ${SPINE_READER_TOP_LEVEL})
 option(SPINE_READER_BUILD_TOOLS "Build the spine-dump tool" ${SPINE_READER_TOP_LEVEL})
+set(SPINE_READER_SANITIZE OFF CACHE STRING
+    "Sanitizers: OFF, ON (address and undefined behaviour) or thread (GCC, Clang)")
+set_property(CACHE SPINE_READER_SANITIZE PROPERTY STRINGS OFF ON thread)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
+endif()
+
+if(SPINE_READER_SANITIZE STREQUAL "thread")
+  add_compile_options(-fsanitize=thread -fno-omit-frame-pointer)
+  add_link_options(-fsanitize=thread)
+elseif(SPINE_READER_SANITIZE)
+  add_compile_options(-fsanitize=address,undefined -fno-sanitize-recover=undefined
+                      -fno-omit-frame-pointer)
+  add_link_options(-fsanitize=address,undefined)
 endif()
 
 # Only the HDF5 C library is used. The HDF5 C++ API is deliberately not a dependency.
