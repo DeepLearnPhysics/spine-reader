@@ -8,6 +8,7 @@ else()
 endif()
 
 option(SPINE_READER_BUILD_TESTS "Build the spine-reader unit tests" ${SPINE_READER_TOP_LEVEL})
+option(SPINE_READER_BUILD_TOOLS "Build the spine-dump tool" ${SPINE_READER_TOP_LEVEL})
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Build type" FORCE)
@@ -54,6 +55,12 @@ install(FILES
   ${PROJECT_BINARY_DIR}/SpineReaderConfig.cmake
   ${PROJECT_BINARY_DIR}/SpineReaderConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SpineReader)
+
+if(SPINE_READER_BUILD_TOOLS)
+  add_executable(spine-dump examples/spine_dump.cpp)
+  target_link_libraries(spine-dump PRIVATE spine_reader)
+  install(TARGETS spine-dump RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 if(SPINE_READER_BUILD_TESTS)
   enable_testing()

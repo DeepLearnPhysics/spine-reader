@@ -77,8 +77,9 @@ struct MemberShape<std::vector<E, A>> {
 template <class M>
 constexpr bool field_matches(const FieldDescriptor& d, std::string_view name) {
   using S = MemberShape<M>;
-  return d.name == name && d.type == S::type && d.count == S::count && d.variable == S::variable &&
-         (d.enumeration != nullptr) == S::is_enum && d.assign != nullptr;
+  // Pointer members (enumeration, assign) are left out: comparing them is not a constant
+  // expression under -fsanitize=undefined. tests/test_model.cpp checks them at run time.
+  return d.name == name && d.type == S::type && d.count == S::count && d.variable == S::variable;
 }
 
 }  // namespace spine::detail
