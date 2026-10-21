@@ -1,0 +1,540 @@
+{
+  "case": "v1.4.0_v2",
+  "writer": {"spine_version":"1.4.0","format_version":2,"lite":false,"complete":true},
+  "layout": "V2Products",
+  "num_events": 5,
+  "products": {
+    "crthits": {
+      "kind": "objects", "class_name": "CRTHit", "scalar": false,
+      "columns": {
+        "center": {"type":"float32","count":3,"variable":false,"enum":null},
+        "feb_id": {"type":"uint8","count":0,"variable":true,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "plane": {"type":"int64","count":1,"variable":false,"enum":null},
+        "tagger": {"type":"string","count":1,"variable":false,"enum":null},
+        "time": {"type":"float64","count":1,"variable":false,"enum":null},
+        "total_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "ts0_ns": {"type":"float64","count":1,"variable":false,"enum":null},
+        "ts0_ns_corr": {"type":"float64","count":1,"variable":false,"enum":null},
+        "ts0_s": {"type":"int64","count":1,"variable":false,"enum":null},
+        "ts0_s_corr": {"type":"float64","count":1,"variable":false,"enum":null},
+        "ts1_ns": {"type":"float64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "width": {"type":"float32","count":3,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"center":[10.0,400.0,20.0],"feb_id":[17,18,255],"id":0,"plane":3,"tagger":"top","time":1.2,"total_pe":55.5,"ts0_ns":1500.5,"ts0_ns_corr":1498.25,"ts0_s":1700000000,"ts0_s_corr":1700000000.0,"ts1_ns":1200.0,"units":"cm","width":[40.0,2.0,40.0]}
+        ],
+        [],
+        [
+          {"center":[1.0,2.0,3.0],"feb_id":[],"id":0,"plane":1,"tagger":"µ-bottom","time":-0.005,"total_pe":1.0,"ts0_ns":10.0,"ts0_ns_corr":9.5,"ts0_s":1700000120,"ts0_s_corr":1700000120.0,"ts1_ns":-5.0,"units":"cm","width":[0.5,0.5,0.5]},
+          {"center":[-1.0,-2.0,-3.0],"feb_id":[3,4],"id":1,"plane":2,"tagger":"side","time":"inf","total_pe":"-inf","ts0_ns":20.0,"ts0_ns_corr":19.5,"ts0_s":1700000120,"ts0_s_corr":1700000120.0,"ts1_ns":"inf","units":"cm","width":[1.0,1.0,1.0]}
+        ],
+        [],
+        [
+          {"center":[0.0,0.0,0.0],"feb_id":[1],"id":0,"plane":0,"tagger":"top","time":0.0,"total_pe":7.5,"ts0_ns":1.0,"ts0_ns_corr":1.0,"ts0_s":1700000240,"ts0_s_corr":1700000240.0,"ts1_ns":0.0,"units":"cm","width":[0.0,0.0,0.0]}
+        ]
+      ]
+    },
+    "flashes": {
+      "kind": "objects", "class_name": "Flash", "scalar": false,
+      "columns": {
+        "center": {"type":"float32","count":3,"variable":false,"enum":null},
+        "fast_to_total": {"type":"float64","count":1,"variable":false,"enum":null},
+        "frame": {"type":"int64","count":1,"variable":false,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "in_beam_frame": {"type":"bool","count":1,"variable":false,"enum":null},
+        "on_beam_time": {"type":"int64","count":1,"variable":false,"enum":null},
+        "pe_per_ch": {"type":"float32","count":0,"variable":true,"enum":null},
+        "time": {"type":"float64","count":1,"variable":false,"enum":null},
+        "time_abs": {"type":"float64","count":1,"variable":false,"enum":null},
+        "time_width": {"type":"float64","count":1,"variable":false,"enum":null},
+        "total_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "volume_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "width": {"type":"float32","count":3,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"center":[-210.5,12.0,340.25],"fast_to_total":0.31,"frame":0,"id":0,"in_beam_frame":true,"on_beam_time":1,"pe_per_ch":[12.5,0.0,301.25,"nan",7.0,2.5],"time":0.12,"time_abs":1500.12,"time_width":0.34,"total_pe":9873.5,"units":"cm","volume_id":0,"width":[5.0,30.0,45.5]},
+          {"center":[200.0,-20.0,100.0],"fast_to_total":"nan","frame":0,"id":1,"in_beam_frame":false,"on_beam_time":0,"pe_per_ch":[],"time":3.5,"time_abs":1503.5,"time_width":0.1,"total_pe":812.0,"units":"cm","volume_id":1,"width":[2.0,2.0,2.0]}
+        ],
+        [
+          {"center":[0.0,0.0,0.0],"fast_to_total":0.5,"frame":1,"id":0,"in_beam_frame":false,"on_beam_time":0,"pe_per_ch":[1.0,2.0,3.0],"time":-1.5,"time_abs":998.5,"time_width":0.2,"total_pe":44.25,"units":"cm","volume_id":0,"width":[1.0,1.0,1.0]}
+        ],
+        [],
+        [
+          {"center":[-100.0,0.0,200.0],"fast_to_total":0.25,"frame":0,"id":0,"in_beam_frame":true,"on_beam_time":1,"pe_per_ch":[50.0,50.0,50.0,50.0],"time":0.5,"time_abs":2000.5,"time_width":0.25,"total_pe":5000.0,"units":"cm","volume_id":0,"width":[3.0,3.0,3.0]},
+          {"center":[100.0,0.0,200.0],"fast_to_total":0.9,"frame":0,"id":1,"in_beam_frame":false,"on_beam_time":0,"pe_per_ch":[1.5],"time":-2.0,"time_abs":1997.0,"time_width":0.5,"total_pe":100.0,"units":"cm","volume_id":1,"width":[3.0,3.0,3.0]},
+          {"center":[100.0,0.0,200.0],"fast_to_total":0.0,"frame":1,"id":2,"in_beam_frame":false,"on_beam_time":0,"pe_per_ch":[0.0,0.0],"time":8.0,"time_abs":2008.0,"time_width":0.5,"total_pe":0.0,"units":"cm","volume_id":1,"width":[0.0,0.0,0.0]}
+        ],
+        []
+      ]
+    },
+    "index": {
+      "kind": "array", "class_name": null, "scalar": true,
+      "columns": {
+        "": {"type":"int64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [0],
+        [1],
+        [2],
+        [3],
+        [4]
+      ]
+    },
+    "meta": {
+      "kind": "objects", "class_name": "ImageMeta3D", "scalar": true,
+      "columns": {
+        "count": {"type":"int64","count":3,"variable":false,"enum":null},
+        "lower": {"type":"float32","count":3,"variable":false,"enum":null},
+        "size": {"type":"float32","count":3,"variable":false,"enum":null},
+        "upper": {"type":"float32","count":3,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"count":[1440,720,2800],"lower":[-360.0,-180.0,0.0],"size":[0.5,0.5,0.5],"upper":[360.0,180.0,1400.0]}
+        ],
+        [
+          {"count":[1440,720,2800],"lower":[-360.0,-180.0,0.0],"size":[0.5,0.5,0.5],"upper":[360.0,180.0,1400.0]}
+        ],
+        [
+          {"count":[1440,720,2800],"lower":[-360.0,-180.0,0.0],"size":[0.5,0.5,0.5],"upper":[360.0,180.0,1400.0]}
+        ],
+        [
+          {"count":[2868,1448,5600],"lower":[-358.5,-181.0,0.0],"size":[0.25,0.25,0.25],"upper":[358.5,181.0,1400.0]}
+        ],
+        [
+          {"count":[2868,1448,5600],"lower":[-358.5,-181.0,0.0],"size":[0.25,0.25,0.25],"upper":[358.5,181.0,1400.0]}
+        ]
+      ]
+    },
+    "reco_interactions": {
+      "kind": "objects", "class_name": "RecoInteraction", "scalar": false,
+      "columns": {
+        "best_match_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_overlap": {"type":"float64","count":1,"variable":false,"enum":null},
+        "cathode_offset": {"type":"float64","count":1,"variable":false,"enum":null},
+        "crt_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "crt_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "crt_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "depositions_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "flash_hypo_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "flash_hypothesis_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "flash_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "flash_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "flash_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "flash_total_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "flash_volume_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "is_cathode_crosser": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_crt_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_fiducial": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_flash_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_time_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_truth": {"type":"bool","count":1,"variable":false,"enum":null},
+        "match_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "match_overlaps": {"type":"float32","count":0,"variable":true,"enum":null},
+        "module_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "num_particles": {"type":"int64","count":1,"variable":false,"enum":null},
+        "num_primary_particles": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "particle_counts": {"type":"int32","count":6,"variable":false,"enum":null},
+        "particle_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "primary_particle_counts": {"type":"int32","count":6,"variable":false,"enum":null},
+        "primary_particle_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "size": {"type":"int64","count":1,"variable":false,"enum":null},
+        "topology": {"type":"string","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "vertex": {"type":"float32","count":3,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"best_match_id":0,"best_match_overlap":0.8799999952316284,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":40.40625,"depositions_sum":28.828125,"dir":[0.8671875,0.0625,-0.5],"flash_hypo_pe":18424.9375,"flash_hypothesis_ids":[10],"flash_ids":[0],"flash_scores":[0.578125],"flash_times":[1.421875],"flash_total_pe":21075.8125,"flash_volume_ids":[0],"id":0,"index":[309,920,2887,4248,4683,5963,6098,8761,3749,6197,7212,7964,8441,692,1922,4329,5380,5590,8606],"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":true,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[0,1],"match_overlaps":[0.8799999952316284,0.05000000074505806],"module_ids":[],"num_particles":3,"num_primary_particles":2,"orig_index":[316,927,2894,4255,4690,5970,6105,8768,3756,6204,7219,7971,8448,699,1929,4336,5387,5597,8613],"particle_counts":[1,0,1,0,1,0],"particle_ids":[0,1,2],"primary_particle_counts":[0,0,1,0,1,0],"primary_particle_ids":[0,1],"size":19,"topology":"1mu1p","units":"cm","vertex":[13.875,-34.5625,105.5625]},
+          {"best_match_id":1,"best_match_overlap":0.699999988079071,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":27.125,"depositions_sum":13.90625,"dir":[0.5625,-0.296875,0.7734375],"flash_hypo_pe":5199.4375,"flash_hypothesis_ids":[11],"flash_ids":[1],"flash_scores":[4.890625],"flash_times":[-0.09375],"flash_total_pe":20257.875,"flash_volume_ids":[1],"id":1,"index":[1496,2565,3946,5419,6495,7151,7545,4635,5663,7528],"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":true,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[1],"match_overlaps":[0.699999988079071],"module_ids":[],"num_particles":2,"num_primary_particles":1,"orig_index":[1503,2572,3953,5426,6502,7158,7552,4642,5670,7535],"particle_counts":[0,2,0,0,0,0],"particle_ids":[3,4],"primary_particle_counts":[0,1,0,0,0,0],"primary_particle_ids":[3],"size":10,"topology":"1e","units":"cm","vertex":[-131.4375,-11.5,-122.875]}
+        ],
+        [
+          {"best_match_id":0,"best_match_overlap":0.44999998807907104,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":25.34375,"depositions_sum":9.203125,"dir":[0.546875,0.5703125,0.609375],"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"id":0,"index":[1713,2659,3498,1212,3161,3507,6965],"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_fiducial":false,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[0],"match_overlaps":[0.44999998807907104],"module_ids":[],"num_particles":2,"num_primary_particles":1,"orig_index":[1720,2666,3505,1219,3168,3514,6972],"particle_counts":[0,0,0,1,0,0],"particle_ids":[0,1],"primary_particle_counts":[0,0,0,1,0,0],"primary_particle_ids":[1],"size":7,"topology":"1pi","units":"px","vertex":[90.5,-70.875,-71.9375]}
+        ],
+        [],
+        [
+          {"best_match_id":0,"best_match_overlap":0.8999999761581421,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":26.6875,"depositions_sum":15.171875,"dir":[-0.9296875,-0.09375,-0.359375],"flash_hypo_pe":3371.3125,"flash_hypothesis_ids":[10],"flash_ids":[0],"flash_scores":[3.578125],"flash_times":[1.328125],"flash_total_pe":29175.625,"flash_volume_ids":[0],"id":0,"index":[503,3323,5611,6881,7095,7727,8118,8687,8802],"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":true,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[0],"match_overlaps":[0.8999999761581421],"module_ids":[],"num_particles":1,"num_primary_particles":1,"orig_index":[510,3330,5618,6888,7102,7734,8125,8694,8809],"particle_counts":[0,0,1,0,0,0],"particle_ids":[0],"primary_particle_counts":[0,0,1,0,0,0],"primary_particle_ids":[0],"size":9,"topology":"1mu","units":"cm","vertex":[88.4375,145.0,77.5625]},
+          {"best_match_id":0,"best_match_overlap":0.019999999552965164,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":17.25,"depositions_sum":6.140625,"dir":[-0.6171875,0.6640625,0.4140625],"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"id":1,"index":[1437,2803,5669,7355,8656],"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[0],"match_overlaps":[0.019999999552965164],"module_ids":[],"num_particles":2,"num_primary_particles":1,"orig_index":[1444,2810,5676,7362,8663],"particle_counts":[0,0,0,0,1,0],"particle_ids":[1,2],"primary_particle_counts":[0,0,0,0,1,0],"primary_particle_ids":[1],"size":5,"topology":"1p","units":"cm","vertex":[148.25,-124.0625,16.5]}
+        ],
+        [
+          {"best_match_id":0,"best_match_overlap":0.5,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":13.796875,"depositions_sum":8.78125,"dir":[0.703125,0.1953125,0.6796875],"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"id":0,"index":[2133,3411,3827,3941,8185],"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":false,"match_ids":[0],"match_overlaps":[0.5],"module_ids":[],"num_particles":1,"num_primary_particles":1,"orig_index":[2140,3418,3834,3948,8192],"particle_counts":[0,1,0,0,0,0],"particle_ids":[0],"primary_particle_counts":[0,1,0,0,0,0],"primary_particle_ids":[0],"size":5,"topology":"1e","units":"cm","vertex":[148.125,-18.8125,-73.6875]},
+          {"best_match_id":-1,"best_match_overlap":-1.0,"cathode_offset":"nan","crt_ids":[],"crt_scores":[],"crt_times":[],"depositions_q_sum":0.0,"depositions_sum":0.0,"dir":[0.859375,-0.25,0.453125],"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"id":1,"index":[],"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":false,"is_flash_matched":false,"is_matched":false,"is_time_contained":true,"is_truth":false,"match_ids":[],"match_overlaps":[],"module_ids":[],"num_particles":0,"num_primary_particles":0,"orig_index":[],"particle_counts":[0,0,0,0,0,0],"particle_ids":[],"primary_particle_counts":[0,0,0,0,0,0],"primary_particle_ids":[],"size":0,"topology":"","units":"cm","vertex":["nan","nan","nan"]}
+        ]
+      ]
+    },
+    "reco_particles": {
+      "kind": "objects", "class_name": "RecoParticle", "scalar": false,
+      "columns": {
+        "axial_spread": {"type":"float64","count":1,"variable":false,"enum":null},
+        "best_match_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_overlap": {"type":"float64","count":1,"variable":false,"enum":null},
+        "calo_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "cathode_offset": {"type":"float64","count":1,"variable":false,"enum":null},
+        "chi2_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "chi2_pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "crt_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "crt_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "crt_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "csda_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "csda_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "depositions_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "directional_spread": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_dedx": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "fragment_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "interaction_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "is_cathode_crosser": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_crt_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_primary": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_time_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_truth": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_valid": {"type":"bool","count":1,"variable":false,"enum":null},
+        "ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "length": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mass": {"type":"float64","count":1,"variable":false,"enum":null},
+        "match_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "match_overlaps": {"type":"float32","count":0,"variable":true,"enum":null},
+        "mcs_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mcs_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "module_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "momentum": {"type":"float64","count":3,"variable":false,"enum":null},
+        "num_fragments": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "p": {"type":"float64","count":1,"variable":false,"enum":null},
+        "pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "pid_scores": {"type":"float32","count":6,"variable":false,"enum":null},
+        "ppn_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "primary_scores": {"type":"float32","count":2,"variable":false,"enum":null},
+        "shape": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"SHOWER":0,"TRACK":1,"MICHEL":2,"DELTA":3,"LOWE":4,"GHOST":5,"LARCV_UNKNOWN":6}},
+        "size": {"type":"int64","count":1,"variable":false,"enum":null},
+        "start_dedx": {"type":"float64","count":1,"variable":false,"enum":null},
+        "start_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "start_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "start_straightness": {"type":"float64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "vertex_distance": {"type":"float64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"axial_spread":"nan","best_match_id":1,"best_match_overlap":0.9100000262260437,"calo_ke":730.6875,"cathode_offset":0.0,"chi2_per_pid":[22.5,11.625,9.5625,2.6875,38.625,22.375],"chi2_pid":2,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":679.54,"csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":16.078125,"depositions_sum":16.109375,"directional_spread":"nan","end_dedx":"nan","end_dir":[-0.75,-0.5859375,-0.296875],"end_point":[208.17999267578125,72.5989990234375,47.375],"fragment_ids":[0],"id":0,"index":[309,920,2887,4248,4683,5963,6098,8761],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":679.54,"length":91.15625,"mass":105.658,"match_ids":[1,4],"match_overlaps":[0.9100000262260437,0.05999999865889549],"mcs_ke":505.125,"mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[583.5425528699684,455.8926194296629,230.9855938443625],"num_fragments":1,"orig_index":[316,927,2894,4255,4690,5970,6105,8768],"p":775.7024790627346,"pdg_code":13,"pid":2,"pid_scores":[0.053199999034404755,0.039799999445676804,0.4408000111579895,0.17470000684261322,0.18850000202655792,0.10300000011920929],"ppn_ids":[0],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":1,"size":8,"start_dedx":2.53125,"start_dir":[0.75,0.5859375,0.296875],"start_point":[139.8125,19.1875,20.3125],"start_straightness":"nan","units":"cm","vertex_distance":3.359375},
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.7699999809265137,"calo_ke":342.1875,"cathode_offset":-1.3125,"chi2_per_pid":[28.75,5.4375,2.3125,3.25,9.8125,23.0625],"chi2_pid":4,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":318.23,"csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":14.328125,"depositions_sum":7.046875,"directional_spread":"nan","end_dedx":"nan","end_dir":[0.34375,-0.890625,0.296875],"end_point":[-147.74400329589844,5.624000072479248,67.29199981689453],"fragment_ids":[1],"id":1,"index":[3749,6197,7212,7964,8441],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":false,"is_truth":false,"is_valid":true,"ke":318.23,"length":43.4375,"mass":938.272,"match_ids":[0],"match_overlaps":[0.7699999809265137],"mcs_ke":583.0,"mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-287.28183728799564,744.3211238825342,-248.10704129417806],"num_fragments":1,"orig_index":[3756,6204,7219,7971,8448],"p":835.5249208928936,"pdg_code":2212,"pid":4,"pid_scores":[0.02879999950528145,0.13830000162124634,0.08649999648332596,0.17270000278949738,0.4514999985694885,0.12229999899864197],"ppn_ids":[1],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":1,"size":5,"start_dedx":2.453125,"start_dir":[-0.34375,0.890625,-0.296875],"start_point":[-132.8125,-33.0625,80.1875],"start_straightness":"nan","units":"cm","vertex_distance":2.296875},
+          {"axial_spread":"nan","best_match_id":2,"best_match_overlap":0.5199999809265137,"calo_ke":27.625,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":0,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":10.0,"depositions_sum":5.671875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[2],"id":2,"index":[692,1922,4329,5380,5590,8606],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":27.625,"length":"nan","mass":0.0,"match_ids":[2,3],"match_overlaps":[0.5199999809265137,0.20000000298023224],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-0.431640625,8.8486328125,-26.1142578125],"num_fragments":1,"orig_index":[699,1929,4336,5387,5597,8613],"p":27.576059859547,"pdg_code":22,"pid":0,"pid_scores":[0.44839999079704285,0.0957999974489212,0.03999999910593033,0.10559999942779541,0.1340000033378601,0.1761000007390976],"ppn_ids":[2],"primary_scores":[1.0,0.10000000149011612],"shape":0,"size":6,"start_dedx":"nan","start_dir":[-0.015625,0.3203125,-0.9453125],"start_point":[122.4375,-64.8125,32.625],"start_straightness":"nan","units":"cm","vertex_distance":0.6875},
+          {"axial_spread":"nan","best_match_id":3,"best_match_overlap":0.8299999833106995,"calo_ke":494.625,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":18.984375,"depositions_sum":8.109375,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[3],"id":3,"index":[1496,2565,3946,5419,6495,7151,7545],"interaction_id":1,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":494.625,"length":"nan","mass":0.511998,"match_ids":[3],"match_overlaps":[0.8299999833106995],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[255.30487809922357,-263.0413895567758,332.66999267474586],"num_fragments":1,"orig_index":[1503,2572,3953,5426,6502,7158,7552],"p":495.0158355319902,"pdg_code":11,"pid":1,"pid_scores":[0.020899999886751175,0.6078000068664551,0.18160000443458557,0.050200000405311584,0.0203000009059906,0.11909999698400497],"ppn_ids":[3],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":0,"size":7,"start_dedx":"nan","start_dir":[0.515625,-0.53125,0.671875],"start_point":[-104.8125,64.3125,-21.6875],"start_straightness":"nan","units":"cm","vertex_distance":2.234375},
+          {"axial_spread":"nan","best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":210.625,"cathode_offset":0.734375,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":8.140625,"depositions_sum":5.796875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[4],"id":4,"index":[4635,5663,7528],"interaction_id":1,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":false,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":210.625,"length":"nan","mass":0.511998,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-209.48687426571746,-19.79403536368984,18.144532416715688],"num_fragments":1,"orig_index":[4642,5670,7535],"p":211.20080109275335,"pdg_code":11,"pid":1,"pid_scores":[0.032600000500679016,0.5669000148773193,0.03669999912381172,0.17829999327659607,0.1589999943971634,0.026599999517202377],"ppn_ids":[4],"primary_scores":[1.0,0.10000000149011612],"shape":2,"size":3,"start_dedx":"nan","start_dir":[-0.9921875,-0.09375,0.0859375],"start_point":[-62.5625,-68.5625,11.875],"start_straightness":"nan","units":"cm","vertex_distance":2.125}
+        ],
+        [
+          {"axial_spread":"nan","best_match_id":1,"best_match_overlap":0.20000000298023224,"calo_ke":53.6875,"cathode_offset":0.9375,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":12.328125,"depositions_sum":4.046875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[0],"id":0,"index":[1713,2659,3498],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":53.6875,"length":"nan","mass":"nan","match_ids":[1],"match_overlaps":[0.20000000298023224],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":["nan","nan","nan"],"num_fragments":1,"orig_index":[1720,2666,3505],"p":"nan","pdg_code":0,"pid":-1,"pid_scores":[0.3978999853134155,0.11069999635219574,0.06859999895095825,0.12030000239610672,0.12110000103712082,0.18140000104904175],"ppn_ids":[0],"primary_scores":[1.0,0.10000000149011612],"shape":6,"size":3,"start_dedx":"nan","start_dir":[0.0859375,0.15625,-0.984375],"start_point":[49.5,8.1875,-143.9375],"start_straightness":"nan","units":"px","vertex_distance":3.984375},
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.5,"calo_ke":332.125,"cathode_offset":0.03125,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":3,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":13.015625,"depositions_sum":5.15625,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[1],"id":1,"index":[1212,3161,3507,6965],"interaction_id":0,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":332.125,"length":"nan","mass":139.57,"match_ids":[0],"match_overlaps":[0.5],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[176.0052340877965,-49.28146554458302,411.85224776544385],"num_fragments":1,"orig_index":[1219,3168,3514,6972],"p":450.587149463864,"pdg_code":211,"pid":3,"pid_scores":[0.05570000037550926,0.17720000445842743,0.01119999960064888,0.42590001225471497,0.13259999454021454,0.1973000019788742],"ppn_ids":[1],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":-1,"size":4,"start_dedx":"nan","start_dir":[0.390625,-0.109375,0.9140625],"start_point":[-53.3125,68.5,-142.25],"start_straightness":"nan","units":"px","vertex_distance":1.84375}
+        ],
+        [],
+        [
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.949999988079071,"calo_ke":30.625,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":5,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":26.6875,"depositions_sum":15.171875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[0],"id":0,"index":[503,3323,5611,6881,7095,7727,8118,8687,8802],"interaction_id":0,"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":30.625,"length":"inf","mass":105.658,"match_ids":[0],"match_overlaps":[0.949999988079071],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[45.729002429617985,30.934325172976873,65.90356232503768],"num_fragments":1,"orig_index":[510,3330,5618,6888,7102,7734,8125,8694,8809],"p":85.97298217606276,"pdg_code":13,"pid":2,"pid_scores":[0.164000004529953,0.08259999752044678,0.40149998664855957,0.12489999830722809,0.20360000431537628,0.023399999365210533],"ppn_ids":[0],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":3,"size":9,"start_dedx":"-inf","start_dir":[0.53125,0.359375,0.765625],"start_point":[-95.0,-15.6875,-23.4375],"start_straightness":"nan","units":"cm","vertex_distance":2.4375},
+          {"axial_spread":"nan","best_match_id":1,"best_match_overlap":0.6000000238418579,"calo_ke":834.1875,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":17.25,"depositions_sum":6.140625,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[1],"id":1,"index":[1437,2803,5669,7355,8656],"interaction_id":1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":834.1875,"length":"nan","mass":938.272,"match_ids":[1,2],"match_overlaps":[0.6000000238418579,0.10000000149011612],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[834.1102714342687,375.93702374502254,-1198.2992631872594],"num_fragments":1,"orig_index":[1444,2810,5676,7362,8663],"p":1507.6437625943154,"pdg_code":2212,"pid":4,"pid_scores":[0.07919999957084656,0.18459999561309814,0.10930000245571136,0.16820000112056732,0.4058000147342682,0.05290000140666962],"ppn_ids":[1],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":4,"size":5,"start_dedx":"nan","start_dir":[0.5546875,0.25,-0.796875],"start_point":[32.6875,66.875,-142.375],"start_straightness":"nan","units":"cm","vertex_distance":3.46875},
+          {"axial_spread":"nan","best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":"nan","cathode_offset":-1.546875,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":0.0,"depositions_sum":0.0,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[2],"id":2,"index":[],"interaction_id":1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":false,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":false,"ke":"nan","length":"nan","mass":493.677,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":["nan","nan","nan"],"num_fragments":1,"orig_index":[],"p":"nan","pdg_code":321,"pid":5,"pid_scores":[0.15919999778270721,0.1768999993801117,0.09120000153779984,0.05739999935030937,0.19629999995231628,0.3190000057220459],"ppn_ids":[2],"primary_scores":[1.0,0.10000000149011612],"shape":5,"size":0,"start_dedx":"nan","start_dir":[0.1640625,0.984375,0.1015625],"start_point":[67.3125,43.0,-73.9375],"start_straightness":"nan","units":"cm","vertex_distance":5.828125}
+        ],
+        [
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.5,"calo_ke":618.3125,"cathode_offset":-0.109375,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":13.796875,"depositions_sum":8.78125,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[0],"id":0,"index":[2133,3411,3827,3941,8185],"interaction_id":0,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":618.3125,"length":"nan","mass":0.511998,"match_ids":[0],"match_overlaps":[0.5],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[299.74301362501774,-48.34564735887383,541.4712504193869],"num_fragments":1,"orig_index":[2140,3418,3834,3948,8192],"p":620.7852212047985,"pdg_code":11,"pid":1,"pid_scores":[0.15240000188350677,0.39570000767707825,0.16200000047683716,0.05009999871253967,0.10939999669790268,0.13050000369548798],"ppn_ids":[0],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":0,"size":5,"start_dedx":"nan","start_dir":[0.484375,-0.078125,0.875],"start_point":[110.25,-23.0625,-47.125],"start_straightness":"nan","units":"cm","vertex_distance":3.1875}
+        ]
+      ]
+    },
+    "run_info": {
+      "kind": "objects", "class_name": "RunInfo", "scalar": true,
+      "columns": {
+        "event": {"type":"int64","count":1,"variable":false,"enum":null},
+        "run": {"type":"int64","count":1,"variable":false,"enum":null},
+        "subrun": {"type":"int64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"event":1000,"run":9001,"subrun":3}
+        ],
+        [
+          {"event":1017,"run":9001,"subrun":3}
+        ],
+        [
+          {"event":1034,"run":9001,"subrun":3}
+        ],
+        [
+          {"event":1051,"run":9001,"subrun":4}
+        ],
+        [
+          {"event":1068,"run":9001,"subrun":4}
+        ]
+      ]
+    },
+    "trigger": {
+      "kind": "objects", "class_name": "Trigger", "scalar": true,
+      "columns": {
+        "beam_time_ns": {"type":"int64","count":1,"variable":false,"enum":null},
+        "beam_time_s": {"type":"int64","count":1,"variable":false,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "time_ns": {"type":"int64","count":1,"variable":false,"enum":null},
+        "time_s": {"type":"int64","count":1,"variable":false,"enum":null},
+        "type": {"type":"int64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"beam_time_ns":2000,"beam_time_s":1700000000,"id":0,"time_ns":123456789,"time_s":1700000000,"type":1}
+        ],
+        [
+          {"beam_time_ns":2001,"beam_time_s":1700000060,"id":1,"time_ns":123455789,"time_s":1700000060,"type":2}
+        ],
+        [
+          {"beam_time_ns":2002,"beam_time_s":1700000120,"id":2,"time_ns":123454789,"time_s":1700000120,"type":1}
+        ],
+        [
+          {"beam_time_ns":2003,"beam_time_s":1700000180,"id":3,"time_ns":123453789,"time_s":1700000180,"type":2}
+        ],
+        [
+          {"beam_time_ns":2004,"beam_time_s":1700000240,"id":4,"time_ns":123452789,"time_s":1700000240,"type":1}
+        ]
+      ]
+    },
+    "truth_interactions": {
+      "kind": "objects", "class_name": "TruthInteraction", "scalar": false,
+      "columns": {
+        "best_match_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_overlap": {"type":"float64","count":1,"variable":false,"enum":null},
+        "bjorken_x": {"type":"float64","count":1,"variable":false,"enum":null},
+        "cathode_offset": {"type":"float64","count":1,"variable":false,"enum":null},
+        "creation_process": {"type":"string","count":1,"variable":false,"enum":null},
+        "crt_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "crt_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "crt_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "current_type": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"CC":0,"NC":1}},
+        "depositions_adapt_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_adapt_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_g4_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "distance_travel": {"type":"float64","count":1,"variable":false,"enum":null},
+        "energy_init": {"type":"float64","count":1,"variable":false,"enum":null},
+        "energy_transfer": {"type":"float64","count":1,"variable":false,"enum":null},
+        "flash_hypo_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "flash_hypothesis_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "flash_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "flash_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "flash_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "flash_total_pe": {"type":"float64","count":1,"variable":false,"enum":null},
+        "flash_volume_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "hadronic_invariant_mass": {"type":"float64","count":1,"variable":false,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "index_adapt": {"type":"int32","count":0,"variable":true,"enum":null},
+        "index_g4": {"type":"int32","count":0,"variable":true,"enum":null},
+        "inelasticity": {"type":"float64","count":1,"variable":false,"enum":null},
+        "interaction_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "interaction_mode": {"type":"int64","count":1,"variable":false,"enum":null},
+        "interaction_scheme": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"LARSOFT":0,"GENIE":1,"GIBUU":2,"NUWRO":3,"NEUT":4}},
+        "interaction_type": {"type":"int64","count":1,"variable":false,"enum":null},
+        "is_cathode_crosser": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_crt_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_fiducial": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_flash_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_time_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_truth": {"type":"bool","count":1,"variable":false,"enum":null},
+        "lepton_p": {"type":"float64","count":1,"variable":false,"enum":null},
+        "lepton_pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "lepton_track_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "match_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "match_overlaps": {"type":"float32","count":0,"variable":true,"enum":null},
+        "mct_index": {"type":"int64","count":1,"variable":false,"enum":null},
+        "module_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "momentum": {"type":"float32","count":3,"variable":false,"enum":null},
+        "momentum_transfer": {"type":"float64","count":1,"variable":false,"enum":null},
+        "momentum_transfer_mag": {"type":"float64","count":1,"variable":false,"enum":null},
+        "nu_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "nucleon": {"type":"int64","count":1,"variable":false,"enum":null},
+        "num_particles": {"type":"int64","count":1,"variable":false,"enum":null},
+        "num_primary_particles": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "particle_counts": {"type":"int32","count":6,"variable":false,"enum":null},
+        "particle_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "position": {"type":"float32","count":3,"variable":false,"enum":null},
+        "primary_particle_counts": {"type":"int32","count":6,"variable":false,"enum":null},
+        "primary_particle_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "quark": {"type":"int64","count":1,"variable":false,"enum":null},
+        "reco_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "reco_vertex": {"type":"float32","count":3,"variable":false,"enum":null},
+        "size": {"type":"int64","count":1,"variable":false,"enum":null},
+        "size_adapt": {"type":"int64","count":1,"variable":false,"enum":null},
+        "size_g4": {"type":"int64","count":1,"variable":false,"enum":null},
+        "t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "target": {"type":"int64","count":1,"variable":false,"enum":null},
+        "theta": {"type":"float64","count":1,"variable":false,"enum":null},
+        "time": {"type":"float64","count":1,"variable":false,"enum":null},
+        "topology": {"type":"string","count":1,"variable":false,"enum":null},
+        "track_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "vertex": {"type":"float32","count":3,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"best_match_id":0,"best_match_overlap":0.8600000143051147,"bjorken_x":0.078125,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":0,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":23.625,"depositions_g4_sum":28.03125,"depositions_q_sum":34.859375,"depositions_sum":27.0625,"dir":[0.6290121674537659,-0.21776719391345978,-0.7462714314460754],"distance_travel":0.0,"energy_init":1.1875,"energy_transfer":1.0,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":2.234375,"id":0,"index":[1141,1190,1316,1411,2843,5987,7261,7970,744,4489,6378,7157,8103,601,2230,6182,6793,8392,8674],"index_adapt":[1141,1190,1316,1411,2843,5987,7261,744,4489,6378,7157,601,2230,6182,6793,8392],"index_g4":[1141,1190,1316,1411,2843,5987,7261,7970,9001,9002,744,4489,6378,7157,8103,9001,9002,601,2230,6182,6793,8392,8674,9001,9002],"inelasticity":0.859375,"interaction_id":-1,"interaction_mode":1,"interaction_scheme":1,"interaction_type":1001,"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":true,"lepton_p":0.53125,"lepton_pdg_code":13,"lepton_track_id":2,"match_ids":[0],"match_overlaps":[0.8600000143051147],"mct_index":-1,"module_ids":[],"momentum":[0.7509999871253967,-0.25999999046325684,-0.890999972820282],"momentum_transfer":1.234375,"momentum_transfer_mag":0.109375,"nu_id":0,"nucleon":2112,"num_particles":3,"num_primary_particles":2,"orig_id":100,"orig_index":[1148,1197,1323,1418,2850,5994,7268,7977,751,4496,6385,7164,8110,608,2237,6189,6800,8399,8681],"particle_counts":[1,0,1,0,1,0],"particle_ids":[0,1,2],"pdg_code":14,"position":[-55.0,138.625,-144.625],"primary_particle_counts":[0,0,1,0,1,0],"primary_particle_ids":[0,1],"quark":2,"reco_dir":[0.5,-0.859375,0.0859375],"reco_vertex":[-54.5,139.125,-144.125],"size":19,"size_adapt":16,"size_g4":25,"t":2.75,"target":1000180400,"theta":1.359375,"time":2.75,"topology":"1mu1p","track_id":1,"units":"cm","vertex":[-55.0,138.625,-144.625]},
+          {"best_match_id":1,"best_match_overlap":0.699999988079071,"bjorken_x":0.28125,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":1,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":14.671875,"depositions_g4_sum":19.25,"depositions_q_sum":22.234375,"depositions_sum":18.25,"dir":[0.0,-0.9065604209899902,0.42207613587379456],"distance_travel":0.0,"energy_init":1.21875,"energy_transfer":0.671875,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":2.140625,"id":1,"index":[253,2826,3875,4909,6258,6822,8792,1676,2457,4971],"index_adapt":[253,2826,3875,4909,6258,6822,1676,2457],"index_g4":[253,2826,3875,4909,6258,6822,8792,9001,9002,1676,2457,4971,9001,9002],"inelasticity":0.75,"interaction_id":-1,"interaction_mode":3,"interaction_scheme":0,"interaction_type":1001,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":true,"lepton_p":1.71875,"lepton_pdg_code":14,"lepton_track_id":-1,"match_ids":[1,0],"match_overlaps":[0.699999988079071,0.10000000149011612],"mct_index":-1,"module_ids":[],"momentum":[0.0,-1.1039999723434448,0.5139999985694885],"momentum_transfer":1.421875,"momentum_transfer_mag":1.375,"nu_id":1,"nucleon":2112,"num_particles":2,"num_primary_particles":1,"orig_id":101,"orig_index":[260,2833,3882,4916,6265,6829,8799,1683,2464,4978],"particle_counts":[0,2,0,0,0,0],"particle_ids":[3,4],"pdg_code":14,"position":[-45.0,132.9375,-119.5],"primary_particle_counts":[0,1,0,0,0,0],"primary_particle_ids":[3],"quark":2,"reco_dir":[-0.8828125,-0.1171875,-0.4609375],"reco_vertex":[-44.5,133.43800354003906,-119.0],"size":10,"size_adapt":8,"size_g4":14,"t":2.96875,"target":1000180400,"theta":0.609375,"time":2.96875,"topology":"1e","track_id":6,"units":"cm","vertex":[-45.0,132.9375,-119.5]}
+        ],
+        [
+          {"best_match_id":0,"best_match_overlap":0.4000000059604645,"bjorken_x":0.140625,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":-1,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":8.4375,"depositions_g4_sum":9.109375,"depositions_q_sum":12.890625,"depositions_sum":10.234375,"dir":[-0.7820246815681458,0.4853314757347107,0.3910123407840729],"distance_travel":0.0,"energy_init":1.09375,"energy_transfer":0.3125,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":2.453125,"id":0,"index":[2357,2542,7915,1409,4775,7335,8665],"index_adapt":[2357,2542,1409,4775,7335],"index_g4":[2357,2542,7915,9001,9002,1409,4775,7335,8665,9001,9002],"inelasticity":0.828125,"interaction_id":-1,"interaction_mode":3,"interaction_scheme":2,"interaction_type":1000,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":true,"lepton_p":2.25,"lepton_pdg_code":14,"lepton_track_id":-1,"match_ids":[0],"match_overlaps":[0.4000000059604645],"mct_index":-1,"module_ids":[],"momentum":[-0.8539999723434448,0.5299999713897705,0.4269999861717224],"momentum_transfer":1.46875,"momentum_transfer_mag":0.3125,"nu_id":0,"nucleon":2112,"num_particles":2,"num_primary_particles":1,"orig_id":200,"orig_index":[2364,2549,7922,1416,4782,7342,8672],"particle_counts":[0,0,1,0,0,0],"particle_ids":[0,1],"pdg_code":14,"position":[50.125,-131.875,76.8125],"primary_particle_counts":[0,0,0,0,0,0],"primary_particle_ids":[0],"quark":2,"reco_dir":[-0.453125,0.859375,0.2421875],"reco_vertex":[50.625,-131.375,77.31199645996094],"size":7,"size_adapt":5,"size_g4":11,"t":2.8125,"target":1000180400,"theta":1.359375,"time":2.8125,"topology":"","track_id":1,"units":"cm","vertex":[50.125,-131.875,76.8125]},
+          {"best_match_id":-1,"best_match_overlap":-1.0,"bjorken_x":0.703125,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":0,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":5.546875,"depositions_g4_sum":8.046875,"depositions_q_sum":17.875,"depositions_sum":9.46875,"dir":[0.5776447653770447,0.1794896125793457,0.7963102459907532],"distance_travel":0.0,"energy_init":2.5,"energy_transfer":0.234375,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":1.515625,"id":1,"index":[2693,3375,5426,5453,5818,6734],"index_adapt":[2693,3375,5426,5453,5818],"index_g4":[2693,3375,5426,5453,5818,6734,9001,9002],"inelasticity":0.8125,"interaction_id":-1,"interaction_mode":2,"interaction_scheme":3,"interaction_type":1005,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":false,"is_time_contained":true,"is_truth":true,"lepton_p":0.25,"lepton_pdg_code":13,"lepton_track_id":-1,"match_ids":[],"match_overlaps":[],"mct_index":-1,"module_ids":[],"momentum":[1.4450000524520874,0.4490000009536743,1.9919999837875366],"momentum_transfer":0.53125,"momentum_transfer_mag":0.859375,"nu_id":1,"nucleon":2112,"num_particles":1,"num_primary_particles":1,"orig_id":201,"orig_index":[2700,3382,5433,5460,5825,6741],"particle_counts":[0,0,0,0,1,0],"particle_ids":[2],"pdg_code":14,"position":[29.0625,1.5,-71.3125],"primary_particle_counts":[0,0,0,0,1,0],"primary_particle_ids":[2],"quark":2,"reco_dir":[0.140625,-0.6171875,-0.7734375],"reco_vertex":[29.562000274658203,2.0,-70.81199645996094],"size":6,"size_adapt":5,"size_g4":8,"t":4.0625,"target":1000180400,"theta":1.0625,"time":4.0625,"topology":"1p","track_id":4,"units":"cm","vertex":[29.0625,1.5,-71.3125]}
+        ],
+        [],
+        [
+          {"best_match_id":0,"best_match_overlap":0.8799999952316284,"bjorken_x":0.8125,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":1,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":18.375,"depositions_g4_sum":22.765625,"depositions_q_sum":37.109375,"depositions_sum":18.421875,"dir":[0.1947748363018036,-0.11675578355789185,-0.9738741517066956],"distance_travel":0.0,"energy_init":1.828125,"energy_transfer":1.125,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":2.09375,"id":0,"index":[1273,1766,2006,3069,3334,4136,4554,6816,8548,5792,6930,7352,7920,8735],"index_adapt":[1273,1766,2006,3069,3334,4136,4554,6816,5792,6930,7352,7920],"index_g4":[1273,1766,2006,3069,3334,4136,4554,6816,8548,9001,9002,5792,6930,7352,7920,8735,9001,9002],"inelasticity":0.859375,"interaction_id":-1,"interaction_mode":3,"interaction_scheme":4,"interaction_type":1001,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":true,"lepton_p":0.421875,"lepton_pdg_code":14,"lepton_track_id":2,"match_ids":[0,1],"match_overlaps":[0.8799999952316284,0.029999999329447746],"mct_index":-1,"module_ids":[],"momentum":[0.3569999933242798,-0.21400000154972076,-1.784999966621399],"momentum_transfer":0.359375,"momentum_transfer_mag":1.375,"nu_id":0,"nucleon":2112,"num_particles":3,"num_primary_particles":2,"orig_id":300,"orig_index":[1280,1773,2013,3076,3341,4143,4561,6823,8555,5799,6937,7359,7927,8742],"particle_counts":[0,0,1,1,0,1],"particle_ids":[0,1,2],"pdg_code":14,"position":[131.5625,5.4375,-39.6875],"primary_particle_counts":[0,0,0,1,0,1],"primary_particle_ids":[0,1],"quark":2,"reco_dir":[-0.046875,-0.9296875,0.3671875],"reco_vertex":[132.06199645996094,5.938000202178955,-39.1879997253418],"size":14,"size_adapt":12,"size_g4":18,"t":4.875,"target":1000180400,"theta":0.921875,"time":4.875,"topology":"1pi1ka","track_id":1,"units":"cm","vertex":[131.5625,5.4375,-39.6875]}
+        ],
+        [
+          {"best_match_id":0,"best_match_overlap":0.5,"bjorken_x":0.0625,"cathode_offset":"nan","creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"current_type":0,"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":5.40625,"depositions_g4_sum":8.75,"depositions_q_sum":14.359375,"depositions_sum":5.640625,"dir":[0.9277723431587219,0.1792411208152771,-0.32727834582328796],"distance_travel":0.0,"energy_init":2.75,"energy_transfer":0.234375,"flash_hypo_pe":"nan","flash_hypothesis_ids":[],"flash_ids":[],"flash_scores":[],"flash_times":[],"flash_total_pe":"nan","flash_volume_ids":[],"hadronic_invariant_mass":1.25,"id":0,"index":[125,7282,8330,8514,8792],"index_adapt":[125,7282,8330,8514],"index_g4":[125,7282,8330,8514,8792,9001,9002],"inelasticity":0.0625,"interaction_id":-1,"interaction_mode":1,"interaction_scheme":-1,"interaction_type":1091,"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_fiducial":true,"is_flash_matched":false,"is_matched":true,"is_time_contained":true,"is_truth":true,"lepton_p":0.953125,"lepton_pdg_code":13,"lepton_track_id":-1,"match_ids":[0],"match_overlaps":[0.5],"mct_index":-1,"module_ids":[],"momentum":[2.556999921798706,0.49399998784065247,-0.9020000100135803],"momentum_transfer":1.5,"momentum_transfer_mag":0.1875,"nu_id":0,"nucleon":2112,"num_particles":1,"num_primary_particles":1,"orig_id":400,"orig_index":[132,7289,8337,8521,8799],"particle_counts":[0,1,0,0,0,0],"particle_ids":[0],"pdg_code":14,"position":[123.0,-19.6875,134.0],"primary_particle_counts":[0,1,0,0,0,0],"primary_particle_ids":[0],"quark":2,"reco_dir":[-0.4921875,-0.3671875,-0.7890625],"reco_vertex":[123.5,-19.187999725341797,134.5],"size":5,"size_adapt":4,"size_g4":7,"t":2.140625,"target":1000180400,"theta":0.890625,"time":2.140625,"topology":"1e","track_id":1,"units":"cm","vertex":[123.0,-19.6875,134.0]}
+        ]
+      ]
+    },
+    "truth_particles": {
+      "kind": "objects", "class_name": "TruthParticle", "scalar": false,
+      "columns": {
+        "ancestor_creation_process": {"type":"string","count":1,"variable":false,"enum":null},
+        "ancestor_pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "ancestor_position": {"type":"float32","count":3,"variable":false,"enum":null},
+        "ancestor_t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "ancestor_track_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_overlap": {"type":"float64","count":1,"variable":false,"enum":null},
+        "calo_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "cathode_offset": {"type":"float64","count":1,"variable":false,"enum":null},
+        "chi2_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "chi2_pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "children_counts": {"type":"int32","count":0,"variable":true,"enum":null},
+        "children_id": {"type":"int32","count":0,"variable":true,"enum":null},
+        "creation_process": {"type":"string","count":1,"variable":false,"enum":null},
+        "crt_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "crt_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "crt_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "csda_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "csda_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "depositions_adapt_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_adapt_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_g4_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "distance_travel": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_momentum": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_p": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_position": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "energy_deposit": {"type":"float64","count":1,"variable":false,"enum":null},
+        "energy_init": {"type":"float64","count":1,"variable":false,"enum":null},
+        "first_step": {"type":"float32","count":3,"variable":false,"enum":null},
+        "first_step_t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "fragment_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "group_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "group_primary": {"type":"int64","count":1,"variable":false,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "index_adapt": {"type":"int32","count":0,"variable":true,"enum":null},
+        "index_g4": {"type":"int32","count":0,"variable":true,"enum":null},
+        "interaction_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "interaction_primary": {"type":"int64","count":1,"variable":false,"enum":null},
+        "is_cathode_crosser": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_crt_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_primary": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_time_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_truth": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_valid": {"type":"bool","count":1,"variable":false,"enum":null},
+        "ke": {"type":"float32","count":1,"variable":false,"enum":null},
+        "last_step": {"type":"float32","count":3,"variable":false,"enum":null},
+        "last_step_t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "length": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mass": {"type":"float32","count":1,"variable":false,"enum":null},
+        "match_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "match_overlaps": {"type":"float32","count":0,"variable":true,"enum":null},
+        "mcs_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mcs_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "mcst_index": {"type":"int64","count":1,"variable":false,"enum":null},
+        "mct_index": {"type":"int64","count":1,"variable":false,"enum":null},
+        "module_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "momentum": {"type":"float32","count":3,"variable":false,"enum":null},
+        "nu_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "num_fragments": {"type":"int64","count":1,"variable":false,"enum":null},
+        "num_voxels": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_children_id": {"type":"int32","count":0,"variable":true,"enum":null},
+        "orig_group_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "orig_interaction_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_parent_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "p": {"type":"float64","count":1,"variable":false,"enum":null},
+        "parent_creation_process": {"type":"string","count":1,"variable":false,"enum":null},
+        "parent_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "parent_pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "parent_position": {"type":"float32","count":3,"variable":false,"enum":null},
+        "parent_t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "parent_track_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "position": {"type":"float32","count":3,"variable":false,"enum":null},
+        "reco_end_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "reco_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "reco_length": {"type":"float64","count":1,"variable":false,"enum":null},
+        "reco_momentum": {"type":"float64","count":3,"variable":false,"enum":null},
+        "reco_start_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "shape": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"SHOWER":0,"TRACK":1,"MICHEL":2,"DELTA":3,"LOWE":4,"GHOST":5,"LARCV_UNKNOWN":6}},
+        "size": {"type":"int64","count":1,"variable":false,"enum":null},
+        "size_adapt": {"type":"int64","count":1,"variable":false,"enum":null},
+        "size_g4": {"type":"int64","count":1,"variable":false,"enum":null},
+        "start_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "start_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "t": {"type":"float64","count":1,"variable":false,"enum":null},
+        "track_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":14,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":0,"best_match_overlap":0.8999999761581421,"calo_ke":577.25,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[1,0,0,0,0,0],"children_id":[2],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":13.203125,"depositions_g4_sum":11.8125,"depositions_q_sum":9.1875,"depositions_sum":10.390625,"distance_travel":106.953125,"end_dir":[0.9345125555992126,0.35043254494667053,0.062316302210092545],"end_momentum":[24.173999786376953,9.0649995803833,1.6119999885559082],"end_p":25.868030548095703,"end_point":[-6.438000202178955,1.7339999675750732,111.75],"end_position":[-6.438000202178955,1.7339999675750732,111.75],"end_t":7.640625,"energy_deposit":95.4375,"energy_init":278.66,"first_step":["nan","nan","nan"],"first_step_t":0.828125,"fragment_ids":[],"group_id":0,"group_primary":-1,"id":0,"index":[1141,1190,1316,1411,2843,5987,7261,7970],"index_adapt":[1141,1190,1316,1411,2843,5987,7261],"index_g4":[1141,1190,1316,1411,2843,5987,7261,7970,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":175.0367431640625,"last_step":["nan","nan","nan"],"last_step_t":5.078125,"length":75.203125,"mass":103.6232681274414,"match_ids":[0],"match_overlaps":[0.8999999761581421],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[241.73599243164062,90.6510009765625,16.115999221801758],"nu_id":0,"num_fragments":0,"num_voxels":8,"orig_children_id":[13],"orig_group_id":-1,"orig_id":11,"orig_index":[1148,1197,1323,1418,2850,5994,7268,7977],"orig_interaction_id":3,"orig_parent_id":-1,"p":258.6766662597656,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":14,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":13,"pid":2,"position":[-34.5625,-8.8125,109.875],"reco_end_dir":["nan","nan","nan"],"reco_ke":577.25,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":1,"size":8,"size_adapt":7,"size_g4":10,"start_dir":[0.9345102310180664,0.3504413664340973,0.06230171397328377],"start_point":[-34.5625,-8.8125,109.875],"t":0.203125,"track_id":2,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":14,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":1,"best_match_overlap":0.800000011920929,"calo_ke":872.875,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":3.234375,"depositions_g4_sum":7.3125,"depositions_q_sum":9.46875,"depositions_sum":8.390625,"distance_travel":35.171875,"end_dir":[0.862091600894928,-0.39185723662376404,-0.3213192820549011],"end_momentum":[61.3650016784668,-27.89299964904785,-22.871999740600586],"end_p":71.18153381347656,"end_point":[0.906000018119812,-117.40599822998047,-20.797000885009766],"end_position":[0.906000018119812,-117.40599822998047,-20.797000885009766],"end_t":5.765625,"energy_deposit":122.5625,"energy_init":1179.082,"first_step":["nan","nan","nan"],"first_step_t":4.78125,"fragment_ids":[],"group_id":1,"group_primary":-1,"id":1,"index":[744,4489,6378,7157,8103],"index_adapt":[744,4489,6378,7157],"index_g4":[744,4489,6378,7157,8103,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":239.10595703125,"last_step":["nan","nan","nan"],"last_step_t":5.53125,"length":139.3125,"mass":939.97607421875,"match_ids":[1],"match_overlaps":[0.800000011920929],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[613.64697265625,-278.9309997558594,-228.72300720214844],"nu_id":0,"num_fragments":0,"num_voxels":5,"orig_children_id":[],"orig_group_id":-1,"orig_id":12,"orig_index":[751,4496,6385,7164,8110],"orig_interaction_id":3,"orig_parent_id":-1,"p":711.8140869140625,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":14,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":2212,"pid":4,"position":[-24.875,-105.6875,-11.1875],"reco_end_dir":["nan","nan","nan"],"reco_ke":872.875,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":1,"size":5,"size_adapt":4,"size_g4":7,"start_dir":[0.8620887994766235,-0.39185935258865356,-0.32132408022880554],"start_point":[-24.875,-105.6875,-11.1875],"t":4.546875,"track_id":3,"units":"cm"},
+          {"ancestor_creation_process":"π→µν","ancestor_pdg_code":14,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":2,"best_match_overlap":0.6000000238418579,"calo_ke":379.4375,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"µIoni","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":7.1875,"depositions_g4_sum":8.90625,"depositions_q_sum":16.203125,"depositions_sum":8.28125,"distance_travel":103.96875,"end_dir":["nan","nan","nan"],"end_momentum":[-55.143001556396484,-14.152000427246094,26.35099983215332],"end_p":62.73280715942383,"end_point":[84.76599884033203,129.14100646972656,135.093994140625],"end_position":[84.76599884033203,129.14100646972656,135.093994140625],"end_t":5.5625,"energy_deposit":326.5,"energy_init":624.625,"first_step":["nan","nan","nan"],"first_step_t":4.09375,"fragment_ids":[],"group_id":2,"group_primary":-1,"id":2,"index":[601,2230,6182,6793,8392,8674],"index_adapt":[601,2230,6182,6793,8392],"index_g4":[601,2230,6182,6793,8392,8674,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":624.625,"last_step":["nan","nan","nan"],"last_step_t":6.546875,"length":"nan","mass":0.0,"match_ids":[2],"match_overlaps":[0.6000000238418579],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-551.427001953125,-141.51699829101562,263.5140075683594],"nu_id":0,"num_fragments":0,"num_voxels":6,"orig_children_id":[],"orig_group_id":-1,"orig_id":13,"orig_index":[608,2237,6189,6800,8399,8681],"orig_interaction_id":3,"orig_parent_id":-1,"p":627.326416015625,"parent_creation_process":"primary","parent_id":0,"parent_pdg_code":13,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":2,"pdg_code":22,"pid":0,"position":[111.25,135.9375,122.4375],"reco_end_dir":["nan","nan","nan"],"reco_ke":379.4375,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":0,"size":6,"size_adapt":5,"size_g4":8,"start_dir":[-0.8790112733840942,-0.22558750212192535,0.42005884647369385],"start_point":[111.25,135.9375,122.4375],"t":3.078125,"track_id":5,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":14,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":7,"best_match_id":3,"best_match_overlap":0.8500000238418579,"calo_ke":305.25,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,1,0,0,0,0],"children_id":[4],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":10.75,"depositions_g4_sum":15.984375,"depositions_q_sum":13.3125,"depositions_sum":11.359375,"distance_travel":88.234375,"end_dir":["nan","nan","nan"],"end_momentum":[30.775999069213867,-51.659000396728516,36.27199935913086],"end_p":70.22444152832031,"end_point":[49.6879997253418,-34.53099822998047,-125.65599822998047],"end_position":[49.6879997253418,-34.53099822998047,-125.65599822998047],"end_t":5.9375,"energy_deposit":477.875,"energy_init":703.448,"first_step":["nan","nan","nan"],"first_step_t":2.875,"fragment_ids":[],"group_id":3,"group_primary":-1,"id":3,"index":[253,2826,3875,4909,6258,6822,8792],"index_adapt":[253,2826,3875,4909,6258,6822],"index_g4":[253,2826,3875,4909,6258,6822,8792,9001,9002],"interaction_id":1,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":662.3357543945312,"last_step":["nan","nan","nan"],"last_step_t":8.390625,"length":"nan","mass":41.11227035522461,"match_ids":[3],"match_overlaps":[0.8500000238418579],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[307.7590026855469,-516.594970703125,362.71600341796875],"nu_id":1,"num_fragments":0,"num_voxels":7,"orig_children_id":[22],"orig_group_id":-1,"orig_id":21,"orig_index":[260,2833,3882,4916,6265,6829,8799],"orig_interaction_id":4,"orig_parent_id":-1,"p":702.24560546875,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":0,"pdg_code":11,"pid":1,"position":[36.5625,-12.5,-141.125],"reco_end_dir":["nan","nan","nan"],"reco_ke":305.25,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":0,"size":7,"size_adapt":6,"size_g4":9,"start_dir":[0.438249796628952,-0.7356328964233398,0.5165087580680847],"start_point":[36.5625,-12.5,-141.125],"t":4.109375,"track_id":7,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":14,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":7,"best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":148.8125,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"muIoni","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":3.921875,"depositions_g4_sum":3.265625,"depositions_q_sum":8.921875,"depositions_sum":6.890625,"distance_travel":49.5,"end_dir":["nan","nan","nan"],"end_momentum":[-3.6510000228881836,30.249000549316406,59.45600128173828],"end_p":66.80829620361328,"end_point":[49.10900115966797,-12.718999862670898,-107.90599822998047],"end_position":[49.10900115966797,-12.718999862670898,-107.90599822998047],"end_t":5.265625,"energy_deposit":191.75,"energy_init":667.573,"first_step":["nan","nan","nan"],"first_step_t":4.171875,"fragment_ids":[],"group_id":4,"group_primary":-1,"id":4,"index":[1676,2457,4971],"index_adapt":[1676,2457],"index_g4":[1676,2457,4971,9001,9002],"interaction_id":1,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":false,"is_primary":false,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":667.572998046875,"last_step":["nan","nan","nan"],"last_step_t":5.765625,"length":"nan","mass":0.0,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-36.507999420166016,302.4939880371094,594.5570068359375],"nu_id":1,"num_fragments":0,"num_voxels":3,"orig_children_id":[],"orig_group_id":-1,"orig_id":22,"orig_index":[1683,2464,4978],"orig_interaction_id":4,"orig_parent_id":-1,"p":668.0819091796875,"parent_creation_process":"primary","parent_id":3,"parent_pdg_code":11,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":7,"pdg_code":11,"pid":1,"position":[50.75,-26.3125,-134.625],"reco_end_dir":["nan","nan","nan"],"reco_ke":148.8125,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":2,"size":3,"size_adapt":2,"size_g4":5,"start_dir":[-0.05464599281549454,0.4527797996997833,0.8899462819099426],"start_point":[50.75,-26.3125,-134.625],"t":1.078125,"track_id":8,"units":"cm"}
+        ],
+        [
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":0,"best_match_overlap":0.25,"calo_ke":639.4375,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":2.984375,"depositions_g4_sum":2.921875,"depositions_q_sum":3.328125,"depositions_sum":5.875,"distance_travel":115.203125,"end_dir":["nan","nan","nan"],"end_momentum":[-30.989999771118164,-24.222000122070312,23.152999877929688],"end_p":45.641502380371094,"end_point":[41.047000885009766,78.81199645996094,61.047000885009766],"end_position":[41.047000885009766,78.81199645996094,61.047000885009766],"end_t":8.890625,"energy_deposit":341.125,"energy_init":455.938,"first_step":["nan","nan","nan"],"first_step_t":2.34375,"fragment_ids":[],"group_id":0,"group_primary":-1,"id":0,"index":[2357,2542,7915],"index_adapt":[2357,2542],"index_g4":[2357,2542,7915,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":455.93798828125,"last_step":["nan","nan","nan"],"last_step_t":8.5,"length":"nan","mass":0.0,"match_ids":[0],"match_overlaps":[0.25],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-309.8949890136719,-242.2169952392578,231.531005859375],"nu_id":0,"num_fragments":0,"num_voxels":3,"orig_children_id":[],"orig_group_id":-1,"orig_id":40,"orig_index":[2364,2549,7922],"orig_interaction_id":3,"orig_parent_id":-1,"p":456.4105529785156,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":-1,"pid":-1,"position":[61.4375,94.75,45.8125],"reco_end_dir":["nan","nan","nan"],"reco_ke":639.4375,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":6,"size":3,"size_adapt":2,"size_g4":5,"start_dir":[-0.6789829730987549,-0.5306997895240784,0.5072867274284363],"start_point":[61.4375,94.75,45.8125],"t":1.390625,"track_id":2,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":1,"best_match_overlap":0.550000011920929,"calo_ke":218.75,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"muIoni","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":5.453125,"depositions_g4_sum":6.1875,"depositions_q_sum":9.5625,"depositions_sum":4.359375,"distance_travel":43.640625,"end_dir":["nan","nan","nan"],"end_momentum":[-32.19300079345703,-12.003999710083008,-6.001999855041504],"end_p":34.87849426269531,"end_point":[53.34400177001953,37.875,111.15599822998047],"end_position":[53.34400177001953,37.875,111.15599822998047],"end_t":5.9375,"energy_deposit":162.125,"energy_init":364.847,"first_step":["nan","nan","nan"],"first_step_t":3.5,"fragment_ids":[],"group_id":1,"group_primary":-1,"id":1,"index":[1409,4775,7335,8665],"index_adapt":[1409,4775,7335],"index_g4":[1409,4775,7335,8665,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":257.79022216796875,"last_step":["nan","nan","nan"],"last_step_t":7.71875,"length":"nan","mass":107.05675506591797,"match_ids":[1],"match_overlaps":[0.550000011920929],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-321.9309997558594,-120.04199981689453,-60.020999908447266],"nu_id":0,"num_fragments":0,"num_voxels":4,"orig_children_id":[],"orig_group_id":-1,"orig_id":41,"orig_index":[1416,4782,7342,8672],"orig_interaction_id":3,"orig_parent_id":-1,"p":348.7867126464844,"parent_creation_process":"primary","parent_id":0,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":13,"pid":2,"position":[81.0,48.1875,116.3125],"reco_end_dir":["nan","nan","nan"],"reco_ke":218.75,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":-1,"size":4,"size_adapt":3,"size_g4":6,"start_dir":[-0.9230024814605713,-0.3441702127456665,-0.17208510637283325],"start_point":[81.0,48.1875,116.3125],"t":2.921875,"track_id":3,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":4,"best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":863.75,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":5.546875,"depositions_g4_sum":8.046875,"depositions_q_sum":17.875,"depositions_sum":9.46875,"distance_travel":3.40625,"end_dir":[-0.7185278534889221,0.6326238512992859,-0.2889719009399414],"end_momentum":[-80.01300048828125,70.4469985961914,-32.17900085449219],"end_p":111.35684967041016,"end_point":[-104.125,-9.515999794006348,77.4530029296875],"end_position":[-104.125,-9.515999794006348,77.4530029296875],"end_t":5.71875,"energy_deposit":207.375,"energy_init":1455.895,"first_step":["nan","nan","nan"],"first_step_t":4.0,"fragment_ids":[],"group_id":2,"group_primary":-1,"id":2,"index":[2693,3375,5426,5453,5818,6734],"index_adapt":[2693,3375,5426,5453,5818],"index_g4":[2693,3375,5426,5453,5818,6734,9001,9002],"interaction_id":1,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":false,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":518.0281982421875,"last_step":["nan","nan","nan"],"last_step_t":8.328125,"length":41.171875,"mass":937.8668212890625,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-800.1339721679688,704.4650268554688,-321.7929992675781],"nu_id":1,"num_fragments":0,"num_voxels":6,"orig_children_id":[],"orig_group_id":-1,"orig_id":50,"orig_index":[2700,3382,5433,5460,5825,6741],"orig_interaction_id":4,"orig_parent_id":-1,"p":1113.569091796875,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":4,"pdg_code":2212,"pid":4,"position":[-82.5625,-28.5,86.125],"reco_end_dir":["nan","nan","nan"],"reco_ke":863.75,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":1,"size":6,"size_adapt":5,"size_g4":8,"start_dir":[-0.71853107213974,0.6326190829277039,-0.28897443413734436],"start_point":[-82.5625,-28.5,86.125],"t":0.15625,"track_id":5,"units":"cm"}
+        ],
+        [],
+        [
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":0,"best_match_overlap":0.9300000071525574,"calo_ke":789.8125,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":10.09375,"depositions_g4_sum":13.71875,"depositions_q_sum":24.203125,"depositions_sum":10.796875,"distance_travel":9.4375,"end_dir":["nan","nan","nan"],"end_momentum":[22.659000396728516,52.715999603271484,14.79699993133545],"end_p":59.2567138671875,"end_point":[-13.32800006866455,-35.90599822998047,-8.625],"end_position":[-13.32800006866455,-35.90599822998047,-8.625],"end_t":8.9375,"energy_deposit":401.3125,"energy_init":608.132,"first_step":["nan","nan","nan"],"first_step_t":2.78125,"fragment_ids":[],"group_id":0,"group_primary":-1,"id":0,"index":[1273,1766,2006,3069,3334,4136,4554,6816,8548],"index_adapt":[1273,1766,2006,3069,3334,4136,4554,6816],"index_g4":[1273,1766,2006,3069,3334,4136,4554,6816,8548,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":false,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":471.4295654296875,"last_step":["nan","nan","nan"],"last_step_t":6.046875,"length":"nan","mass":136.70245361328125,"match_ids":[0],"match_overlaps":[0.9300000071525574],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[226.58700561523438,527.1610107421875,147.97500610351562],"nu_id":0,"num_fragments":0,"num_voxels":9,"orig_children_id":[],"orig_group_id":-1,"orig_id":60,"orig_index":[1280,1773,2013,3076,3341,4143,4561,6823,8555],"orig_interaction_id":3,"orig_parent_id":-1,"p":592.568115234375,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":211,"pid":3,"position":[-24.8125,-62.625,-16.125],"reco_end_dir":["nan","nan","nan"],"reco_ke":789.8125,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":3,"size":9,"size_adapt":8,"size_g4":11,"start_dir":[0.3823813796043396,0.8896209597587585,0.24971814453601837],"start_point":[-24.8125,-62.625,-16.125],"t":4.78125,"track_id":2,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":1,"best_match_overlap":0.6000000238418579,"calo_ke":135.375,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":8.28125,"depositions_g4_sum":9.046875,"depositions_q_sum":12.90625,"depositions_sum":7.625,"distance_travel":20.484375,"end_dir":["nan","nan","nan"],"end_momentum":[-117.18699645996094,-12.918000221252441,-4.613999843597412],"end_p":117.98709869384766,"end_point":[-149.14100646972656,-26.7810001373291,-144.10899353027344],"end_position":[-149.14100646972656,-26.7810001373291,-144.10899353027344],"end_t":5.84375,"energy_deposit":251.8125,"energy_init":1280.118,"first_step":["nan","nan","nan"],"first_step_t":0.984375,"fragment_ids":[],"group_id":1,"group_primary":-1,"id":1,"index":[5792,6930,7352,7920,8735],"index_adapt":[5792,6930,7352,7920],"index_g4":[5792,6930,7352,7920,8735,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":783.5137939453125,"last_step":["nan","nan","nan"],"last_step_t":5.421875,"length":"nan","mass":496.6042175292969,"match_ids":[1,2],"match_overlaps":[0.6000000238418579,0.10000000149011612],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-1171.865966796875,-129.1820068359375,-46.13600158691406],"nu_id":0,"num_fragments":0,"num_voxels":5,"orig_children_id":[],"orig_group_id":-1,"orig_id":61,"orig_index":[5799,6937,7359,7927,8742],"orig_interaction_id":3,"orig_parent_id":-1,"p":1179.8670654296875,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":321,"pid":5,"position":[-119.375,-23.5,-142.9375],"reco_end_dir":["nan","nan","nan"],"reco_ke":135.375,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":4,"size":5,"size_adapt":4,"size_g4":7,"start_dir":[-0.9932186603546143,-0.10948861390352249,-0.0391027107834816],"start_point":[-119.375,-23.5,-142.9375],"t":4.671875,"track_id":3,"units":"cm"},
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":"nan","cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"muIoni","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":0.0,"depositions_g4_sum":0.0,"depositions_q_sum":0.0,"depositions_sum":0.0,"distance_travel":53.28125,"end_dir":["nan","nan","nan"],"end_momentum":[1.6640000343322754,64.34100341796875,-29.95199966430664],"end_p":70.99053192138672,"end_point":[129.64100646972656,-48.8120002746582,48.21900177001953],"end_position":[129.64100646972656,-48.8120002746582,48.21900177001953],"end_t":7.265625,"energy_deposit":310.9375,"energy_init":717.785,"first_step":["nan","nan","nan"],"first_step_t":2.25,"fragment_ids":[],"group_id":2,"group_primary":-1,"id":2,"index":[],"index_adapt":[],"index_g4":[],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":true,"is_contained":false,"is_crt_matched":false,"is_matched":false,"is_primary":false,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":611.687255859375,"last_step":["nan","nan","nan"],"last_step_t":8.578125,"length":"nan","mass":106.09768676757812,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[16.639999389648438,643.406005859375,-299.5169982910156],"nu_id":0,"num_fragments":0,"num_voxels":0,"orig_children_id":[],"orig_group_id":-1,"orig_id":62,"orig_index":[],"orig_interaction_id":3,"orig_parent_id":-1,"p":709.900390625,"parent_creation_process":"primary","parent_id":1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":3,"pdg_code":13,"pid":2,"position":[128.9375,-76.0,60.875],"reco_end_dir":["nan","nan","nan"],"reco_ke":"nan","reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":5,"size":0,"size_adapt":0,"size_g4":0,"start_dir":[0.023439906537532806,0.906332790851593,-0.42191413044929504],"start_point":[128.9375,-76.0,60.875],"t":4.34375,"track_id":4,"units":"cm"}
+        ],
+        [
+          {"ancestor_creation_process":"primary","ancestor_pdg_code":0,"ancestor_position":["nan","nan","nan"],"ancestor_t":"nan","ancestor_track_id":1,"best_match_id":0,"best_match_overlap":0.5,"calo_ke":672.875,"cathode_offset":"nan","chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"children_counts":[0,0,0,0,0,0],"children_id":[],"creation_process":"primary","crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_adapt_q_sum":0.0,"depositions_adapt_sum":5.40625,"depositions_g4_sum":8.75,"depositions_q_sum":14.359375,"depositions_sum":5.640625,"distance_travel":54.171875,"end_dir":["nan","nan","nan"],"end_momentum":[-41.98699951171875,-49.89699935913086,-42.595001220703125],"end_p":77.8906478881836,"end_point":[102.0780029296875,55.28099822998047,-92.59400177001953],"end_position":[102.0780029296875,55.28099822998047,-92.59400177001953],"end_t":8.484375,"energy_deposit":552.8125,"energy_init":778.886,"first_step":["nan","nan","nan"],"first_step_t":1.984375,"fragment_ids":[],"group_id":0,"group_primary":-1,"id":0,"index":[125,7282,8330,8514,8792],"index_adapt":[125,7282,8330,8514],"index_g4":[125,7282,8330,8514,8792,9001,9002],"interaction_id":0,"interaction_primary":-1,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":true,"is_valid":true,"ke":778.885986328125,"last_step":["nan","nan","nan"],"last_step_t":6.234375,"length":"nan","mass":0.0,"match_ids":[0],"match_overlaps":[0.5],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"mcst_index":-1,"mct_index":-1,"module_ids":[],"momentum":[-419.8680114746094,-498.9739990234375,-425.9530029296875],"nu_id":0,"num_fragments":0,"num_voxels":5,"orig_children_id":[],"orig_group_id":-1,"orig_id":70,"orig_index":[132,7289,8337,8521,8799],"orig_interaction_id":3,"orig_parent_id":-1,"p":778.9095458984375,"parent_creation_process":"primary","parent_id":-1,"parent_pdg_code":0,"parent_position":["nan","nan","nan"],"parent_t":"nan","parent_track_id":1,"pdg_code":11,"pid":1,"position":[118.25,74.5,-76.1875],"reco_end_dir":["nan","nan","nan"],"reco_ke":672.875,"reco_length":"nan","reco_momentum":["nan","nan","nan"],"reco_start_dir":["nan","nan","nan"],"shape":0,"size":5,"size_adapt":4,"size_g4":7,"start_dir":[-0.5390459299087524,-0.6406058073043823,-0.5468581318855286],"start_point":[118.25,74.5,-76.1875],"t":3.03125,"track_id":2,"units":"cm"}
+        ]
+      ]
+    }
+  }
+}
