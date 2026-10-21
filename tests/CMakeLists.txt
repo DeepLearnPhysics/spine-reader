@@ -43,3 +43,11 @@ if(Python3_Interpreter_FOUND)
 else()
   message(WARNING "No Python 3 interpreter: the generated-model checks are not registered")
 endif()
+
+# spine-dump on the Reader test files: what it prints, and its exit codes.
+if(TARGET spine-dump)
+  add_test(NAME spine_dump_output
+           COMMAND ${CMAKE_COMMAND} -DSPINE_DUMP=$<TARGET_FILE:spine-dump>
+                   -DDATA=${CMAKE_CURRENT_SOURCE_DIR}/data
+                   -P ${CMAKE_CURRENT_SOURCE_DIR}/check_spine_dump.cmake)
+endif()
