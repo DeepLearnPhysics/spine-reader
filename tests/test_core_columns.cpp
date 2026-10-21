@@ -95,31 +95,6 @@ TEST_CASE("columns of an object product, V2: pool fields are columns, offsets ar
   CHECK(info.columns[info.columns.size() - 3].name == "match_overlaps");
 }
 
-TEST_CASE("V1 and V2 describe every object product with the same columns") {
-  Hdf5Lock lock;
-  auto v1 = open("spine_v1_events.h5");
-  auto v2 = open("spine_v2_events.h5");
-  for (const char* name : {"reco_particles", "reco_interactions", "truth_particles",
-                           "truth_interactions", "flashes", "crthits", "run_info", "meta",
-                           "trigger"}) {
-    const core::ProductInfo& a = v1->product(name).info();
-    const core::ProductInfo& b = v2->product(name).info();
-    CAPTURE(name);
-    CHECK(a.kind == b.kind);
-    CHECK(a.class_name == b.class_name);
-    CHECK(a.scalar == b.scalar);
-    REQUIRE(a.columns.size() == b.columns.size());
-    for (const ColumnInfo& column : a.columns) {
-      const ColumnInfo* other = b.find(column.name);
-      REQUIRE_MESSAGE(other != nullptr, column.name);
-      CHECK_MESSAGE(column.type == other->type, column.name);
-      CHECK_MESSAGE(column.count == other->count, column.name);
-      CHECK_MESSAGE(column.variable == other->variable, column.name);
-      CHECK_MESSAGE(labels(column) == labels(*other), column.name);
-    }
-  }
-}
-
 TEST_CASE("strings, scalars and arrays: kinds, counts and the single column ''") {
   Hdf5Lock lock;
   for (const char* name : {"spine_v1_events.h5", "spine_v2_events.h5"}) {

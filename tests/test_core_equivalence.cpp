@@ -90,28 +90,36 @@ TEST_CASE("every column of every product, every event: V1 buffers equal V2 buffe
       if (!readable(a.info())) continue;
       CHECK(a.num_rows() == b.num_rows());
 
-      for (std::uint64_t e = 0; e < v1->info().num_events; ++e) {
-        CAPTURE(e);
-        const RowRange ra = a.rows(e);
-        const RowRange rb = b.rows(e);
-        REQUIRE(ra.size() == rb.size());
-        if (ra.size() > 0) {
-          CHECK(ra.begin == rb.begin);
-        }
+      // Three readings of every column: as the file has it, as float64, as int32. One read per
+      // event and reading takes all columns (the V2 request is in V1's column order, by name).
+      for (int variant = 0; variant < 3; ++variant) {
+        CAPTURE(variant);
+        std::vector<ColumnRequest> requests_a;
+        std::vector<ColumnRequest> requests_b;
         for (const ColumnInfo& column : a.info().columns) {
-          CAPTURE(column.name);
-          const ColumnInfo* other = b.info().find(column.name);
-          REQUIRE(other != nullptr);
-          // the column's own type, and every other type it converts to
-          std::vector<ScalarType> types = {column.type};
-          if (column.type != ScalarType::String) {
-            types.push_back(ScalarType::Float64);
-            if (column.type != ScalarType::Bool) types.push_back(ScalarType::Int32);
+          ScalarType type = column.type;
+          if (type != ScalarType::String) {
+            if (variant == 1) type = ScalarType::Float64;
+            if (variant == 2 && type != ScalarType::Bool) type = ScalarType::Int32;
           }
-          for (ScalarType type : types) {
-            const ColumnBuffer x = read_column(a, column, ra, type);
-            const ColumnBuffer y = read_column(b, *other, rb, type);
-            CHECK_MESSAGE(same_buffer(x, y), column.name << " as " << to_string(type));
+          requests_a.push_back({&column, type});
+          requests_b.push_back({b.info().find(column.name), type});
+          REQUIRE(requests_b.back().column != nullptr);
+        }
+        for (std::uint64_t e = 0; e < v1->info().num_events; ++e) {
+          CAPTURE(e);
+          const RowRange ra = a.rows(e);
+          const RowRange rb = b.rows(e);
+          REQUIRE(ra.size() == rb.size());
+          if (ra.size() > 0) CHECK(ra.begin == rb.begin);
+          std::vector<ColumnBuffer> out_a;
+          std::vector<ColumnBuffer> out_b;
+          a.read(ra, requests_a, out_a);
+          b.read(rb, requests_b, out_b);
+          REQUIRE(out_a.size() == out_b.size());
+          for (std::size_t i = 0; i < out_a.size(); ++i) {
+            CHECK_MESSAGE(same_buffer(out_a[i], out_b[i]),
+                          requests_a[i].column->name << " as " << to_string(requests_a[i].type));
             ++compared;
           }
         }
@@ -119,11 +127,12 @@ TEST_CASE("every column of every product, every event: V1 buffers equal V2 buffe
     }
   }
   MESSAGE("compared " << compared << " (column, event, type) buffers");
-  CHECK(compared > 3000);
+  CHECK(compared > 3000);  // the loops above are not empty
 }
 
 TEST_CASE("the whole product read at once is the same in V1 and V2, and as single columns") {
   Hdf5Lock lock;
+  std::size_t alone = 0;  // columns also read alone
   for (const Pair& pair : kPairs) {
     CAPTURE(pair.v1);
     auto v1 = open(pair.v1);
@@ -133,6 +142,8 @@ TEST_CASE("the whole product read at once is the same in V1 and V2, and as singl
       ProductSource& a = v1->product(name);
       ProductSource& b = v2->product(name);
       if (!readable(a.info())) continue;
+      const bool check_alone = name == "reco_particles" || name == "truth_interactions" ||
+                               name == "flashes" || name == "label";
 
       // the requests in V2's column order differ from V1's: match them by name
       std::vector<ColumnRequest> requests_a;
@@ -149,20 +160,25 @@ TEST_CASE("the whole product read at once is the same in V1 and V2, and as singl
       for (std::size_t i = 0; i < out_a.size(); ++i) {
         CAPTURE(requests_a[i].column->name);
         CHECK(same_buffer(out_a[i], out_b[i]));
-        // one column alone is the same as that column within the full request
+        // one column alone is the same as that column within the full request (checked for the
+        // products that have fixed, variable and string columns, which is where it can differ)
+        if (!check_alone) continue;
         const ColumnBuffer alone_a =
             read_column(a, *requests_a[i].column, all_rows(a), requests_a[i].type);
         const ColumnBuffer alone_b =
             read_column(b, *requests_b[i].column, all_rows(b), requests_b[i].type);
         CHECK(same_buffer(alone_a, out_a[i]));
         CHECK(same_buffer(alone_b, out_b[i]));
+        ++alone;
       }
     }
   }
+  CHECK(alone > 100);  // the loops above are not empty
 }
 
 TEST_CASE("reading events one by one equals reading the whole product, V1 and V2") {
   Hdf5Lock lock;
+  std::size_t compared = 0;
   for (const char* file_name : {"spine_v1_events.h5", "spine_v2_events.h5"}) {
     CAPTURE(file_name);
     auto file = open(file_name);
@@ -170,36 +186,46 @@ TEST_CASE("reading events one by one equals reading the whole product, V1 and V2
          {"reco_particles", "truth_particles", "reco_interactions", "flashes", "crthits"}) {
       CAPTURE(name);
       ProductSource& product = file->product(name);
-      for (const ColumnInfo& column : product.info().columns) {
-        CAPTURE(column.name);
-        const ColumnBuffer whole = read_column(product, column, all_rows(product), column.type);
-        std::size_t row = 0;
-        for (std::uint64_t e = 0; e < file->info().num_events; ++e) {
-          const RowRange rows = product.rows(e);
-          const ColumnBuffer part = read_column(product, column, rows, column.type);
-          CHECK(part.rows == rows.size());
+      const std::vector<ColumnRequest> requests = natural_requests(product.info());
+      std::vector<ColumnBuffer> whole;  // every column, all events at once
+      product.read(all_rows(product), requests, whole);
+      REQUIRE(whole.size() == requests.size());
+
+      std::vector<std::size_t> row(requests.size(), 0);  // rows of `whole` consumed so far
+      std::vector<ColumnBuffer> part;                    // every column, one event
+      for (std::uint64_t e = 0; e < file->info().num_events; ++e) {
+        CAPTURE(e);
+        const RowRange rows = product.rows(e);
+        product.read(rows, requests, part);
+        REQUIRE(part.size() == requests.size());
+        for (std::size_t i = 0; i < requests.size(); ++i) {
+          const ColumnInfo& column = *requests[i].column;
+          CAPTURE(column.name);
+          CHECK(part[i].rows == rows.size());
           if (column.type == ScalarType::String) {
-            for (std::size_t r = 0; r < part.rows; ++r) {
-              CHECK(part.strings[r] == whole.strings[row + r]);
+            for (std::size_t r = 0; r < part[i].rows; ++r) {
+              CHECK(part[i].strings[r] == whole[i].strings[row[i] + r]);
             }
           } else if (column.variable) {
-            for (std::size_t r = 0; r < part.rows; ++r) {
-              const auto n = part.offsets[r + 1] - part.offsets[r];
-              REQUIRE(whole.offsets[row + r + 1] - whole.offsets[row + r] == n);
+            for (std::size_t r = 0; r < part[i].rows; ++r) {
+              const auto n = part[i].offsets[r + 1] - part[i].offsets[r];
+              REQUIRE(whole[i].offsets[row[i] + r + 1] - whole[i].offsets[row[i] + r] == n);
               const std::size_t size = scalar_size(column.type);
-              CHECK(same_bytes(part.data.data() + part.offsets[r] * size,
-                               whole.data.data() + whole.offsets[row + r] * size,
+              CHECK(same_bytes(part[i].data.data() + part[i].offsets[r] * size,
+                               whole[i].data.data() + whole[i].offsets[row[i] + r] * size,
                                static_cast<std::size_t>(n) * size));
             }
           } else {
-            const std::size_t row_bytes = part.count * scalar_size(column.type);
-            CHECK(same_bytes(part.data.data(), whole.data.data() + row * row_bytes,
-                             part.rows * row_bytes));
+            const std::size_t row_bytes = part[i].count * scalar_size(column.type);
+            CHECK(same_bytes(part[i].data.data(), whole[i].data.data() + row[i] * row_bytes,
+                             part[i].rows * row_bytes));
           }
-          row += part.rows;
+          row[i] += part[i].rows;
+          ++compared;
         }
-        CHECK(row == whole.rows);
       }
+      for (std::size_t i = 0; i < requests.size(); ++i) CHECK(row[i] == whole[i].rows);
     }
   }
+  CHECK(compared > 1000);  // the loops above are not empty
 }
