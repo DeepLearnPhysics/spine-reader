@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(HDF5 COMPONENTS C)
+
+include("${CMAKE_CURRENT_LIST_DIR}/SpineReaderTargets.cmake")
+check_required_components(SpineReader)
