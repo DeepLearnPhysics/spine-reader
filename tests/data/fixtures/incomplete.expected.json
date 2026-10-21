@@ -1,0 +1,107 @@
+{
+  "case": "incomplete",
+  "writer": {"spine_version":"1.4.0","format_version":1,"lite":false,"complete":false},
+  "layout": "V1",
+  "num_events": 2,
+  "products": {
+    "index": {
+      "kind": "array", "class_name": null, "scalar": true,
+      "columns": {
+        "": {"type":"int64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [0],
+        [1]
+      ]
+    },
+    "reco_particles": {
+      "kind": "objects", "class_name": "RecoParticle", "scalar": false,
+      "columns": {
+        "axial_spread": {"type":"float64","count":1,"variable":false,"enum":null},
+        "best_match_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "best_match_overlap": {"type":"float64","count":1,"variable":false,"enum":null},
+        "calo_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "cathode_offset": {"type":"float64","count":1,"variable":false,"enum":null},
+        "chi2_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "chi2_pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "crt_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "crt_scores": {"type":"float32","count":0,"variable":true,"enum":null},
+        "crt_times": {"type":"float32","count":0,"variable":true,"enum":null},
+        "csda_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "csda_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "depositions_q_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "depositions_sum": {"type":"float64","count":1,"variable":false,"enum":null},
+        "directional_spread": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_dedx": {"type":"float64","count":1,"variable":false,"enum":null},
+        "end_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "end_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "fragment_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "interaction_id": {"type":"int64","count":1,"variable":false,"enum":null},
+        "is_cathode_crosser": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_crt_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_matched": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_primary": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_time_contained": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_truth": {"type":"bool","count":1,"variable":false,"enum":null},
+        "is_valid": {"type":"bool","count":1,"variable":false,"enum":null},
+        "ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "length": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mass": {"type":"float64","count":1,"variable":false,"enum":null},
+        "match_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "match_overlaps": {"type":"float32","count":0,"variable":true,"enum":null},
+        "mcs_ke": {"type":"float64","count":1,"variable":false,"enum":null},
+        "mcs_ke_per_pid": {"type":"float32","count":6,"variable":false,"enum":null},
+        "module_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "momentum": {"type":"float64","count":3,"variable":false,"enum":null},
+        "num_fragments": {"type":"int64","count":1,"variable":false,"enum":null},
+        "orig_index": {"type":"int32","count":0,"variable":true,"enum":null},
+        "p": {"type":"float64","count":1,"variable":false,"enum":null},
+        "pdg_code": {"type":"int64","count":1,"variable":false,"enum":null},
+        "pid": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"PHOTON":0,"ELECTRON":1,"MUON":2,"PION":3,"PROTON":4,"KAON":5}},
+        "pid_scores": {"type":"float32","count":6,"variable":false,"enum":null},
+        "ppn_ids": {"type":"int32","count":0,"variable":true,"enum":null},
+        "primary_scores": {"type":"float32","count":2,"variable":false,"enum":null},
+        "shape": {"type":"int64","count":1,"variable":false,"enum":{"UNKNOWN":-1,"SHOWER":0,"TRACK":1,"MICHEL":2,"DELTA":3,"LOWE":4,"GHOST":5,"LARCV_UNKNOWN":6}},
+        "size": {"type":"int64","count":1,"variable":false,"enum":null},
+        "start_dedx": {"type":"float64","count":1,"variable":false,"enum":null},
+        "start_dir": {"type":"float32","count":3,"variable":false,"enum":null},
+        "start_point": {"type":"float32","count":3,"variable":false,"enum":null},
+        "start_straightness": {"type":"float64","count":1,"variable":false,"enum":null},
+        "units": {"type":"string","count":1,"variable":false,"enum":null},
+        "vertex_distance": {"type":"float64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"axial_spread":"nan","best_match_id":1,"best_match_overlap":0.9100000262260437,"calo_ke":730.6875,"cathode_offset":0.0,"chi2_per_pid":[22.5,11.625,9.5625,2.6875,38.625,22.375],"chi2_pid":2,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":679.54,"csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":16.078125,"depositions_sum":16.109375,"directional_spread":"nan","end_dedx":"nan","end_dir":[-0.75,-0.5859375,-0.296875],"end_point":[208.17999267578125,72.5989990234375,47.375],"fragment_ids":[0],"id":0,"index":[309,920,2887,4248,4683,5963,6098,8761],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":679.54,"length":91.15625,"mass":105.658,"match_ids":[1,4],"match_overlaps":[0.9100000262260437,0.05999999865889549],"mcs_ke":505.125,"mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[583.5425528699684,455.8926194296629,230.9855938443625],"num_fragments":1,"orig_index":[316,927,2894,4255,4690,5970,6105,8768],"p":775.7024790627346,"pdg_code":13,"pid":2,"pid_scores":[0.053199999034404755,0.039799999445676804,0.4408000111579895,0.17470000684261322,0.18850000202655792,0.10300000011920929],"ppn_ids":[0],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":1,"size":8,"start_dedx":2.53125,"start_dir":[0.75,0.5859375,0.296875],"start_point":[139.8125,19.1875,20.3125],"start_straightness":"nan","units":"cm","vertex_distance":3.359375},
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.7699999809265137,"calo_ke":342.1875,"cathode_offset":-1.3125,"chi2_per_pid":[28.75,5.4375,2.3125,3.25,9.8125,23.0625],"chi2_pid":4,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":318.23,"csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":14.328125,"depositions_sum":7.046875,"directional_spread":"nan","end_dedx":"nan","end_dir":[0.34375,-0.890625,0.296875],"end_point":[-147.74400329589844,5.624000072479248,67.29199981689453],"fragment_ids":[1],"id":1,"index":[3749,6197,7212,7964,8441],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":false,"is_truth":false,"is_valid":true,"ke":318.23,"length":43.4375,"mass":938.272,"match_ids":[0],"match_overlaps":[0.7699999809265137],"mcs_ke":583.0,"mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-287.28183728799564,744.3211238825342,-248.10704129417806],"num_fragments":1,"orig_index":[3756,6204,7219,7971,8448],"p":835.5249208928936,"pdg_code":2212,"pid":4,"pid_scores":[0.02879999950528145,0.13830000162124634,0.08649999648332596,0.17270000278949738,0.4514999985694885,0.12229999899864197],"ppn_ids":[1],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":1,"size":5,"start_dedx":2.453125,"start_dir":[-0.34375,0.890625,-0.296875],"start_point":[-132.8125,-33.0625,80.1875],"start_straightness":"nan","units":"cm","vertex_distance":2.296875},
+          {"axial_spread":"nan","best_match_id":2,"best_match_overlap":0.5199999809265137,"calo_ke":27.625,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":0,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":10.0,"depositions_sum":5.671875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[2],"id":2,"index":[692,1922,4329,5380,5590,8606],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":27.625,"length":"nan","mass":0.0,"match_ids":[2,3],"match_overlaps":[0.5199999809265137,0.20000000298023224],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-0.431640625,8.8486328125,-26.1142578125],"num_fragments":1,"orig_index":[699,1929,4336,5387,5597,8613],"p":27.576059859547,"pdg_code":22,"pid":0,"pid_scores":[0.44839999079704285,0.0957999974489212,0.03999999910593033,0.10559999942779541,0.1340000033378601,0.1761000007390976],"ppn_ids":[2],"primary_scores":[1.0,0.10000000149011612],"shape":0,"size":6,"start_dedx":"nan","start_dir":[-0.015625,0.3203125,-0.9453125],"start_point":[122.4375,-64.8125,32.625],"start_straightness":"nan","units":"cm","vertex_distance":0.6875},
+          {"axial_spread":"nan","best_match_id":3,"best_match_overlap":0.8299999833106995,"calo_ke":494.625,"cathode_offset":0.0,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":18.984375,"depositions_sum":8.109375,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[3],"id":3,"index":[1496,2565,3946,5419,6495,7151,7545],"interaction_id":1,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":494.625,"length":"nan","mass":0.511998,"match_ids":[3],"match_overlaps":[0.8299999833106995],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[255.30487809922357,-263.0413895567758,332.66999267474586],"num_fragments":1,"orig_index":[1503,2572,3953,5426,6502,7158,7552],"p":495.0158355319902,"pdg_code":11,"pid":1,"pid_scores":[0.020899999886751175,0.6078000068664551,0.18160000443458557,0.050200000405311584,0.0203000009059906,0.11909999698400497],"ppn_ids":[3],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":0,"size":7,"start_dedx":"nan","start_dir":[0.515625,-0.53125,0.671875],"start_point":[-104.8125,64.3125,-21.6875],"start_straightness":"nan","units":"cm","vertex_distance":2.234375},
+          {"axial_spread":"nan","best_match_id":-1,"best_match_overlap":-1.0,"calo_ke":210.625,"cathode_offset":0.734375,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":8.140625,"depositions_sum":5.796875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[4],"id":4,"index":[4635,5663,7528],"interaction_id":1,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":false,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":210.625,"length":"nan","mass":0.511998,"match_ids":[],"match_overlaps":[],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[-209.48687426571746,-19.79403536368984,18.144532416715688],"num_fragments":1,"orig_index":[4642,5670,7535],"p":211.20080109275335,"pdg_code":11,"pid":1,"pid_scores":[0.032600000500679016,0.5669000148773193,0.03669999912381172,0.17829999327659607,0.1589999943971634,0.026599999517202377],"ppn_ids":[4],"primary_scores":[1.0,0.10000000149011612],"shape":2,"size":3,"start_dedx":"nan","start_dir":[-0.9921875,-0.09375,0.0859375],"start_point":[-62.5625,-68.5625,11.875],"start_straightness":"nan","units":"cm","vertex_distance":2.125}
+        ],
+        [
+          {"axial_spread":"nan","best_match_id":1,"best_match_overlap":0.20000000298023224,"calo_ke":53.6875,"cathode_offset":0.9375,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":-1,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":12.328125,"depositions_sum":4.046875,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[0],"id":0,"index":[1713,2659,3498],"interaction_id":0,"is_cathode_crosser":false,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":false,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":53.6875,"length":"nan","mass":"nan","match_ids":[1],"match_overlaps":[0.20000000298023224],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":["nan","nan","nan"],"num_fragments":1,"orig_index":[1720,2666,3505],"p":"nan","pdg_code":0,"pid":-1,"pid_scores":[0.3978999853134155,0.11069999635219574,0.06859999895095825,0.12030000239610672,0.12110000103712082,0.18140000104904175],"ppn_ids":[0],"primary_scores":[1.0,0.10000000149011612],"shape":6,"size":3,"start_dedx":"nan","start_dir":[0.0859375,0.15625,-0.984375],"start_point":[49.5,8.1875,-143.9375],"start_straightness":"nan","units":"px","vertex_distance":3.984375},
+          {"axial_spread":"nan","best_match_id":0,"best_match_overlap":0.5,"calo_ke":332.125,"cathode_offset":0.03125,"chi2_per_pid":["nan","nan","nan","nan","nan","nan"],"chi2_pid":3,"crt_ids":[],"crt_scores":[],"crt_times":[],"csda_ke":"nan","csda_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"depositions_q_sum":13.015625,"depositions_sum":5.15625,"directional_spread":"nan","end_dedx":"nan","end_dir":["nan","nan","nan"],"end_point":["nan","nan","nan"],"fragment_ids":[1],"id":1,"index":[1212,3161,3507,6965],"interaction_id":0,"is_cathode_crosser":true,"is_contained":true,"is_crt_matched":false,"is_matched":true,"is_primary":true,"is_time_contained":true,"is_truth":false,"is_valid":true,"ke":332.125,"length":"nan","mass":139.57,"match_ids":[0],"match_overlaps":[0.5],"mcs_ke":"nan","mcs_ke_per_pid":["nan","nan","nan","nan","nan","nan"],"module_ids":[],"momentum":[176.0052340877965,-49.28146554458302,411.85224776544385],"num_fragments":1,"orig_index":[1219,3168,3514,6972],"p":450.587149463864,"pdg_code":211,"pid":3,"pid_scores":[0.05570000037550926,0.17720000445842743,0.01119999960064888,0.42590001225471497,0.13259999454021454,0.1973000019788742],"ppn_ids":[1],"primary_scores":[0.20000000298023224,0.8999999761581421],"shape":-1,"size":4,"start_dedx":"nan","start_dir":[0.390625,-0.109375,0.9140625],"start_point":[-53.3125,68.5,-142.25],"start_straightness":"nan","units":"px","vertex_distance":1.84375}
+        ]
+      ]
+    },
+    "run_info": {
+      "kind": "objects", "class_name": "RunInfo", "scalar": true,
+      "columns": {
+        "event": {"type":"int64","count":1,"variable":false,"enum":null},
+        "run": {"type":"int64","count":1,"variable":false,"enum":null},
+        "subrun": {"type":"int64","count":1,"variable":false,"enum":null}
+      },
+      "events": [
+        [
+          {"event":1000,"run":9001,"subrun":3}
+        ],
+        [
+          {"event":1017,"run":9001,"subrun":3}
+        ]
+      ]
+    }
+  }
+}
