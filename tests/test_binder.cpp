@@ -1,5 +1,6 @@
 #include <doctest.h>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstring>
@@ -9,6 +10,7 @@
 
 #include <spine/descriptor.hpp>
 #include <spine/detail/assign.hpp>
+#include <spine/error.hpp>
 #include <spine/object.hpp>
 
 #include "bind/binder.hpp"
@@ -86,6 +88,13 @@ class FakeSource : public spine::core::ProductSource {
     out.assign(reqs.size(), {});
     for (std::size_t k = 0; k < reqs.size(); ++k) {
       const Column& c = columns_[static_cast<std::size_t>(reqs[k].column - info_.columns.data())];
+      // What the real core refuses (core::check_request): a binder that asks for it is wrong.
+      if ((c.info.type == ScalarType::String) != (reqs[k].type == ScalarType::String)) {
+        throw spine::Error("FakeSource: column '" + c.info.name + "' cannot be read as that type");
+      }
+      if (reqs[k].type == ScalarType::Bool && c.info.type != ScalarType::Bool) {
+        throw spine::Error("FakeSource: column '" + c.info.name + "' is not a bool");
+      }
       spine::detail::ColumnBuffer& b = out[k];
       b.type = reqs[k].type;
       b.variable = c.info.variable;
@@ -114,6 +123,7 @@ class FakeSource : public spine::core::ProductSource {
   static void append(spine::detail::ColumnBuffer& b, double v) {
     switch (b.type) {
       case ScalarType::Bool:
+        return put(b, static_cast<std::uint8_t>(v != 0));
       case ScalarType::UInt8:
         return put(b, static_cast<std::uint8_t>(v));
       case ScalarType::Int32:
@@ -193,10 +203,85 @@ TEST_CASE("missing and mismatched fields keep defaults and are reported") {
   CHECK(toys[0].id == 7);
   CHECK(toys[0].is_contained);  // integer-stored bool: non-zero is true
   CHECK(std::isnan(toys[0].start_point[0]));
-  CHECK_FALSE(toys[0].has(Toy::Field::start_point));
-  CHECK_FALSE(toys[0].has(Toy::Field::units));
-  CHECK(toys[0].has(Toy::Field::id));
   CHECK(toys[0].units == "cm");
+  // exactly the fields that were bound are present
+  const std::vector<std::pair<Toy::Field, bool>> present = {
+      {Toy::Field::id, true},          {Toy::Field::shape, true},
+      {Toy::Field::is_contained, true}, {Toy::Field::start_point, false},
+      {Toy::Field::match_ids, false},  {Toy::Field::units, false}};
+  for (const auto& [field, expected] : present) {
+    CHECK_MESSAGE(toys[0].has(field) == expected, "field " << static_cast<int>(field));
+    CHECK(binding.present(static_cast<std::size_t>(field)) == expected);
+  }
+}
+
+TEST_CASE("a bool stored as a plain integer is read as that integer, then made a bool") {
+  // The core refuses to read a non-bool column as Bool, and so does FakeSource: this test fails
+  // if the binder asks for Bool, and passes only if it reads the integer and lets assign convert.
+  FakeSource source({{column("is_contained", ScalarType::UInt8), {{0}, {1}, {2}, {255}}, {}}});
+  spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  std::vector<Toy> toys;
+  binding.read(RowRange{0, 4}, toys);
+  REQUIRE(toys.size() == 4);
+  CHECK_FALSE(toys[0].is_contained);
+  CHECK(toys[1].is_contained);
+  CHECK(toys[2].is_contained);
+  CHECK(toys[3].is_contained);
+  CHECK(toys[0].has(Toy::Field::is_contained));
+
+  // an enum-bool column is read as Bool
+  FakeSource enum_bool({{column("is_contained", ScalarType::Bool), {{0}, {1}}, {}}});
+  spine::bind::ProductBinding enum_binding(Toy::descriptor(), enum_bool);
+  enum_binding.read(RowRange{0, 2}, toys);
+  CHECK_FALSE(toys[0].is_contained);
+  CHECK(toys[1].is_contained);
+}
+
+TEST_CASE("fields are bound by name, not by position") {
+  // every column of the model, but in reverse order and with a foreign column in front
+  FakeSource source({
+      {column("units", ScalarType::String, 1, true), {}, {"px"}},
+      {column("match_ids", ScalarType::Int32, 0, true), {{4, 5}}, {}},
+      {column("start_point", ScalarType::Float32, 3), {{1, 2, 3}}, {}},
+      {column("is_contained", ScalarType::Bool), {{1}}, {}},
+      {column("shape", ScalarType::Int64), {{1}}, {}},
+      {column("id", ScalarType::Int64), {{42}}, {}},
+      {column("zzz", ScalarType::Int64), {{0}}, {}},
+  });
+  spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  CHECK(binding.report().complete());  // extra columns do not count
+  CHECK(binding.report().extra == std::vector<std::string>{"zzz"});
+  CHECK(binding.report().missing.empty());
+  std::vector<Toy> toys;
+  binding.read(RowRange{0, 1}, toys);
+  REQUIRE(toys.size() == 1);
+  CHECK(toys[0].id == 42);
+  CHECK(toys[0].shape == Shape::TRACK);
+  CHECK(toys[0].is_contained);
+  CHECK(toys[0].start_point == std::array<float, 3>{1, 2, 3});
+  CHECK(toys[0].match_ids == std::vector<std::int32_t>{4, 5});
+  CHECK(toys[0].units == "px");
+}
+
+TEST_CASE("reading into a vector that holds objects replaces them, defaults and all") {
+  FakeSource source({{column("id", ScalarType::Int64), {{7}, {8}, {9}}, {}}});
+  spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  std::vector<Toy> toys(5);
+  for (Toy& toy : toys) {
+    toy.units = "stale";
+    toy.shape = Shape::TRACK;
+    toy.id = 1000;
+  }
+  binding.read(RowRange{0, 3}, toys);
+  REQUIRE(toys.size() == 3);
+  for (const Toy& toy : toys) {
+    CHECK(toy.units == "cm");  // the file has no units: the default, not what was there before
+    CHECK(toy.shape == Shape::UNKNOWN);
+  }
+  CHECK(toys[2].id == 9);
+  binding.read(RowRange{1, 2}, toys);
+  REQUIRE(toys.size() == 1);
+  CHECK(toys[0].id == 8);
 }
 
 TEST_CASE("enum labels are compared by value, ignoring case") {
@@ -219,4 +304,45 @@ TEST_CASE("string and number columns never bind to each other") {
         "file int64 vs model string");
   CHECK(spine::bind::incompatibility(kToyFields[4], column("match_ids", ScalarType::Int64, 2)) ==
         "file int64[2] vs model int32[]");
+}
+
+TEST_CASE("enum labels that name a known value differently are reported") {
+  ColumnInfo shape = column("shape", ScalarType::Int64);
+  shape.enum_members = {{"TRACK", 0}, {"SHOWER", 1}, {"UNKNOWN", -1}, {"NOVEL", 9}};
+  FakeSource source({{shape, {{0}}, {}}});
+  spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  std::vector<std::string> notes = binding.report().enum_notes;
+  std::sort(notes.begin(), notes.end());
+  CHECK(notes == std::vector<std::string>{
+                     "shape: file label NOVEL=9 is unknown to the model",
+                     "shape: value 0 is TRACK in the file but SHOWER in the model",
+                     "shape: value 1 is SHOWER in the file but TRACK in the model"});
+
+  // the value is what is read, whatever the label: 0 is SHOWER in the model
+  std::vector<Toy> toys;
+  binding.read(RowRange{0, 1}, toys);
+  CHECK(toys[0].shape == Shape::SHOWER);
+
+  // no enum labels in the file, nothing to report
+  FakeSource plain({{column("shape", ScalarType::Int64), {{1}}, {}}});
+  CHECK(spine::bind::ProductBinding(Toy::descriptor(), plain).report().enum_notes.empty());
+}
+
+TEST_CASE("shape mismatches name both sides") {
+  using spine::bind::incompatibility;
+  // fixed length differs, variable vs fixed, fixed vs variable, number vs string, string vs number
+  CHECK(incompatibility(kToyFields[3], column("start_point", ScalarType::Float64, 3)).empty());
+  CHECK(incompatibility(kToyFields[3], column("start_point", ScalarType::Float64, 4)) ==
+        "file float64[4] vs model float32[3]");
+  CHECK(incompatibility(kToyFields[3], column("start_point", ScalarType::Float64, 3, true)) ==
+        "file float64[] vs model float32[3]");
+  CHECK(incompatibility(kToyFields[4], column("match_ids", ScalarType::Int32, 0, true)).empty());
+  CHECK(incompatibility(kToyFields[4], column("match_ids", ScalarType::Int32, 1)) ==
+        "file int32 vs model int32[]");
+  CHECK(incompatibility(kToyFields[0], column("id", ScalarType::String, 1, true)) ==
+        "file string vs model int64");
+  CHECK(incompatibility(kToyFields[0], column("id", ScalarType::Int64, 2)) ==
+        "file int64[2] vs model int64");
+  // the element type never matters: the core converts
+  CHECK(incompatibility(kToyFields[0], column("id", ScalarType::Float32)).empty());
 }
