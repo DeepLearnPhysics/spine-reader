@@ -74,12 +74,31 @@ TEST_CASE("layout detection: V1, V2 under /products, V2 at the file root") {
   CHECK(open("spine_v1_exotic.h5")->info().num_events == 3);
 }
 
-TEST_CASE("a V1 file may have a product called 'products'") {
+TEST_CASE("a V1 file may have a product called 'products', dataset or group") {
   Hdf5Lock lock;
   auto file = open("edge_v1_products.h5");
   CHECK(file->info().layout == Layout::V1);  // format_version says 1: the dataset is data
   CHECK(file->product_names() == std::vector<std::string>{"products"});
   CHECK(file->product("products").num_rows() == 3);
+
+  // as a group (a list of arrays), /products looks like the root of a V2 file: only
+  // /info@format_version = 1 tells them apart
+  auto group = open("edge_v1_products_group.h5");
+  CHECK(group->info().format_version == 1);
+  CHECK(group->info().layout == Layout::V1);
+  CHECK(group->product_names() == std::vector<std::string>{"products"});
+  CHECK(group->product("products").info().kind == ProductKind::List);
+}
+
+TEST_CASE("a file with /products but no format_version is V2") {
+  Hdf5Lock lock;
+  auto file = open("edge_v2_noversion.h5");
+  CHECK(file->info().layout == Layout::V2Products);
+  CHECK(file->info().format_version == 1);  // the default of an absent attribute
+  CHECK(file->info().spine_version.empty());
+  CHECK(file->product_names() == std::vector<std::string>{"index"});
+  ProductSource& index = file->product("index");
+  CHECK(read_column(index, "", all_rows(index), ScalarType::Int64).rows == 3);
 }
 
 TEST_CASE("product listing") {
@@ -108,6 +127,8 @@ TEST_CASE("product listing") {
   auto root = open("mini_v2_v0.16.3.h5");
   CHECK(root->product_names() ==
         std::vector<std::string>{"index", "points", "reco_particles", "run_info"});
+  CHECK_FALSE(root->has_product("info"));
+  CHECK_FALSE(root->has_product("events"));
 
   auto litified = open("spine_v2_events_litified.h5");
   CHECK_FALSE(litified->has_product("points"));
@@ -141,9 +162,10 @@ TEST_CASE("files that are not complete SPINE outputs are rejected") {
 
   const std::string cache = open_error("edge_cache.h5");
   CHECK(contains(cache, data_path("edge_cache.h5")));
-  CHECK(contains(cache, "cache"));
+  // (the words in the messages: the files are called edge_cache.h5, edge_incomplete_v1.h5)
+  CHECK(contains(cache, "this is a SPINE cache shard"));
   // A cache shard stays rejected when incomplete files are allowed.
-  CHECK(contains(open_error("edge_cache.h5", {true}), "cache"));
+  CHECK(contains(open_error("edge_cache.h5", {true}), "this is a SPINE cache shard"));
 
   const std::string version = open_error("edge_bad_version.h5");
   CHECK(contains(version, data_path("edge_bad_version.h5")));
@@ -152,7 +174,7 @@ TEST_CASE("files that are not complete SPINE outputs are rejected") {
   for (const char* name : {"edge_incomplete_v1.h5", "edge_incomplete_v2.h5"}) {
     const std::string incomplete = open_error(name);
     CHECK(contains(incomplete, data_path(name)));
-    CHECK(contains(incomplete, "incomplete"));
+    CHECK(contains(incomplete, "the file is incomplete (/info@complete is false)"));
   }
 }
 

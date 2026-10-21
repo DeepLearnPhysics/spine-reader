@@ -172,3 +172,75 @@ TEST_CASE("yaml lists as SPINE writes them") {
   CHECK_THROWS_AS(parse_yaml_list("-a\n"), Error);
   CHECK_THROWS_AS(parse_yaml_list("- \n"), Error);
 }
+
+TEST_CASE("fail() puts the call, the object and the innermost message together") {
+  Hdf5Lock lock;
+  h5::ErrorSilencer silence;
+
+  // nothing on the HDF5 error stack: the text says so, and still names the call and the object
+  H5Eclear2(H5E_DEFAULT);
+  try {
+    h5::fail("H5Xcall", "the object");
+    FAIL("fail() throws");
+  } catch (const Error& error) {
+    CHECK(std::string(error.what()) ==
+          "H5Xcall on 'the object' failed (no message on the HDF5 error stack)");
+  }
+  H5Eclear2(H5E_DEFAULT);
+  try {
+    h5::fail("H5Ycall");
+    FAIL("fail() throws");
+  } catch (const Error& error) {
+    CHECK(std::string(error.what()) == "H5Ycall failed (no message on the HDF5 error stack)");
+  }
+
+  // after a real failure the stack holds HDF5's messages, outermost first; the innermost is kept
+  const std::string missing = data_path("no_such_file.h5");
+  H5Fopen(missing.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
+  try {
+    h5::fail("H5Fopen", "somewhere else");
+    FAIL("fail() throws");
+  } catch (const Error& error) {
+    const std::string text = error.what();
+    CHECK(text.rfind("H5Fopen on 'somewhere else' failed: ", 0) == 0);
+    CHECK(contains(text, "No such file or directory"));
+    CHECK_FALSE(contains(text, "no message"));
+  }
+
+  // check(): negative is failure, zero and positive are results
+  CHECK(h5::check(0, "H5X") == 0);
+  CHECK(h5::check(5, "H5X") == 5);
+  CHECK(h5::check(static_cast<hid_t>(3), "H5X") == 3);
+  CHECK_THROWS_AS(h5::check(-1, "H5X"), Error);
+  CHECK_THROWS_AS(h5::check(static_cast<hssize_t>(-1), "H5X", "thing"), Error);
+}
+
+TEST_CASE("fixed-length string attributes: space padding is trimmed, text inside is kept") {
+  Hdf5Lock lock;
+  h5::ErrorSilencer silence;
+  h5::File file = h5::open_file(data_path("edge_attributes_padded.h5"));
+  CHECK(h5::read_string_attribute(file.get(), "space_padded") == "ab c");  // 8 bytes: "ab c    "
+  CHECK(h5::read_string_attribute(file.get(), "space_padded_blank").empty());
+}
+
+TEST_CASE("children are listed in creation order when the group records it, else by name") {
+  Hdf5Lock lock;
+  h5::ErrorSilencer silence;
+  h5::File file = h5::open_file(data_path("edge_creation_order.h5"));
+  h5::Group products = h5::open_group(file.get(), "products");
+  bool by_creation = false;
+  const std::vector<std::string> names = h5::child_names(products.get(), &by_creation);
+  CHECK(by_creation);
+  CHECK(names == std::vector<std::string>{"zeta", "alpha", "mid"});  // not alphabetical
+
+  // the product list of the file follows
+  auto source = open("edge_creation_order.h5");
+  CHECK(source->product_names() == std::vector<std::string>{"zeta", "alpha", "mid"});
+
+  // the root of this file does not track order: name order
+  by_creation = true;
+  h5::Group root_group = h5::open_group(file.get(), "/");
+  const std::vector<std::string> root = h5::child_names(root_group.get(), &by_creation);
+  CHECK_FALSE(by_creation);
+  CHECK(root == std::vector<std::string>{"events", "info", "products"});
+}
