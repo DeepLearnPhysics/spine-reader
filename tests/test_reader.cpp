@@ -656,7 +656,8 @@ TEST_CASE("a Reader can be moved") {
 TEST_CASE("a product with every kind of difference binds as the report says") {
   // edge_model_binding_v1.h5: 'reco_particles', class RecoParticle, columns
   //   id (int64), is_primary (plain uint8: 2, 0, 1), is_valid (bool enum: 1, 0, 2),
-  //   shape (enum {UNKNOWN -1, TRACK 0, SHOWER 1, NOVEL 9}: 0, 1, 9), units, match_ids (VLEN),
+  //   shape (enum {UNKNOWN -1, TRACK 0, SHOWER 1, NOVEL 9}: 0, 1, 9; numbered across the model's,
+  //   so it is not read), units, match_ids (VLEN),
   //   start_point (float64[4]: the model has float32[3]), brand_new (float32).
   Reader reader(core_file("edge_model_binding_v1.h5"));
   REQUIRE(reader.num_events() == 2);
@@ -667,30 +668,28 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
   CHECK(p.class_name == "RecoParticle");
   CHECK_FALSE(p.complete());
   CHECK(p.mismatched ==
-        std::vector<std::string>{"start_point: file float64[4] vs model float32[3]"});
+        std::vector<std::string>{"shape: enum numbering differs: file SHOWER=1 and TRACK=0, "
+                                 "model SHOWER=0 and TRACK=1",
+                                 "start_point: file float64[4] vs model float32[3]"});
   CHECK(p.extra == std::vector<std::string>{"brand_new"});
-  // 55 fields; 6 bound, 1 mismatched
-  CHECK(p.missing.size() == 55 - 6 - 1);
+  // 55 fields; 5 bound, 2 mismatched
+  CHECK(p.missing.size() == 55 - 5 - 2);
   CHECK(std::find(p.missing.begin(), p.missing.end(), "end_point") != p.missing.end());
   CHECK(std::find(p.missing.begin(), p.missing.end(), "length") != p.missing.end());
   for (const char* bound :
        {"id", "is_primary", "is_valid", "shape", "units", "match_ids", "start_point"}) {
     CHECK_MESSAGE(std::find(p.missing.begin(), p.missing.end(), bound) == p.missing.end(), bound);
   }
-  const std::set<std::string> notes(p.enum_notes.begin(), p.enum_notes.end());
-  CHECK(notes == std::set<std::string>{
-                     "shape: value 0 is TRACK in the file but SHOWER in the model",
-                     "shape: value 1 is SHOWER in the file but TRACK in the model",
-                     "shape: file label NOVEL=9 is unknown to the model"});
+  CHECK(p.enum_notes.empty());  // the only enum is not read
 
   // what the summary prints
   const std::string summary = report.summary();
   CHECK(contains(summary, "reco_particles [RecoParticle]: some model fields missing"));
-  CHECK(contains(summary, "mismatched (1):"));
+  CHECK(contains(summary, "mismatched (2):"));
+  CHECK_FALSE(contains(summary, "enum labels"));
   CHECK(contains(summary, "start_point: file float64[4] vs model float32[3]"));
   CHECK(contains(summary, "not in model (1):"));
   CHECK(contains(summary, "brand_new"));
-  CHECK(contains(summary, "enum labels (3):"));
   CHECK(contains(summary, "SPINE 1.4.0, format_version 1 (V1)"));
   CHECK(contains(summary, core_file("edge_model_binding_v1.h5")));
 
@@ -713,11 +712,10 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
   CHECK(a.is_valid);
   CHECK_FALSE(b.is_valid);
   CHECK(c.is_valid);
-  // enums map by value whatever the labels say
-  CHECK(static_cast<std::int64_t>(a.shape) == 0);
-  CHECK(a.shape == ParticleShape::SHOWER);
-  CHECK(b.shape == ParticleShape::TRACK);
-  CHECK(static_cast<std::int64_t>(c.shape) == 9);
+  // the crossed enum keeps its default
+  CHECK(a.shape == ParticleShape::UNKNOWN);
+  CHECK(b.shape == ParticleShape::UNKNOWN);
+  CHECK(c.shape == ParticleShape::UNKNOWN);
   CHECK(a.units == "cm");
   CHECK(b.units == "px");
   CHECK(a.match_ids == std::vector<std::int32_t>{1, 2});
@@ -725,11 +723,11 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
   CHECK(c.match_ids == std::vector<std::int32_t>{3});
   // presence
   using F = RecoParticle::Field;
-  for (F field : {F::id, F::is_primary, F::is_valid, F::shape, F::units, F::match_ids}) {
+  for (F field : {F::id, F::is_primary, F::is_valid, F::units, F::match_ids}) {
     CHECK_MESSAGE(a.has(field), "field " << static_cast<int>(field));
   }
   for (F field :
-       {F::start_point, F::end_point, F::length, F::is_truth, F::interaction_id, F::pid}) {
+       {F::shape, F::start_point, F::end_point, F::length, F::is_truth, F::interaction_id, F::pid}) {
     CHECK_MESSAGE(!a.has(field), "field " << static_cast<int>(field));
   }
   // a mismatched or missing field keeps SPINE's default

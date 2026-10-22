@@ -25,6 +25,41 @@ bool equal_ignoring_case(std::string_view a, std::string_view b) {
   return true;
 }
 
+const EnumMember* find_label(const EnumDescriptor& enumeration, std::string_view label) {
+  for (std::size_t i = 0; i < enumeration.size; ++i) {
+    if (equal_ignoring_case(enumeration.members[i].name, label)) return &enumeration.members[i];
+  }
+  return nullptr;
+}
+
+const core::FileEnumMember* find_label(const core::ColumnInfo& column, std::string_view label) {
+  for (const core::FileEnumMember& member : column.enum_members) {
+    if (equal_ignoring_case(member.name, label)) return &member;
+  }
+  return nullptr;
+}
+
+// Enums are read by value, as SPINE reads its own files: labels are not stable enough to go by
+// (SPINE v0.9-v0.10 label 6 "Unknown", which is LARCV_UNKNOWN in the model, not UNKNOWN = -1).
+// But when two labels that file and model both have cross, e.g. the file has Track=0 and
+// Shower=1 where the model has TRACK=1 and SHOWER=0, the numbering itself differs and the values
+// cannot be trusted: the field is then not read.
+std::string crossed_numbering(const FieldDescriptor& field, const core::ColumnInfo& column) {
+  for (const core::FileEnumMember& member : column.enum_members) {
+    const EnumMember* same_label = find_label(*field.enumeration, member.name);
+    if (same_label == nullptr || same_label->value == member.value) continue;
+    const std::string_view model_name = field.enumeration->name_of(member.value);
+    if (model_name.empty()) continue;
+    const core::FileEnumMember* other = find_label(column, model_name);
+    if (other == nullptr) continue;
+    return "enum numbering differs: file " + member.name + "=" + std::to_string(member.value) +
+           " and " + other->name + "=" + std::to_string(other->value) + ", model " +
+           std::string(same_label->name) + "=" + std::to_string(same_label->value) + " and " +
+           std::string(model_name) + "=" + std::to_string(member.value);
+  }
+  return {};
+}
+
 void note_enum_differences(const FieldDescriptor& field, const core::ColumnInfo& column,
                            std::vector<std::string>& notes) {
   for (const core::FileEnumMember& member : column.enum_members) {
@@ -67,7 +102,9 @@ ProductBinding::ProductBinding(const ClassDescriptor& cls, core::ProductSource& 
       report_.missing.emplace_back(field.name);
       continue;
     }
-    if (std::string why = incompatibility(field, *column); !why.empty()) {
+    std::string why = incompatibility(field, *column);
+    if (why.empty() && field.enumeration != nullptr) why = crossed_numbering(field, *column);
+    if (!why.empty()) {
       report_.mismatched.push_back(std::string(field.name) + ": " + why);
       continue;
     }

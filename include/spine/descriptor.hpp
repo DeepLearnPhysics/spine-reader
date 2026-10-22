@@ -62,7 +62,8 @@ struct EnumMember {
 };
 
 /// Enumeration as defined by SPINE (e.g. Shape, ParticlePID). Values are what the file
-/// stores; names are the SPINE spelling at the model's release. Files map by value.
+/// stores; names are the SPINE spelling at the model's release. Files map by value. A file
+/// whose labels cross the model's (Track=0, Shower=1 against TRACK=1, SHOWER=0) does not bind.
 struct EnumDescriptor {
   std::string_view name;
   const EnumMember* members;

@@ -307,25 +307,57 @@ TEST_CASE("string and number columns never bind to each other") {
 }
 
 TEST_CASE("enum labels that name a known value differently are reported") {
+  // SPINE v0.9-v0.10 wrote Unknown=6: the model's UNKNOWN is -1, and 6 is not a model value.
+  // Read by value, as SPINE does.
   ColumnInfo shape = column("shape", ScalarType::Int64);
-  shape.enum_members = {{"TRACK", 0}, {"SHOWER", 1}, {"UNKNOWN", -1}, {"NOVEL", 9}};
-  FakeSource source({{shape, {{0}}, {}}});
+  shape.enum_members = {{"Unknown", 6}, {"Michel", 0}, {"TRACK", 1}};
+  FakeSource source({{shape, {{6}, {0}, {1}}, {}}});
   spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  CHECK(binding.report().mismatched.empty());
   std::vector<std::string> notes = binding.report().enum_notes;
   std::sort(notes.begin(), notes.end());
   CHECK(notes == std::vector<std::string>{
-                     "shape: file label NOVEL=9 is unknown to the model",
-                     "shape: value 0 is TRACK in the file but SHOWER in the model",
-                     "shape: value 1 is SHOWER in the file but TRACK in the model"});
+                     "shape: file label Unknown=6 is unknown to the model",
+                     "shape: value 0 is Michel in the file but SHOWER in the model"});
 
-  // the value is what is read, whatever the label: 0 is SHOWER in the model
   std::vector<Toy> toys;
-  binding.read(RowRange{0, 1}, toys);
+  binding.read(RowRange{0, 3}, toys);
+  CHECK(static_cast<std::int64_t>(toys[0].shape) == 6);
+  CHECK(toys[1].shape == Shape::SHOWER);
+  CHECK(toys[2].shape == Shape::TRACK);
+
+  // a model label at another value, where the model's label for that value is not in the file:
+  // still by value (0 is SHOWER although the file calls it Unknown)
+  ColumnInfo renamed = column("shape", ScalarType::Int64);
+  renamed.enum_members = {{"Unknown", 0}, {"Track", 1}};
+  FakeSource renamed_source({{renamed, {{0}}, {}}});
+  spine::bind::ProductBinding renamed_binding(Toy::descriptor(), renamed_source);
+  CHECK(renamed_binding.report().mismatched.empty());
+  renamed_binding.read(RowRange{0, 1}, toys);
   CHECK(toys[0].shape == Shape::SHOWER);
 
   // no enum labels in the file, nothing to report
   FakeSource plain({{column("shape", ScalarType::Int64), {{1}}, {}}});
   CHECK(spine::bind::ProductBinding(Toy::descriptor(), plain).report().enum_notes.empty());
+}
+
+TEST_CASE("an enum whose labels cross the model's numbering is not read") {
+  ColumnInfo shape = column("shape", ScalarType::Int64);
+  shape.enum_members = {{"Track", 0}, {"Shower", 1}, {"UNKNOWN", -1}, {"NOVEL", 9}};
+  ColumnInfo id = column("id", ScalarType::Int64);
+  FakeSource source({{id, {{4}}, {}}, {shape, {{0}}, {}}});
+  spine::bind::ProductBinding binding(Toy::descriptor(), source);
+  CHECK(binding.report().mismatched ==
+        std::vector<std::string>{"shape: enum numbering differs: file Track=0 and Shower=1, "
+                                 "model TRACK=1 and SHOWER=0"});
+  CHECK_FALSE(binding.present(1));
+  CHECK(binding.present(0));
+
+  std::vector<Toy> toys;
+  binding.read(RowRange{0, 1}, toys);
+  CHECK(toys[0].id == 4);
+  CHECK(toys[0].shape == Shape::UNKNOWN);  // the default
+  CHECK_FALSE(toys[0].has(Toy::Field::shape));
 }
 
 TEST_CASE("shape mismatches name both sides") {
