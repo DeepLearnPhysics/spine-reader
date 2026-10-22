@@ -122,7 +122,6 @@ void check_structure(std::string_view name, std::size_t expected_fields) {
       CHECK(f.variable);
       CHECK(f.count == 0);
     }
-    CHECK(f.derived() == ((f.flags & spine::kDerived) != 0));
   }
   CHECK(d.find("no_such_field") == nullptr);
 

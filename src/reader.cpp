@@ -108,11 +108,18 @@ Reader::Reader(const std::vector<std::string>& paths, ReaderOptions options)
     : impl_(std::make_unique<Impl>()) {
   std::lock_guard<std::recursive_mutex> lock(core::hdf5_mutex());
   impl_->options = std::move(options);
-  for (const std::string& path : paths) {
-    OpenFile file = open_file(path, impl_->options);
-    file.first_event = impl_->num_events;
-    impl_->num_events += file.source->info().num_events;
-    impl_->files.push_back(std::move(file));
+  try {
+    for (const std::string& path : paths) {
+      OpenFile file = open_file(path, impl_->options);
+      file.first_event = impl_->num_events;
+      impl_->num_events += file.source->info().num_events;
+      impl_->files.push_back(std::move(file));
+    }
+  } catch (...) {
+    // The files opened so far are closed here, with the lock held. Left to the unwinding of the
+    // constructor, impl_ would be destroyed after `lock` has been released.
+    impl_.reset();
+    throw;
   }
 }
 
@@ -123,7 +130,15 @@ Reader::~Reader() {
 }
 
 Reader::Reader(Reader&&) noexcept = default;
-Reader& Reader::operator=(Reader&&) noexcept = default;
+
+Reader& Reader::operator=(Reader&& other) noexcept {
+  if (this != &other) {
+    // The files this Reader held are closed by the assignment: that is HDF5 work, under the lock.
+    std::lock_guard<std::recursive_mutex> lock(core::hdf5_mutex());
+    impl_ = std::move(other.impl_);
+  }
+  return *this;
+}
 
 std::uint64_t Reader::num_events() const { return impl_->num_events; }
 

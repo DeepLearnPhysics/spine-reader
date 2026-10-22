@@ -28,6 +28,23 @@ source /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh
 cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build --output-on-failure
 ```
 
+## Tests
+
+`ctest --test-dir build` runs:
+
+| ctest entry | What it does |
+| --- | --- |
+| `spine_reader_tests` | The doctest unit tests (`tests/test_*.cpp`), a few seconds. |
+| `spine_reader_real_files` | Reads every `*.h5` in `$SPINE_READER_REAL_FILES` (or `-DSPINE_READER_REAL_FILES=dir`). Without a directory it reports **Skipped**, never Passed. |
+| `spine_reader_generated_model` | `tools/gen/generate.py --check`: the generated model is what the committed SPINE schema produces. |
+| `spine_reader_golden_members` | `tests/golden_members.inc` (the member list `test_golden.cpp` compares object by object) is current. |
+| `spine_dump_output` | `spine-dump` prints what it should for the Reader test files. |
+
+The test files in `tests/data/` come with the scripts that write them: `core/make_edge_cases.py`,
+`core/make_audit_cases.py`, `core/make_expected.py`, `reader/make_reader_cases.py` (SPINE's own
+writer) and `tools/fixtures/` (golden fixtures). `ci/sl7-ups.sh` builds with the SL7 UPS toolchain
+(gcc 12, HDF5 1.12.2); `ci/sanitize.sh` builds with ASan and UBSan (`ci/sanitize.sh thread`: ThreadSanitizer).
+
 ## Conventions
 
 - C++17 in everything installed; no HDF5 type appears in a public header.

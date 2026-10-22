@@ -157,9 +157,11 @@ TEST_CASE("an event or a row range outside the file is an error naming file and 
       CHECK_THROWS_AS(product.read({2, 1}, requests, out), Error);
       try {
         product.read({0, total + 1}, requests, out);
+        FAIL("rows past the end of the product");
       } catch (const Error& error) {
         CHECK(contains(error.what(), data_path(file_name)));
         CHECK(contains(error.what(), name));
+        CHECK(contains(error.what(), "are outside the " + std::to_string(total) + " rows"));
       }
     }
   }
@@ -206,6 +208,54 @@ TEST_CASE("V1 events with a contiguous reference, an empty one, and references t
   // event 1 selects only the first column of two
   ProductSource& partial = file->product("partial_width");
   CHECK(partial.rows(0).size() == 3);
-  CHECK_THROWS_WITH_AS(partial.rows(1), doctest::Contains("width"), Error);
+  CHECK_THROWS_WITH_AS(partial.rows(1), doctest::Contains("selects part of the width of the rows"),
+                       Error);
   CHECK(partial.rows(2).size() == 5);
+}
+
+TEST_CASE("a V1 scalar product has one row per event, and says so when the file disagrees") {
+  Hdf5Lock lock;
+  auto file = open("edge_v1_scalar.h5");
+  ProductSource& product = file->product("scal");
+  REQUIRE(product.info().scalar);
+  CHECK(product.rows(0).begin == 0);
+  CHECK(product.rows(0).end == 1);
+  // event 1 references no row at all
+  try {
+    product.rows(1);
+    FAIL("a scalar product needs a row");
+  } catch (const Error& error) {
+    CHECK(contains(error.what(), data_path("edge_v1_scalar.h5")));
+    CHECK(contains(error.what(), "scalar product has no row for event 1"));
+  }
+  // event 2 references two
+  try {
+    product.rows(2);
+    FAIL("a scalar product has one row");
+  } catch (const Error& error) {
+    CHECK(contains(error.what(), "scalar product has 2 rows for event 2"));
+  }
+}
+
+TEST_CASE("a V1 reference past the last event is an error that says which event") {
+  Hdf5Lock lock;
+  auto file = open("spine_v1_events.h5");
+  for (const char* name : {"reco_particles", "run_info"}) {
+    CAPTURE(name);
+    ProductSource& product = file->product(name);
+    CHECK_NOTHROW(product.rows(3));
+    try {
+      product.rows(4);
+      FAIL("there are 4 events");
+    } catch (const Error& error) {
+      CHECK(contains(error.what(), "event 4 is out of range, the file has 4 events"));
+    }
+  }
+  auto v2 = open("spine_v2_events.h5");
+  try {
+    v2->product("reco_particles").rows(4);
+    FAIL("there are 4 events");
+  } catch (const Error& error) {
+    CHECK(contains(error.what(), "event 4 is out of range, the file has 4 events"));
+  }
 }
