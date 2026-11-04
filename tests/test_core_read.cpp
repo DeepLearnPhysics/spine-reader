@@ -442,6 +442,8 @@ TEST_CASE("a V2 product with a wrong structure is refused with a message that sa
       {"duplicate_pool", "duplicate pool_00"},
       {"offsets_not_1d", "_var_offsets_0 is not a one-dimensional array"},
       {"array_of_text", "does not hold plain numbers"},
+      {"vlen_in_fixed", "'fixed' member 'hits' is variable-length"},
+      {"string_in_fixed", "'fixed' member 'units' is variable-length"},
   };
   for (const auto& [name, why] : cases) {
     CAPTURE(name);

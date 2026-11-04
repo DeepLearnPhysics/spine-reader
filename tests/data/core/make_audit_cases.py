@@ -262,6 +262,18 @@ def structure(p):
 
     v2_array(p, "array_of_text", np.array([b"abc", b"def", b"ghi"]), [0, 1, 2, 3])
 
+    # variable-length members in `fixed`, where SPINE never puts them (they go to the pools)
+    g = objects_group("vlen_in_fixed")
+    dt = np.dtype([("id", np.int64), ("hits", h5py.vlen_dtype(np.int32))])
+    rows = np.zeros(1, dt)
+    rows["hits"][0] = np.array([1, 2, 3], np.int32)
+    g.create_dataset("fixed", data=rows, maxshape=(None,))
+    g = objects_group("string_in_fixed")
+    dt = np.dtype([("id", np.int64), ("units", UTF8)])
+    rows = np.zeros(1, dt)
+    rows["units"][0] = "cm"
+    g.create_dataset("fixed", data=rows, maxshape=(None,))
+
     # twelve pools, one field each: pool_10 and pool_11 must not be read as pool_0 and pool_1
     n = 12
     dt = np.dtype([("id", np.int64)] + [(f"_var_offsets_{k}", np.int64, (2,)) for k in range(n)])

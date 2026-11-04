@@ -465,6 +465,12 @@ std::unique_ptr<ProductSource> open_objects(const std::string& where, hid_t grou
     }
     std::optional<ColumnInfo> column = describe_type(name, type.get());
     if (!column) continue;  // a type spine-reader cannot read; the column is left out
+    // `fixed` is read as plain fixed-size data (no VLEN reclaim), as SPINE writes it: a
+    // variable-length member there is not a V2 file SPINE wrote, and would be read empty.
+    if (column->variable) {
+      throw Error("'fixed' member '" + name +
+                  "' is variable-length; V2 keeps variable-length fields in variables/pool_<i>");
+    }
     info.columns.push_back(std::move(*column));
     sources.push_back({});
     file_types.push_back(std::move(type));
