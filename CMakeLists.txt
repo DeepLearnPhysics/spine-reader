@@ -55,7 +55,9 @@ install(TARGETS spine_reader EXPORT SpineReaderTargets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(DIRECTORY include/spine DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# Headers only: the EGM.md contracts that sit next to them are not installed.
+install(DIRECTORY include/spine DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  PATTERN "EGM.md" EXCLUDE)
 install(EXPORT SpineReaderTargets NAMESPACE SpineReader::
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SpineReader)
 configure_package_config_file(cmake/SpineReaderConfig.cmake.in

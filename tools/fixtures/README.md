@@ -6,7 +6,7 @@
 
 | file | role |
 | --- | --- |
-| `make_fixtures.py` | writes the cases, decodes them, runs every cross-check (asserted), prints sizes |
+| `make_fixtures.py` | writes the cases, decodes them, runs every cross-check (failures are collected; the run exits non-zero at the end), prints sizes |
 | `decode_raw.py` | independent decoder: V1 (region references), V2 (offsets and pools); also a CLI |
 | `spine_worker.py` | the only code that imports SPINE: builds objects, runs the writer / `litify_hdf5` / `HDF5Reader` of one SPINE version |
 | `content.py` | the synthetic events as plain Python (no SPINE import) |
@@ -71,7 +71,7 @@ Events (writer called twice: events 0-1, then 2-4, so appends and absolute offse
 | 3 | 2 : 1 + 2 | 1 : 3 | 3 | 0 | DELTA/LOWE/GHOST shapes, KAON, `length=+inf`, `start_dedx=-inf`, scheme NEUT |
 | 4 | 2 : 1 + **0** | 1 : 1 | 0 | 1 | an interaction without particles (all its arrays empty, `vertex` NaN), scheme UNKNOWN |
 
-`make_fixtures.py` asserts that the full cases contain every label of `shape`, `pid`, `chi2_pid`, `current_type`,
+`make_fixtures.py` checks that the full cases contain every label of `shape`, `pid`, `chi2_pid`, `current_type`,
 `interaction_scheme`, both bool values, `nan`/`inf`/`-inf`, non-ASCII strings, empty and non-empty variable arrays,
 an event with no object at all, an interaction without particles, and that ids, `interaction_id`, `particle_ids` and
 `match_ids` obey the conventions above. Floats are mostly on a dyadic grid (exact in float32 and float64, short in
@@ -129,7 +129,7 @@ groups of region references, V2 `string`/`list`/`multi_list`); the CAF products 
   column of each `fixed` row, and the pool spans are checked to be contiguous and in range. Products live in
   `/products` if it exists, else at the root (v0.16.x).
 
-## Cross-checks (asserted by `make_fixtures.py`)
+## Cross-checks (run by `make_fixtures.py`; failures make it exit non-zero)
 
 1. `decode(v1.4.0_v1) == decode(v1.4.0_v2)` and `decode(v1.4.0_v1_lite) == decode(v1.4.0_v2_lite)`: **no
    difference at all** except `case`, `layout` and `writer.format_version`. (No legitimate difference was found:

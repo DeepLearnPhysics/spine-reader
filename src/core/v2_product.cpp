@@ -1,4 +1,6 @@
-// V2 (offset-based, format_version 2) products. See notes/spine_format.md, section B.
+// V2 (offset-based, format_version 2) products, as SPINE's HDF5 writer stores them with
+// format_version=2 (src/spine/io/write/hdf5/product.py in the SPINE repository): per product a
+// group with `event_offsets`, and for objects a `fixed` compound plus `variables/pool_<i>`.
 
 #include <algorithm>
 #include <cstring>

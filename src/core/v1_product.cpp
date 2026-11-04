@@ -1,4 +1,6 @@
-// V1 (region-reference, format_version 1) products. See notes/spine_format.md, section A.
+// V1 (region-reference, format_version 1) products, as SPINE's HDF5 writer stores them by
+// default (src/spine/io/write/hdf5/writer.py and region.py in the SPINE repository): one row of
+// `events` per event, holding a dataset-region reference per product.
 
 #include <algorithm>
 #include <cstring>
