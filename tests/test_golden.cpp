@@ -1,12 +1,18 @@
 // Golden tests: every fixture in tests/data/fixtures was written by SPINE's own writer and
 // decoded independently with h5py (tools/fixtures/decode_raw.py). The core must reproduce the
 // decoded file, product by product, column by column, row by row.
+//
+// The cases are the *.expected.json files of the directory: the current set (current_*, written
+// by the model's SPINE tag) and the frozen cases (written by older releases, never rewritten).
+// tools/fixtures/make_fixtures.py writes them.
 
 #include <doctest.h>
 #include <json.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <filesystem>
 #include <fstream>
 #include <functional>
 #include <map>
@@ -29,11 +35,6 @@ using nlohmann::json;
 using spine::ScalarType;
 using spine::detail::ColumnBuffer;
 
-const std::vector<std::string> kCases = {
-    "v1.4.0_v1",      "v1.4.0_v2", "v1.4.0_v1_lite", "v1.4.0_v2_lite",
-    "v1.4.0_v2_fixed_only", "v2root", "v0.11.1_v1",
-};
-
 std::string fixture(const std::string& name, const std::string& extension) {
   return std::string(SPINE_READER_TEST_DATA) + "/fixtures/" + name + extension;
 }
@@ -43,6 +44,69 @@ json expected(const std::string& name) {
   REQUIRE(in.good());
   return json::parse(in);
 }
+
+/// One fixture: its name, its role (from the name) and the writer flags its .expected.json holds.
+struct Case {
+  std::string name;
+  bool current = false;  ///< "current_*": written by the model's SPINE tag; otherwise frozen
+  bool complete = true;  ///< info@complete is not false (a missing attribute counts as complete)
+};
+
+/// Every case of tests/data/fixtures, sorted by name.
+const std::vector<Case>& all_cases() {
+  static const std::vector<Case> cases = [] {
+    const std::string suffix = ".expected.json";
+    std::vector<Case> found;
+    for (const auto& entry :
+         std::filesystem::directory_iterator(std::string(SPINE_READER_TEST_DATA) + "/fixtures")) {
+      const std::string file = entry.path().filename().string();
+      if (file.size() <= suffix.size() ||
+          file.compare(file.size() - suffix.size(), suffix.size(), suffix) != 0) {
+        continue;
+      }
+      Case c;
+      c.name = file.substr(0, file.size() - suffix.size());
+      c.current = c.name.rfind("current_", 0) == 0;
+      const json want = expected(c.name);
+      const json& complete = want["writer"]["complete"];
+      c.complete = !(complete.is_boolean() && !complete.get<bool>());
+      found.push_back(c);
+    }
+    std::sort(found.begin(), found.end(),
+              [](const Case& a, const Case& b) { return a.name < b.name; });
+    return found;
+  }();
+  return cases;
+}
+
+/// The cases a reader opens without allow_incomplete: those whose writer.complete is not false
+/// (a null, as in files of SPINE v0.11.1, counts as complete).
+std::vector<std::string> complete_cases() {
+  std::vector<std::string> names;
+  for (const Case& c : all_cases()) {
+    if (c.complete) names.push_back(c.name);
+  }
+  return names;
+}
+
+}  // namespace
+
+TEST_CASE("the fixture directory holds the current set and the frozen cases") {
+  std::set<std::string> current, frozen;
+  for (const Case& c : all_cases()) (c.current ? current : frozen).insert(c.name);
+  // the current set: the names the other tests and tools/fixtures/make_fixtures.py use
+  CHECK(current == std::set<std::string>{"current_incomplete", "current_v1", "current_v1_lite",
+                                         "current_v2", "current_v2_fixed_only",
+                                         "current_v2_lite"});
+  CHECK_FALSE(frozen.empty());
+  for (const Case& c : all_cases()) {
+    INFO("fixture " << c.name);
+    CHECK(c.complete == (c.name != "current_incomplete"));
+    CHECK(expected(c.name)["case"].get<std::string>() == c.name);
+  }
+}
+
+namespace {
 
 bool same_number(const json& want, double got) {
   if (want.is_string()) {
@@ -152,7 +216,7 @@ void check_values(spine::core::ProductSource& product, const json& want, std::ui
 
 TEST_CASE("the core reproduces every golden fixture") {
   std::lock_guard<std::recursive_mutex> lock(spine::core::hdf5_mutex());
-  for (const std::string& name : kCases) {
+  for (const std::string& name : complete_cases()) {
     INFO("fixture " << name);
     const json want = expected(name);
     auto file = spine::core::FileSource::open(fixture(name, ".h5"));
@@ -191,7 +255,7 @@ TEST_CASE("the core reproduces every golden fixture") {
 
 TEST_CASE("incomplete files are refused unless allowed") {
   std::lock_guard<std::recursive_mutex> lock(spine::core::hdf5_mutex());
-  const std::string path = fixture("incomplete", ".h5");
+  const std::string path = fixture("current_incomplete", ".h5");
   CHECK_THROWS_AS(spine::core::FileSource::open(path), spine::Error);
   spine::core::OpenOptions options;
   options.allow_incomplete = true;
@@ -304,7 +368,7 @@ const json* by_id(const json& rows, std::int64_t id) {
 
 TEST_CASE("the reader fills every member of every model object as the fixtures say") {
   std::size_t objects_checked = 0;
-  for (const std::string& name : kCases) {
+  for (const std::string& name : complete_cases()) {
     INFO("fixture " << name);
     const json want = expected(name);
     spine::Reader reader(fixture(name, ".h5"));
@@ -383,7 +447,7 @@ std::vector<T> list_of(const json& row, const char* column) {
 
 TEST_CASE("event relations agree with the ids the fixtures hold") {
   std::size_t resolved = 0, matched = 0, members = 0;
-  for (const std::string& name : kCases) {
+  for (const std::string& name : complete_cases()) {
     INFO("fixture " << name);
     const json want = expected(name);
     spine::Reader reader(fixture(name, ".h5"));

@@ -10,9 +10,18 @@
 SPINE on the path (dropping fields that version does not have, and reporting
 them on stderr) and writes them with that SPINE's own ``HDF5Writer``.
 
+``write --configure-enums`` first gives ``content.py`` the members of the checked
+enums of that SPINE (``spine.constants.enums``). Each label the content writes
+that this SPINE lacks is written as ``UNKNOWN`` and printed on stderr as a line
+``SUBSTITUTION <json>``.
+
 ``read`` loads the file back with that SPINE's own ``HDF5Reader`` and dumps what
 it returns as JSON (stored values only, ``build_classes=False``), plus, when the
 reader can rebuild the classes, the re-derived values of the rebuilt objects.
+
+Exit codes: 0 on success; 3 when this SPINE's API cannot be driven (an import
+fails, the writer lacks a parameter it needs, or it cannot write the asked
+``format_version``); 1 for any other error.
 """
 
 import argparse
@@ -43,20 +52,45 @@ KEYS = CORE_KEYS + ["trigger", "flashes", "crthits"]
 MIN_KEYS = ["run_info", "reco_particles"]
 
 
+class SpineApiError(Exception):
+    """This SPINE's API cannot be driven by the worker (exit code 3)."""
+
+
 # --------------------------------------------------------------------------
 # SPINE imports that moved between releases
 # --------------------------------------------------------------------------
 def spine_api():
-    import spine.data as sd
-    from spine.version import __version__
-
     try:
-        from spine.io.write import HDF5Writer
-        from spine.io.read import HDF5Reader
-    except ImportError:  # v0.11.x: spine.io.core.*
-        from spine.io.core.write import HDF5Writer
-        from spine.io.core.read import HDF5Reader
+        import spine.data as sd
+        from spine.version import __version__
+
+        try:
+            from spine.io.write import HDF5Writer
+            from spine.io.read import HDF5Reader
+        except ImportError:  # v0.11.x: spine.io.core.*
+            from spine.io.core.write import HDF5Writer
+            from spine.io.core.read import HDF5Reader
+    except ImportError as exc:
+        raise SpineApiError(f"cannot import SPINE's data classes, writer or reader: {exc}") from exc
     return sd, __version__, HDF5Writer, HDF5Reader
+
+
+ENUMS = tuple(content.LABELS)  # the checked enums: ParticleShape, ParticlePID, NuCurrentType, ...
+
+
+def tag_enums():
+    """``{enum name: {label: value}}`` of the checked enums of this SPINE; an enum this SPINE
+    lacks is left out (configure() then substitutes all its labels)."""
+    try:
+        import spine.constants.enums as enums
+    except ImportError as exc:
+        raise SpineApiError(f"cannot import spine.constants.enums: {exc}") from exc
+    out = {}
+    for name in ENUMS:
+        cls = getattr(enums, name, None)
+        if cls is not None:
+            out[name] = {member.name: int(member.value) for member in cls}
+    return out
 
 
 # --------------------------------------------------------------------------
@@ -191,7 +225,11 @@ def apply_libver(libver):
 def cmd_write(args):
     apply_libver(args.libver)
     sd, version, HDF5Writer, _ = spine_api()
+    if args.configure_enums:
+        for sub in content.configure(tag_enums()):
+            print("SUBSTITUTION " + json.dumps(sub, sort_keys=True), file=sys.stderr)
     params = inspect.signature(HDF5Writer.__init__).parameters
+    takes_any = any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
     cfg = {"fixture": os.path.basename(args.out), "note": "spine-reader golden fixture"}
 
     kw = dict(file_name=args.out, overwrite=True)
@@ -200,10 +238,13 @@ def cmd_write(args):
     if "format_version" in params:
         kw["format_version"] = args.format_version
     elif args.format_version != 1:
-        sys.exit(f"SPINE {version} cannot write format_version {args.format_version}")
+        raise SpineApiError(f"SPINE {version} cannot write format_version {args.format_version}")
     keys = {"all": KEYS, "core": CORE_KEYS, "min": MIN_KEYS}[args.products]
     if not args.exotic:
         kw["keys"] = keys
+    unknown = sorted(k for k in kw if k not in params)
+    if unknown and not takes_any:
+        raise SpineApiError(f"SPINE {version} HDF5Writer has no parameter {', '.join(unknown)}")
     if os.path.exists(args.out):
         os.remove(args.out)
     writer = HDF5Writer(**kw)
@@ -236,8 +277,11 @@ def cmd_write(args):
 
 def cmd_litify(args):
     apply_libver(args.libver)
-    from spine.io.transform import litify_hdf5
-    from spine.io.transform.hdf5 import DEFAULT_LITE_KEYS
+    try:
+        from spine.io.transform import litify_hdf5
+        from spine.io.transform.hdf5 import DEFAULT_LITE_KEYS
+    except ImportError as exc:
+        raise SpineApiError(f"cannot import SPINE's litify_hdf5: {exc}") from exc
 
     litify_hdf5(args.src, args.out, mode="fixed_only", overwrite=True, keys=DEFAULT_LITE_KEYS)
     print(f"litified (fixed_only) {args.src} -> {args.out} ({os.path.getsize(args.out)} bytes)",
@@ -327,6 +371,9 @@ def main():
                         "min = run_info and reco_particles")
     w.add_argument("--libver", default="v110",
                    help="HDF5 file-format bound passed to every h5py.File (earliest = h5py default)")
+    w.add_argument("--configure-enums", action="store_true",
+                   help="write the content with this SPINE's enum values (current cases); labels "
+                        "it lacks become UNKNOWN, reported as SUBSTITUTION lines on stderr")
     w.set_defaults(fn=cmd_write)
     li = sub.add_parser("litify")
     li.add_argument("--src", required=True)
@@ -338,7 +385,11 @@ def main():
     r.add_argument("--out", required=True)
     r.set_defaults(fn=cmd_read)
     args = ap.parse_args()
-    args.fn(args)
+    try:
+        args.fn(args)
+    except SpineApiError as exc:
+        print(f"spine_worker: {exc}", file=sys.stderr)
+        sys.exit(3)
 
 
 if __name__ == "__main__":

@@ -19,6 +19,10 @@ Every enum label of ``shape``, ``pid``, ``chi2_pid``, ``current_type`` and
 ``interaction_scheme`` occurs in the data, both bool values occur, there are
 NaN / +inf / -inf values, empty variable arrays, a particle-less event, an
 interaction without particles and non-ASCII strings (2- and 3-byte UTF-8).
+
+The enum values are SPINE v1.4.0's unless ``configure()`` is given another tag's
+enums: the current cases are written with the enums of their writing tag, the
+frozen cases with the built-in values.
 """
 
 import math
@@ -27,15 +31,70 @@ import random
 NAN = float("nan")
 INF = float("inf")
 
-# Enum values (spine.constants.enums)
+# Enum values (spine.constants.enums). These are the values of SPINE v1.4.0; configure() replaces
+# them with those of another tag. UNKNOWN is -1 in every checked enum.
 UNKNOWN = -1
 SHOWER, TRACK, MICHEL, DELTA, LOWE, GHOST, LARCV_UNKNOWN = 0, 1, 2, 3, 4, 5, 6
 PHOTON, ELECTRON, MUON, PION, PROTON, KAON = 0, 1, 2, 3, 4, 5
 CC, NC = 0, 1
 LARSOFT, GENIE, GIBUU, NUWRO, NEUT = 0, 1, 2, 3, 4
 
-PDG = {UNKNOWN: -1, PHOTON: 22, ELECTRON: 11, MUON: 13, PION: 211, PROTON: 2212, KAON: 321}
-MASS = {PHOTON: 0.0, ELECTRON: 0.511, MUON: 105.66, PION: 139.57, PROTON: 938.27, KAON: 493.68}
+# The labels this content writes, per SPINE enum (UNKNOWN excepted).
+LABELS = {
+    "ParticleShape": ("SHOWER", "TRACK", "MICHEL", "DELTA", "LOWE", "GHOST", "LARCV_UNKNOWN"),
+    "ParticlePID": ("PHOTON", "ELECTRON", "MUON", "PION", "PROTON", "KAON"),
+    "NuCurrentType": ("CC", "NC"),
+    "NuInteractionScheme": ("LARSOFT", "GENIE", "GIBUU", "NUWRO", "NEUT"),
+}
+_PDG_OF = {"PHOTON": 22, "ELECTRON": 11, "MUON": 13, "PION": 211, "PROTON": 2212, "KAON": 321}
+_MASS_OF = {"PHOTON": 0.0, "ELECTRON": 0.511, "MUON": 105.66, "PION": 139.57, "PROTON": 938.27,
+            "KAON": 493.68}
+_DEFAULTS = {label: globals()[label] for labels in LABELS.values() for label in labels}
+
+# Keyed by PID value; rebuilt by configure().
+PDG = {UNKNOWN: -1, **{globals()[k]: v for k, v in _PDG_OF.items()}}
+MASS = {globals()[k]: v for k, v in _MASS_OF.items()}
+
+# The labels configure() could not find in the tag and wrote as UNKNOWN, as dicts
+# {kind: "substitution", name: "<Enum>.<LABEL>", detail}.
+SUBSTITUTIONS = []
+
+
+def configure(enums=None):
+    """Use the enum values of a SPINE tag.
+
+    ``enums`` is ``{enum name: {label: value}}`` for the four enums of ``LABELS``, as that tag
+    defines them. A label the content writes that the tag lacks (or an enum the tag lacks) is
+    written as ``UNKNOWN`` and listed in ``SUBSTITUTIONS``. ``PDG`` and ``MASS`` are rebuilt for
+    the new PID values; a substituted PID has no PDG code (-1) and no mass.
+
+    ``configure()`` or ``configure(None)`` restores the built-in values (SPINE v1.4.0), which
+    the frozen cases use.
+    """
+    module = globals()
+    SUBSTITUTIONS.clear()
+    values = dict(_DEFAULTS)
+    if enums is not None:
+        for enum, labels in LABELS.items():
+            members = enums.get(enum) or {}
+            for label in labels:
+                if label in members:
+                    values[label] = int(members[label])
+                else:
+                    values[label] = UNKNOWN
+                    SUBSTITUTIONS.append({
+                        "kind": "substitution", "name": f"{enum}.{label}",
+                        "detail": f"the tag's {enum} has no {label}; written as UNKNOWN"})
+    module.update(values)
+    PDG.clear()
+    PDG[UNKNOWN] = -1
+    MASS.clear()
+    for label in LABELS["ParticlePID"]:
+        if values[label] != UNKNOWN:
+            PDG[values[label]] = _PDG_OF[label]
+            MASS[values[label]] = _MASS_OF[label]
+    return list(SUBSTITUTIONS)
+
 
 NUM_EVENTS = 5
 # The two writer calls: events [0, 2) then [2, 5).  The second batch starts with
@@ -76,8 +135,11 @@ def _scores(rng, n, best):
     return [round(x / t, 4) for x in s]
 
 
-def reco_particle(rng, shape, pid, primary, nvox, match, chi2_pid=UNKNOWN, units="cm", **kw):
-    """One reco particle; ``match`` is a list of (truth_id, overlap) pairs."""
+def reco_particle(rng, shape, pid, primary, nvox, match, chi2_pid=None, units="cm", **kw):
+    """One reco particle; ``match`` is a list of (truth_id, overlap) pairs. ``chi2_pid``
+    defaults to ``UNKNOWN`` as configured when the function is called."""
+    if chi2_pid is None:
+        chi2_pid = UNKNOWN
     track = shape == TRACK
     index = _voxels(rng, nvox) if nvox else []
     d = _unit(rng)

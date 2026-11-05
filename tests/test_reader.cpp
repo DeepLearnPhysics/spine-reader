@@ -586,12 +586,12 @@ TEST_CASE("strict mode refuses a product that lacks model fields, and only then"
   ReaderOptions strict;
   strict.strict = true;
 
-  // a complete SPINE v1.4.0 file reads
-  CHECK_NOTHROW(Reader(fixture_file("v1.4.0_v1.h5"), strict));
-  CHECK_NOTHROW(Reader(fixture_file("v1.4.0_v2.h5"), strict));
+  // a complete file of the current set reads
+  CHECK_NOTHROW(Reader(fixture_file("current_v1.h5"), strict));
+  CHECK_NOTHROW(Reader(fixture_file("current_v2.h5"), strict));
 
   // the same file written in lite mode lacks index and orig_index; the oldest release lacks more
-  for (const char* name : {"v1.4.0_v1_lite.h5", "v0.11.1_v1.h5", "v1.4.0_v2_fixed_only.h5"}) {
+  for (const char* name : {"current_v1_lite.h5", "v0.11.1_v1.h5", "current_v2_fixed_only.h5"}) {
     CAPTURE(name);
     CHECK_NOTHROW(Reader(fixture_file(name)));  // not strict: fine
     try {
@@ -611,7 +611,7 @@ TEST_CASE("strict mode refuses a product that lacks model fields, and only then"
 }
 
 TEST_CASE("incomplete files are refused unless ReaderOptions::allow_incomplete") {
-  const std::string path = fixture_file("incomplete.h5");
+  const std::string path = fixture_file("current_incomplete.h5");
   try {
     Reader reader(path);
     FAIL("the file is incomplete");

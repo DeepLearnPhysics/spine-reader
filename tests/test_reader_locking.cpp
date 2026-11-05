@@ -65,11 +65,11 @@ std::vector<bool> finished_while_locked(const std::vector<std::function<void()>>
 }  // namespace
 
 TEST_CASE("the public operations of a Reader that touch HDF5 wait for the HDF5 lock") {
-  const std::string path = fixture("v1.4.0_v1.h5");
+  const std::string path = fixture("current_v1.h5");
   Reader reader(path);
   auto doomed = std::make_unique<Reader>(path);  // destroyed by an action
   Reader target(path);                           // overwritten by an action
-  Reader source(fixture("v1.4.0_v2.h5"));        // moved from by an action
+  Reader source(fixture("current_v2.h5"));       // moved from by an action
   std::unique_ptr<Reader> constructed;           // built by an action (and so destroyed after)
 
   const std::vector<bool> finished = finished_while_locked({

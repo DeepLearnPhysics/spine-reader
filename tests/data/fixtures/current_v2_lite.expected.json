@@ -1,7 +1,7 @@
 {
-  "case": "v1.4.0_v1_lite",
-  "writer": {"spine_version":"1.4.0","format_version":1,"lite":true,"complete":true},
-  "layout": "V1",
+  "case": "current_v2_lite",
+  "writer": {"spine_version":"1.4.0","format_version":2,"lite":true,"complete":true},
+  "layout": "V2Products",
   "num_events": 5,
   "products": {
     "crthits": {

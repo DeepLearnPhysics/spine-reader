@@ -1,5 +1,5 @@
 {
-  "case": "v1.4.0_v2",
+  "case": "current_v2",
   "writer": {"spine_version":"1.4.0","format_version":2,"lite":false,"complete":true},
   "layout": "V2Products",
   "num_events": 5,
