@@ -1,0 +1,90 @@
+{
+  "cases": {
+    "current_incomplete": {
+      "derived_from": null,
+      "expected": "current_incomplete.expected.json",
+      "h5": "current_incomplete.h5",
+      "layout": "V1",
+      "lite": false,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "current_v1": {
+      "derived_from": null,
+      "expected": "current_v1.expected.json",
+      "h5": "current_v1.h5",
+      "layout": "V1",
+      "lite": false,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "current_v1_lite": {
+      "derived_from": null,
+      "expected": "current_v1_lite.expected.json",
+      "h5": "current_v1_lite.h5",
+      "layout": "V1",
+      "lite": true,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "current_v2": {
+      "derived_from": null,
+      "expected": "current_v2.expected.json",
+      "h5": "current_v2.h5",
+      "layout": "V2Products",
+      "lite": false,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "current_v2_fixed_only": {
+      "derived_from": "current_v2",
+      "expected": "current_v2_fixed_only.expected.json",
+      "h5": "current_v2_fixed_only.h5",
+      "layout": "V2Products",
+      "lite": false,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "current_v2_lite": {
+      "derived_from": null,
+      "expected": "current_v2_lite.expected.json",
+      "h5": "current_v2_lite.h5",
+      "layout": "V2Products",
+      "lite": true,
+      "role": "current",
+      "sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+      "tag": "v1.4.0"
+    },
+    "v0.11.1_v1": {
+      "derived_from": null,
+      "expected": "v0.11.1_v1.expected.json",
+      "h5": "v0.11.1_v1.h5",
+      "layout": "V1",
+      "lite": false,
+      "role": "frozen",
+      "sha": "b78a6d64f60ce0be5a24611541df19033620b95a",
+      "tag": "v0.11.1"
+    },
+    "v2root": {
+      "derived_from": null,
+      "expected": "v2root.expected.json",
+      "h5": "v2root.h5",
+      "layout": "V2Root",
+      "lite": false,
+      "role": "frozen",
+      "sha": "a9ad6c63ce5532429c26b3374ec73c7ecc2f1cea",
+      "tag": "v0.16.3"
+    }
+  },
+  "partial": false,
+  "spine_sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
+  "spine_tag": "v1.4.0",
+  "spine_version": "1.4.0",
+  "substitutions": [],
+  "warnings": []
+}

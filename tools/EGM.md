@@ -22,8 +22,11 @@ in the LCG_110 view (`source
   [./gen/README.md](./gen/README.md).
 - fixtures: [./fixtures/EGM.md](./fixtures/EGM.md) - `make_fixtures.py` writes
   `tests/data/fixtures/<case>.h5` with SPINE's real writers (one `spine_worker.py`
-  subprocess per write, litify or read call, each importing a single SPINE tag;
-  `PYTHONHASHSEED=0`), decodes them with the SPINE-free `decode_raw.py` into
-  `<case>.expected.json`, and cross-checks them. `make_member_list.py` writes or
-  checks `tests/golden_members.inc` from the schema. Legacy notes:
+  subprocess per write, litify or read call, each importing a single SPINE commit;
+  `PYTHONHASHSEED=0`): the current set (`current_*`) with any tag, by default the
+  model's, and the frozen cases with their own releases. It decodes them with the
+  SPINE-free `decode_raw.py` into `<case>.expected.json`, cross-checks them, and
+  records each case's SPINE tag and commit in `manifest.json`. `spine_checkout.py`
+  resolves tags and clones commits. `make_member_list.py` writes or checks
+  `tests/golden_members.inc` from the schema. Legacy notes:
   [./fixtures/README.md](./fixtures/README.md).

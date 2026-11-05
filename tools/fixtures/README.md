@@ -2,37 +2,115 @@
 
 `tests/data/fixtures/<case>.h5` are small HDF5 files written by **SPINE's own `HDF5Writer`**;
 `tests/data/fixtures/<case>.expected.json` is what the files contain, decoded by
-`decode_raw.py`, which uses plain h5py and nothing from SPINE.
+`decode_raw.py`, which uses plain h5py and nothing from SPINE. `tests/data/fixtures/manifest.json`
+records, for people, the SPINE tag and commit that wrote each case; no test reads it.
 
 | file | role |
 | --- | --- |
-| `make_fixtures.py` | writes the cases, decodes them, runs every cross-check (failures are collected; the run exits non-zero at the end), prints sizes |
+| `make_fixtures.py` | writes the cases, decodes them, runs every cross-check (failures are collected; the run exits non-zero at the end), writes the manifest, prints sizes |
+| `spine_checkout.py` | resolves a SPINE tag to its commit (`git ls-remote`) and clones that commit; no h5py or numpy |
 | `decode_raw.py` | independent decoder: V1 (region references), V2 (offsets and pools); also a CLI |
 | `spine_worker.py` | the only code that imports SPINE: builds objects, runs the writer / `litify_hdf5` / `HDF5Reader` of one SPINE version |
 | `content.py` | the synthetic events as plain Python (no SPINE import) |
 | `make_member_list.py` | writes `tests/golden_members.inc`, the member names of every model class, from `schema/`; `--check` is a ctest |
 
+## Two roles: the current set and the frozen cases
+
+* The **current set**, the cases named `current_*`, is written by **one SPINE tag**: by default the
+  model's SPINE tag ("v" + the `spine_version` of the committed `schema/spine-*.json`), or the tag
+  given with `--tag`. When the model moves to a new SPINE tag, the whole current set is rewritten
+  by that tag.
+* The **frozen cases** keep the old release that wrote them and are never rewritten by a new tag:
+  `v2root` (SPINE v0.16.3, commit `a9ad6c63`) and `v0.11.1_v1` (SPINE v0.11.1, commit `b78a6d64`,
+  the oldest supported writer). `--frozen` writes them again, to reproduce how they were made; it
+  checks out the recorded commits.
+* The golden test (`tests/test_golden.cpp`) lists `tests/data/fixtures/*.expected.json`, reads each
+  case's flags from the file itself, and takes its role from its name. The tests that open every
+  case skip a case whose `writer.complete` is `false` (`current_incomplete`); `null`, as in
+  `v0.11.1_v1`, counts as complete.
+
+**What counts as a change in content.** The decoded document includes the writer's SPINE version,
+which counts as content; only the case name is ignored. After a run with a tag whose content
+changed, the whole current set is committed, rewritten by that tag. A tag that changes nothing
+commits nothing. Frozen cases are never rewritten.
+
 ## Regenerating
 
 ```bash
 source /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh   # python3 + numpy + h5py + yaml + scipy
-python3 tools/fixtures/make_fixtures.py                                       # clones the SPINE tags it needs
-# offline / with a local SPINE repository and checkouts:
+python3 tools/fixtures/make_fixtures.py                    # the current set, with the model's tag
+python3 tools/fixtures/make_fixtures.py --frozen           # ... and the frozen cases, with their own releases
+python3 tools/fixtures/make_fixtures.py --tag v1.2.3 --out /tmp/f   # another tag, outside the repository
+python3 tools/fixtures/make_fixtures.py --tag v1.4.1 --sha <commit> --schema <dump of v1.4.1>
+# offline / with a local SPINE repository and clones:
 python3 tools/fixtures/make_fixtures.py --spine-repo /path/to/spine --workdir /path/to/clones
-python3 tools/fixtures/make_fixtures.py --only v1.4.0_v1 v1.4.0_v2           # a subset (some cross-checks skip)
-python3 tools/fixtures/decode_raw.py FILE.h5 --case NAME [--lite] -o OUT.json # decode any SPINE file
+python3 tools/fixtures/make_fixtures.py --only current_v1 current_v2   # a partial run (see below)
+python3 tools/fixtures/make_fixtures.py --manifest-only --tag v1.4.0 --sha <commit>   # record existing files
+python3 tools/fixtures/decode_raw.py FILE.h5 --case NAME [--lite] -o OUT.json   # decode any SPINE file
 ```
 
+* **Tags and commits.** `--tag vX.Y.Z` names the tag that writes the current set; `--sha` gives its
+  commit, which is then not resolved again. Without `--sha`, `spine_checkout.resolve_tag()` runs
+  `git ls-remote --tags` and takes the peeled `^{}` commit of an annotated tag, or the commit of a
+  lightweight one. Each commit is cloned once into `--workdir`, in a folder `spine_<sha>` named
+  after the commit (`git clone --branch <tag>`, then a check that `HEAD` is that commit), so a tag
+  moved to another commit never reuses old code. Missing clones come from `--spine-repo` (default
+  GitHub).
+* **`--schema PATH`** (default the committed `schema/spine-*.json`) is read for `lite_dropped`, the
+  fields lite mode drops, class by class. When the schema's `spine_version` is not the current
+  set's tag, the run warns (`schema_tag_mismatch`).
 * SPINE needs **no torch / larcv / MinkowskiEngine** for any of this. It is imported as
-  `PYTHONPATH=<clone>/src`, one subprocess per SPINE version, so never mix versions in one process.
-* SPINE versions needed: **v1.4.0** (a, b, c, f, g), **v0.16.3** (d), **v0.11.1** (e).
-  `--workdir` holds the clones `spine_<tag>` (`git clone --branch <tag>`); missing ones are cloned from
-  `--spine-repo` (default GitHub). The v1.4.0 reader also reads the v0.11.1 file (see Surprises).
+  `PYTHONPATH=<clone>/src`, one subprocess per SPINE commit, so never mix versions in one process.
 * The files are made with the HDF5 file-format bound `--libver v110` (see Sizes). `--libver earliest`
   gives h5py's default format.
 * `PYTHONHASHSEED=0` is set for the workers: V1 `events` member order follows Python `set` order.
   `.h5` bytes are still not reproducible (object-header timestamps), the `.expected.json` are.
-* `--with-exotic` also writes `v1.4.0_exotic_v{1,2}` (not shipped, see below).
+* `--with-exotic` also writes `current_exotic_v{1,2}` to `--out` (not shipped, see below).
+* `--artifacts-dir DIR` keeps what a run otherwise deletes: the unshipped cases' `.h5` and decoded
+  JSON (`DIR/unshipped/`), SPINE's reader output (`DIR/reader/<case>.<tag>.json`) and the worker
+  logs (`DIR/logs/<case>.<step>.log`).
+* **Partial runs.** `--only CASE...` and `--no-reader-check` are for development. A run that uses
+  either is marked `partial: true` in the manifest and on standard output. In a partial run a
+  cross-check whose pair of cases was not written is skipped; in a full run it is a failure.
+  `--only` names frozen cases only together with `--frozen`.
+* **Standard output** is one JSON line: `spine_tag`, `spine_sha`, `cases`, `partial`, `failures`,
+  `warnings`, `substitutions` and `manifest`. Everything else (progress, `ok`/`FAIL` lines, notes,
+  sizes) goes to standard error.
+* **Exit codes:** 0 success, warnings allowed; 1 a check failed (a cross-check, the content checks,
+  or the comparison with SPINE's own reader); 2 a usage error; 3 a worker could not drive SPINE's
+  API (an import, a writer parameter, or a `format_version` the writer cannot write); 4 any other
+  error (a clone, a worker that failed otherwise while writing or litifying, an exception).
+
+## The manifest
+
+`manifest.json` holds, at the top, the run that wrote the current set (`spine_tag`, `spine_sha`,
+`spine_version`, `partial`, `warnings`, `substitutions`), and under `cases` one entry per shipped
+case: `role` (`current` or `frozen`), `tag`, `sha`, `layout`, `lite`, `derived_from`, and the file
+names `h5` and `expected`. Warnings and substitutions have the shape `{kind, name, detail}`.
+
+* It was created once by `--manifest-only`, which records the files already in `--out` without
+  writing any: each case's flags come from its `.expected.json`, its tag and commit from `--tag` and
+  `--sha` (current set) or from the frozen table.
+* Every later run merges. `--manifest-base` (default the committed
+  `tests/data/fixtures/manifest.json`, read only) gives the entries carried over: those of the
+  frozen cases, and in a partial run also those of the current cases the run did not write. The
+  entries of the cases the run wrote replace theirs. The result goes to `--manifest` (default
+  `<out>/manifest.json`), so a run into another `--out` keeps the frozen entries too.
+
+## Enum values come from the writing tag (current set only)
+
+The worker writes the current set with `--configure-enums`: it gives `content.configure()` the
+members of `ParticleShape`, `ParticlePID`, `NuCurrentType` and `NuInteractionScheme` at the writing
+tag, from `spine.constants.enums`. A label the content writes that the tag lacks is written as
+`UNKNOWN` (-1 in all four, from v1.2.1 on) and listed as a substitution: SPINE v1.2.1 and v1.2.2, for
+instance, have no `GIBUU`, `NUWRO` or `NEUT` scheme. After substitution:
+
+* a value a current case stores that the file's enum does not name is a **failure**;
+* a label the file defines that no row stores is a **warning** (`unused_label`), as is an enum
+  column stored as a plain integer (`not_an_enum`).
+
+The frozen cases keep the built-in values (SPINE v1.4.0's), so `--frozen` reproduces `v2root`, which
+stores `interaction_scheme` values 2 and 3 under a three-label enum. Their enums are not checked.
 
 ## Cases
 
@@ -43,20 +121,22 @@ product (`RunInfo`, `ImageMeta3D`, `Trigger`, `Flash`, `CRTHit`, `Reco/TruthPart
 `index` is a scalar `array` product. Products with `source_file_*` provenance are not written (no `file_index` in
 the batch): nothing in the CAFMakers reads them.
 
-| case | writer | layout | products | events | bytes (.h5 / .json) | exercises |
+The sizes are those of the current set written by v1.4.0.
+
+| case | writer | layout | products | events | bytes at v1.4.0 (.h5 / .json) | exercises |
 | --- | --- | --- | --- | --- | --- | --- |
-| `v1.4.0_v1` | v1.4.0, `format_version=1` | V1 | all 10 | 5 | 171,590 / 97,803 | region references + VLEN compound members, SEL_NONE regions, enums, bools, strings, `info@complete` |
-| `v1.4.0_v2` | v1.4.0, `format_version=2` | V2Products | all 10 | 5 | 209,665 / 97,811 | `/products`, `event_offsets`, `fixed` + `variables/pool_i` + `_var_offsets_i`; **same objects as `v1.4.0_v1`** |
-| `v1.4.0_v1_lite` | v1.4.0, `lite=True` | V1 | all 10 | 5 | 162,000 / 91,861 | columns missing (`index`, `orig_index`, `index_adapt`, `index_g4`) while derived `size`... is still stored |
-| `v1.4.0_v2_lite` | v1.4.0, `lite=True` | V2Products | all 10 | 5 | 207,105 / 91,869 | same, and V2 pool **renumbering** (a pool changes its dtype between full and lite) |
-| `v2root` | **v0.16.3**, `format_version=2` | V2Root | core 6 | 3 | 167,792 / 66,551 | V2 with the product groups at the file root (no `/products`), `info@format_version=2` |
-| `v0.11.1_v1` | **v0.11.1** | V1 | core 6 | 3 | 135,487 / 62,916 | oldest supported release: no `format_version`/`complete`/`spine_version`/`format` attributes, fewer fields (see Surprises), different enum labels and one different dtype |
-| `v1.4.0_v2_fixed_only` | `litify_hdf5(v1.4.0_v2, mode="fixed_only")` | V2Products | default 6 + `index` | 5 | 104,266 / 71,615 | no pools at all: empty `variables` groups, no `_var_offsets_*`, no strings (`units`, `topology`), no `match_ids`...; `info@litified` |
-| `incomplete` | v1.4.0, V1, never finalized | V1 | `run_info`, `reco_particles` | 2 | 52,294 / 15,982 | `info@complete = False` (the state SPINE leaves while writing) |
+| `current_v1` | current tag, `format_version=1` | V1 | all 10 | 5 | 171,590 / 97,804 | region references + VLEN compound members, SEL_NONE regions, enums, bools, strings, `info@complete` |
+| `current_v2` | current tag, `format_version=2` | V2Products | all 10 | 5 | 209,665 / 97,812 | `/products`, `event_offsets`, `fixed` + `variables/pool_i` + `_var_offsets_i`; **same objects as `current_v1`** |
+| `current_v1_lite` | current tag, `lite=True` | V1 | all 10 | 5 | 162,000 / 91,862 | columns missing (`index`, `orig_index`, `index_adapt`, `index_g4`) while derived `size`... is still stored |
+| `current_v2_lite` | current tag, `lite=True` | V2Products | all 10 | 5 | 207,105 / 91,870 | same, and V2 pool **renumbering** (a pool changes its dtype between full and lite) |
+| `current_v2_fixed_only` | `litify_hdf5(current_v2, mode="fixed_only")` | V2Products | default 6 + `index` | 5 | 104,266 / 71,616 | no pools at all: empty `variables` groups, no `_var_offsets_*`, no strings (`units`, `topology`), no `match_ids`...; `info@litified` |
+| `current_incomplete` | current tag, V1, never finalized | V1 | `run_info`, `reco_particles` | 2 | 52,294 / 15,990 | `info@complete = False` (the state SPINE leaves while writing) |
+| `v2root` (frozen) | **v0.16.3**, `format_version=2` | V2Root | core 6 | 3 | 167,792 / 66,551 | V2 with the product groups at the file root (no `/products`), `info@format_version=2` |
+| `v0.11.1_v1` (frozen) | **v0.11.1** | V1 | core 6 | 3 | 135,487 / 62,916 | oldest supported release: no `format_version`/`complete`/`spine_version`/`format` attributes, fewer fields (see Surprises), different enum labels and one different dtype |
 
 (10 products = `index`, `run_info`, `meta`, `trigger`, `reco_particles`, `reco_interactions`, `truth_particles`,
 `truth_interactions`, `flashes`, `crthits`. "core 6" = the six `run_info`, `meta`, `reco_*`, `truth_*` products
-plus `index`.) Total shipped: 1,806,607 bytes.
+plus `index`.) Total shipped at v1.4.0: 1,806,620 bytes, plus the manifest.
 
 `v2root` and `v0.11.1_v1` contain the first 3 events of the 5 below (same content, fields the old SPINE does not
 have are dropped by `spine_worker.py`: it reports them on stderr).
@@ -71,24 +151,24 @@ Events (writer called twice: events 0-1, then 2-4, so appends and absolute offse
 | 3 | 2 : 1 + 2 | 1 : 3 | 3 | 0 | DELTA/LOWE/GHOST shapes, KAON, `length=+inf`, `start_dedx=-inf`, scheme NEUT |
 | 4 | 2 : 1 + **0** | 1 : 1 | 0 | 1 | an interaction without particles (all its arrays empty, `vertex` NaN), scheme UNKNOWN |
 
-`make_fixtures.py` checks that the full cases contain every label of `shape`, `pid`, `chi2_pid`, `current_type`,
-`interaction_scheme`, both bool values, `nan`/`inf`/`-inf`, non-ASCII strings, empty and non-empty variable arrays,
-an event with no object at all, an interaction without particles, and that ids, `interaction_id`, `particle_ids` and
-`match_ids` obey the conventions above. Floats are mostly on a dyadic grid (exact in float32 and float64, short in
-JSON); `match_overlaps`, `pid_scores`, some energies and every *derived* float (`ke`, `p`, `momentum`, sums...)
-are deliberately not.
+`make_fixtures.py` checks that the full cases contain both bool values, `nan`/`inf`/`-inf`, non-ASCII strings,
+empty and non-empty variable arrays, an event with no object at all, an interaction without particles, and that
+ids, `interaction_id`, `particle_ids` and `match_ids` obey the conventions above; the enum labels follow the rule
+of the previous section. Floats are mostly on a dyadic grid (exact in float32 and float64, short in JSON);
+`match_overlaps`, `pid_scores`, some energies and every *derived* float (`ke`, `p`, `momentum`, sums...) are
+deliberately not.
 
-### Not shipped, but generated and checked: `v1.4.0_exotic_v{1,2}`
+### Not shipped, but generated and checked: `current_exotic_v{1,2}`
 
 Non-object products (a `string`, a 2-D `array`, a `list`, a `multi_list` product, with empty events) written by
-v1.4.0 in both layouts. They exist so that `decode_raw.py` is tested on every product kind (V1 `list`/`multi_list`
-groups of region references, V2 `string`/`list`/`multi_list`); the CAF products never use them, and they cost
-190 kB, so they are written to a temporary directory unless `--with-exotic` is given.
+the current tag in both layouts. They exist so that `decode_raw.py` is tested on every product kind (V1
+`list`/`multi_list` groups of region references, V2 `string`/`list`/`multi_list`); the CAF products never use
+them, and they cost 190 kB at v1.4.0, so they are written to a scratch directory unless `--with-exotic` is given.
 
 ## Expected JSON format
 
 ```json
-{ "case": "v1.4.0_v1",
+{ "case": "current_v1",
   "writer": {"spine_version": "1.4.0", "format_version": 1, "lite": false, "complete": true},
   "layout": "V1",                         // "V1" | "V2Root" | "V2Products"
   "num_events": 5,
@@ -129,29 +209,40 @@ groups of region references, V2 `string`/`list`/`multi_list`); the CAF products 
   column of each `fixed` row, and the pool spans are checked to be contiguous and in range. Products live in
   `/products` if it exists, else at the root (v0.16.x).
 
-## Cross-checks (run by `make_fixtures.py`; failures make it exit non-zero)
+## Cross-checks (run by `make_fixtures.py`; failures make it exit 1)
 
-1. `decode(v1.4.0_v1) == decode(v1.4.0_v2)` and `decode(v1.4.0_v1_lite) == decode(v1.4.0_v2_lite)`: **no
-   difference at all** except `case`, `layout` and `writer.format_version`. (No legitimate difference was found:
-   the column types, enums, empty-event rows and every value are identical.)
-2. `lite` = `full` minus exactly `index`, `orig_index` (reco and truth) and `index_adapt`, `index_g4` (truth).
-3. `fixed_only` = the full V2 file restricted to its 7 products and with every pooled column removed.
-4. `expected == SPINE's own HDF5Reader` of the writing version (`build_classes=False`, i.e. the stored values) for
-   every product, column and event of every case: 2745 / 2745 / 2637 / 2637 / 1619 / 1537 / 1999 / 393 values
-   (the v0.11.1 file with the v1.4.0 reader, see below). The reader adds only its administrative entries
-   (`index`, `file_index`, `file_entry_index`, `source_file_*`).
+They key on role names, so they run for every tag.
+
+1. `decode(current_v1) == decode(current_v2)` and `decode(current_v1_lite) == decode(current_v2_lite)`: **no
+   difference at all** except `case`, `layout` and `writer.format_version`. (At v1.4.0 no legitimate difference
+   was found: the column types, enums, empty-event rows and every value are identical.)
+2. `current_v1_lite` = `current_v1` minus, in each object product, exactly the fields its class's
+   `lite_dropped` lists in the schema (at v1.4.0: `index`, `orig_index` of the reco and truth classes, plus
+   `index_adapt`, `index_g4` of the truth classes). A lite file that drops more, or less, fails.
+3. `current_v2_fixed_only` = `current_v2` restricted to its 7 products and with every pooled column removed.
+4. `expected == SPINE's own HDF5Reader` of the writing tag (`build_classes=False`, i.e. the stored values) for
+   every product, column and event of every case: at v1.4.0, 2745 / 2745 / 2637 / 2637 / 1999 / 393 values for
+   the current set and 1619 / 1537 for `v2root` / `v0.11.1_v1`. The reader adds only its administrative entries
+   (`index`, `file_index`, `file_entry_index`, `source_file_*`). Only `v0.11.1_v1` falls back to another reader,
+   the current tag's (see below); for every other case a reader that fails, or disagrees, is a check failure.
 5. The default `HDF5Reader` accepts every complete file and raises `RuntimeError("... is marked incomplete")` on
-   `incomplete.h5`.
-6. Content conventions and coverage (see Cases).
+   `current_incomplete.h5`.
+6. Each written file has the `format_version` asked for, and `info@complete` is false only for
+   `current_incomplete`.
+7. Content conventions and coverage (see Cases), and the enum rule of the current set.
+
+A cross-check whose pair of cases is missing is a failure, unless the run is partial.
 
 ## Surprises and findings about the real writers
+
+These were found with the current set written by v1.4.0 and the two frozen releases.
 
 * **Sizes.** SPINE's layouts are one chunk per dataset (h5py auto-chunking: 6-21 KB for each `fixed`, 4 KB for each int32/float32
   pool, 8 KB for `index/values` and `events`), so the size is set by the number of datasets, not by the events: a 5-event V2
   file with 10 products is 306 kB with h5py's default file format, 210 kB with `libver=v110` (V1: 195 -> 172 kB).
   V2 is *larger* than V1 for small files. `--libver v110` changes only the HDF5 file-format bound (compact groups,
   extensible-array chunk indexes; needs libhdf5 >= 1.10); no SPINE logic, dtype, attribute or chunk shape differs.
-  Even so `v1.4.0_v2` (209,665 B) and `v1.4.0_v2_lite` (207,105 B) stay just above 200 kB.
+  Even so, at v1.4.0, `current_v2` (209,665 B) and `current_v2_lite` (207,105 B) stay just above 200 kB.
 * **Empty events.** V1: the region reference has `H5S_SEL_NONE` (0 points), not a zero-length hyperslab. V2: equal
   consecutive offsets (`event_offsets = [0 5 7 7 10 11]`). Scalar products (`run_info`, `meta`, `index`) are never empty.
   Empty lists need `ObjectList(objs, default=Cls())` in SPINE or the writer cannot infer the class.
@@ -179,7 +270,8 @@ groups of region references, V2 `string`/`list`/`multi_list`); the CAF products 
 * **v0.11.1**: `info` carries only `cfg` and `version` (a group; `format_version`, `complete`, `spine_version` and
   `format` appear later). The v0.11.1 `HDF5Reader` **cannot read its own file** (`AttributeError: module
   'spine.data' has no attribute 'ImageMeta3D'`: the writer stores `class_name="ImageMeta3D"`, the reader resolves
-  it in `spine.data`, which only exports `Meta`); the v1.4.0 reader reads it (used for the cross-check).
+  it in `spine.data`, which only exports `Meta`); the current tag's reader (v1.4.0 so far) reads it, and is used
+  for the cross-check of that case only.
 * **Incomplete files**: `with HDF5Writer(...)` calls `finalize()`; skipping it leaves `complete=False`. SPINE's
   reader refuses such a file unless `ignore_incomplete=True`. A genuinely interrupted V2 file (products longer than
   `events`) cannot be made reproducibly with the real writer and was not hand-crafted.

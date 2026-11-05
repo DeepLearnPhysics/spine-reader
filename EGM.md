@@ -73,7 +73,8 @@ Build and packaging (`CMakeLists.txt`):
   - [./tools/gen/EGM.md](./tools/gen/EGM.md) - Model generator (`dump_schema.py`,
     `generate.py`, `check_names.py`).
   - [./tools/fixtures/EGM.md](./tools/fixtures/EGM.md) - Golden test files written by SPINE's
-    own writer, plus their expected JSON and `tests/golden_members.inc`.
+    own writer (the `current_*` set by any tag, the frozen cases by old releases), plus their
+    expected JSON, `manifest.json` and `tests/golden_members.inc`.
 - examples: [./examples/EGM.md](./examples/EGM.md) - The `spine-dump` command-line tool.
 - ci: [./ci/EGM.md](./ci/EGM.md) - the GitHub Actions workflow and `github-ci.sh` (HDF5 1.14 and
   1.12 from LCG views on CVMFS), `check_tag_version.sh` (release tag against
@@ -112,7 +113,7 @@ Build and packaging (`CMakeLists.txt`):
 - Temporarily changes HDF5's library-global automatic error printing (`h5::ErrorSilencer`),
   restoring it afterwards.
 - Developer tools only: `tools/gen` rewrites the generated model; `tools/fixtures` clones SPINE
-  tags and rewrites `tests/data/fixtures/` and `tests/golden_members.inc`; `ci/` scripts
+  commits and rewrites `tests/data/fixtures/` (cases and manifest) and `tests/golden_members.inc`; `ci/` scripts
   create `build-ci/`, `build-asan/`, `build-tsan/` and `build-sl7/`.
 - CI: the GitHub Actions workflow builds and tests on GitHub's hosted runners, with read-only
   access to the repository and no secrets.
