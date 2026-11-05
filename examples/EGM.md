@@ -14,7 +14,10 @@ repository. It is a debugging aid, and its output is pinned by the
   is built and installed to `${CMAKE_INSTALL_BINDIR}` only when the option
   `SPINE_READER_BUILD_TOOLS` is on. The option defaults to on when this is the
   top-level project.
-- Command line: `spine-dump [--events N] file.h5 [more.h5 ...]`.
+- Command line: `spine-dump [--events N] file.h5 [more.h5 ...]`, or `spine-dump --version`.
+  - `--version` prints `spine-dump: spine-reader <spine::version()> (model from SPINE
+    <SPINE_READER_MODEL_SPINE_VERSION>)` and exits `0`, whatever other arguments are given;
+    no file is opened.
   - `--events N` sets the number of events to print (default `5`). `N` is parsed
     with `std::strtoull`. A `--events` with nothing after it is treated as a
     file path.
@@ -43,7 +46,10 @@ repository. It is a debugging aid, and its output is pinned by the
 - The exact output format is tested. `tests/check_spine_dump.cmake` matches
   substrings such as `"6 events\nevent 0 (run 7, subrun 2, event 101): ..."`,
   checks the `--events` limit (`--events 1`, `3`, `99`; the default of 5 is not
-  tested), and checks exit codes `2` and `1`.
+  tested), checks `--version`, and checks exit codes `2` and `1`. It gets the
+  expected spine-reader and model versions from `tests/CMakeLists.txt`
+  (`-DREADER_VERSION`, `-DMODEL_VERSION`); the file versions it expects
+  (`SPINE 1.4.0`) describe the frozen test files.
   Any change to the printed text, the line order or the exit codes must be made
   in that script too.
 - Only `spine::Error` is caught. Any other exception ends the program

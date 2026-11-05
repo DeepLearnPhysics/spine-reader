@@ -41,19 +41,25 @@ Build and packaging (`CMakeLists.txt`):
 - It also exports the CMake package `SpineReader` (`SpineReaderTargets`, version compatibility
   `SameMinorVersion`). Consumers load it with `find_package(SpineReader)` and
   `-DCMAKE_PREFIX_PATH=<prefix>`.
+- Version: `project(spine-reader VERSION X.Y.Z)` is the only place the library's version is
+  written. It reaches the code as the private compile definition `SPINE_READER_VERSION_STRING`,
+  returned by `spine::version()` and printed by `SchemaReport::summary()` and
+  `spine-dump --version`. A release is the git tag `vX.Y.Z` made from it
+  (`ci/check_tag_version.sh`).
 
 ## Subdirectories & System Boundaries
 
 - include: [./include/EGM.md](./include/EGM.md) - Public header root (installed as `include/spine`).
   - [./include/spine/EGM.md](./include/spine/EGM.md) - `Reader`, `ReaderOptions`, `Event`,
-    `Match<T>`, `SchemaReport`/`ProductReport`, descriptors, `Object<N>`, `spine::Error`.
+    `Match<T>`, `SchemaReport`/`ProductReport`, descriptors, `Object<N>`, `spine::Error`,
+    `spine::version()`.
   - [./include/spine/model/EGM.md](./include/spine/model/EGM.md) - Generated SPINE 1.4.0
     classes (`RecoParticle`, `TruthParticle`, `RecoInteraction`, `TruthInteraction`, `RunInfo`,
     `Trigger`, `ImageMeta3D`, `Flash`, `CRTHit`, `FlashHypothesis`) and enums. Do not edit.
   - [./include/spine/detail/EGM.md](./include/spine/detail/EGM.md) - `ColumnBuffer` and
     `assign<&Class::member>`, the bridge from read columns to model members.
 - src: [./src/EGM.md](./src/EGM.md) - Implementation of `Reader` and `Event`, descriptor
-  helpers, `SchemaReport::summary`.
+  helpers, `SchemaReport::summary`, `spine::version()`.
   - [./src/h5/EGM.md](./src/h5/EGM.md) - Move-only HDF5 handles, `ErrorSilencer`,
     `check`/`fail`, read-only open and attribute helpers.
   - [./src/core/EGM.md](./src/core/EGM.md) - `FileSource`/`ProductSource`, V1 and V2 product

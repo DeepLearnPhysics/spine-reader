@@ -37,6 +37,11 @@ Direct sources:
 - `descriptor.cpp` defines `spine::to_string(ScalarType)`, `EnumDescriptor::name_of(value)`
   and `ClassDescriptor::find(field_name)` (`include/spine/descriptor.hpp`).
 - `schema_report.cpp` defines `spine::SchemaReport::summary()` (`include/spine/schema_report.hpp`).
+  Its line after the path names the file's SPINE version, the spine-reader version
+  (`spine::version()`) and the model's SPINE version.
+- `version.cpp` defines `spine::version()` (`include/spine/version.hpp`). It returns
+  `SPINE_READER_VERSION_STRING`, a compile definition that `CMakeLists.txt` sets to
+  `${PROJECT_VERSION}`; the file refuses to compile without it.
 
 Subdirectory contracts:
 

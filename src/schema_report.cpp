@@ -1,4 +1,5 @@
 #include <spine/schema_report.hpp>
+#include <spine/version.hpp>
 
 #include <sstream>
 
@@ -17,8 +18,8 @@ void list(std::ostringstream& out, const char* label, const std::vector<std::str
 std::string SchemaReport::summary() const {
   std::ostringstream out;
   out << path << "\n  SPINE " << (spine_version.empty() ? "unknown" : spine_version)
-      << ", format_version " << format_version << " (" << layout << "), read with model "
-      << model_version << "\n";
+      << ", format_version " << format_version << " (" << layout << "); read by spine-reader "
+      << version() << " (model from SPINE " << model_version << ")\n";
   for (const ProductReport& product : products) {
     out << "  " << product.product << " [" << product.class_name << "]: "
         << (product.complete() ? "all model fields read" : "some model fields missing") << "\n";

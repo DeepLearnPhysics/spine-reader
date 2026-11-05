@@ -555,10 +555,12 @@ TEST_CASE("non-object products and products of unknown classes are listed as not
         report.skipped.end());
   CHECK(report.skipped.size() == 1);
 
-  // the summary says so, after the products
+  // the summary says so, after the products. The file versions ("SPINE 1.4.0") describe these
+  // frozen test files; the spine-reader and model versions come from the build.
+  const std::string read_by = std::string("; read by spine-reader ") + spine::version() +
+                              " (model from SPINE " + SPINE_READER_MODEL_SPINE_VERSION + ")\n";
   const std::string summary = report.summary();
-  CHECK(contains(summary, three_files()[0] +
-                              "\n  SPINE 1.4.0, format_version 1 (V1), read with model 1.4.0\n"));
+  CHECK(contains(summary, three_files()[0] + "\n  SPINE 1.4.0, format_version 1 (V1)" + read_by));
   CHECK(contains(summary, "\n  reco_particles [RecoParticle]: all model fields read\n"));
   const std::string tail = "  not read:\n    index: array product\n";
   REQUIRE(summary.size() > tail.size());
@@ -567,7 +569,7 @@ TEST_CASE("non-object products and products of unknown classes are listed as not
   // a file that does not say which SPINE wrote it
   Reader unversioned(core_file("edge_v2_noversion.h5"));
   CHECK(contains(unversioned.schema_report().summary(),
-                 "\n  SPINE unknown, format_version 1 (V2Products), read with model 1.4.0\n"));
+                 "\n  SPINE unknown, format_version 1 (V2Products)" + read_by));
 
   // edge_v1_columns.h5 has an 'Edge' class no model knows
   Reader edge(core_file("edge_v1_columns.h5"));

@@ -44,6 +44,8 @@ target_include_directories(spine_reader
   PRIVATE
     ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(spine_reader PRIVATE HDF5::HDF5)
+# spine::version() (src/version.cpp): project(VERSION) above is the only place it is written.
+target_compile_definitions(spine_reader PRIVATE SPINE_READER_VERSION_STRING="${PROJECT_VERSION}")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(spine_reader PRIVATE -Wall -Wextra -Wpedantic)
 endif()
