@@ -45,6 +45,12 @@ The test files in `tests/data/` come with the scripts that write them: `core/mak
 writer) and `tools/fixtures/` (golden fixtures). `ci/sl7-ups.sh` builds with the SL7 UPS toolchain
 (gcc 12, HDF5 1.12.2); `ci/sanitize.sh` builds with ASan and UBSan (`ci/sanitize.sh thread`: ThreadSanitizer).
 
+CI (`.github/workflows/ci.yml`) builds and runs ctest on every push and pull request, with HDF5
+1.14 (LCG_110, Ubuntu 24.04) and HDF5 1.12 (LCG_105, Ubuntu 22.04) from the LCG views on CVMFS.
+Both jobs run `ci/github-ci.sh`, which configures with `-DSPINE_READER_REQUIRE_PYTHON=ON`: a missing
+Python 3 then fails the configuration instead of silently leaving out the Python-based checks.
+`ci/EGM.md` shows how to run the same jobs locally.
+
 ## Conventions
 
 - C++17 in everything installed; no HDF5 type appears in a public header.

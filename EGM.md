@@ -26,13 +26,16 @@ The model is generated at build-maintenance time, not at configure time:
 `tools/gen/generate.py` -> `include/spine/model/`, `include/spine/model.hpp`, `src/model/`.
 
 The root folder holds no source files: only `CMakeLists.txt`, `cmake/SpineReaderConfig.cmake.in`,
-`schema/spine-1.4.0.json`, `README.md`, `EGM.md`, `LICENSE` and `.gitignore`.
+`schema/spine-1.4.0.json`, `README.md`, `EGM.md`, `LICENSE`, `.gitignore` and the GitHub Actions
+workflow `.github/workflows/ci.yml` (documented in [./ci/EGM.md](./ci/EGM.md)).
 
 Build and packaging (`CMakeLists.txt`):
 
 - Options: `SPINE_READER_BUILD_TESTS` and `SPINE_READER_BUILD_TOOLS` (both default ON for a
   top-level build, OFF as a subproject) and `SPINE_READER_SANITIZE` (`OFF`/`ON`/`thread`). The
-  default build type, when none is given, is `RelWithDebInfo`.
+  default build type, when none is given, is `RelWithDebInfo`. `tests/CMakeLists.txt` adds
+  `SPINE_READER_REQUIRE_PYTHON` (default OFF; CI turns it on): a missing Python 3 then fails the
+  configuration instead of leaving out the Python-based checks.
 - `cmake --install` installs the library, `spine-dump` (when the tools are built) and the
   headers under `include/spine`. Only headers are installed: the `EGM.md` files are excluded.
 - It also exports the CMake package `SpineReader` (`SpineReaderTargets`, version compatibility
@@ -66,8 +69,10 @@ Build and packaging (`CMakeLists.txt`):
   - [./tools/fixtures/EGM.md](./tools/fixtures/EGM.md) - Golden test files written by SPINE's
     own writer, plus their expected JSON and `tests/golden_members.inc`.
 - examples: [./examples/EGM.md](./examples/EGM.md) - The `spine-dump` command-line tool.
-- ci: [./ci/EGM.md](./ci/EGM.md) - `sanitize.sh` (ASan/UBSan or TSan on EL9) and `sl7-ups.sh`
-  (SL7 container, UPS gcc 12 and HDF5 1.12.2).
+- ci: [./ci/EGM.md](./ci/EGM.md) - the GitHub Actions workflow and `github-ci.sh` (HDF5 1.14 and
+  1.12 from LCG views on CVMFS), `check_tag_version.sh` (release tag against
+  `project(VERSION)`), `sanitize.sh` (ASan/UBSan or TSan on EL9) and `sl7-ups.sh` (SL7 container,
+  UPS gcc 12 and HDF5 1.12.2).
 - tests (not documented by contract): doctest unit tests and the test data under `tests/data/`.
 
 ## Global Invariants
@@ -102,7 +107,9 @@ Build and packaging (`CMakeLists.txt`):
   restoring it afterwards.
 - Developer tools only: `tools/gen` rewrites the generated model; `tools/fixtures` clones SPINE
   tags and rewrites `tests/data/fixtures/` and `tests/golden_members.inc`; `ci/` scripts
-  create `build-asan/`, `build-tsan/` and `build-sl7/`.
+  create `build-ci/`, `build-asan/`, `build-tsan/` and `build-sl7/`.
+- CI: the GitHub Actions workflow builds and tests on GitHub's hosted runners, with read-only
+  access to the repository and no secrets.
 
 ## System Verification
 
@@ -113,5 +120,8 @@ Build and packaging (`CMakeLists.txt`):
   `spine_reader_real_files` (skipped unless `SPINE_READER_REAL_FILES` names a directory).
 - `spine_reader_tests` excludes the `real files*` test cases, which `spine_reader_real_files`
   runs. `spine_reader_generated_model` and `spine_reader_golden_members` are registered only
-  when CMake finds Python 3, and `spine_dump_output` only when the tools are built.
+  when CMake finds Python 3 (with `SPINE_READER_REQUIRE_PYTHON=ON`, a missing Python fails the
+  configuration), and `spine_dump_output` only when the tools are built.
+- CI: `.github/workflows/ci.yml` runs `ci/github-ci.sh` with HDF5 1.14 (LCG_110, Ubuntu 24.04)
+  and HDF5 1.12 (LCG_105, Ubuntu 22.04) on every push and pull request.
 - Other toolchains: `ci/sl7-ups.sh`, `ci/sanitize.sh`, `ci/sanitize.sh thread`.

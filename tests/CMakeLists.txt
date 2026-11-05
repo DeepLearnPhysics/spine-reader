@@ -30,7 +30,16 @@ endif()
 # The generated model (include/spine/model, src/model) must be what tools/gen produces from the
 # committed schema, which was dumped from SPINE: this is what ties every default value, field
 # type and assign pointer of the model to SPINE. It needs only a Python 3 interpreter.
-find_package(Python3 COMPONENTS Interpreter QUIET)
+# SPINE_READER_REQUIRE_PYTHON (CI turns it on) makes a missing interpreter a configuration
+# error instead of silently leaving these checks out.
+option(SPINE_READER_REQUIRE_PYTHON
+       "Fail the configuration if Python 3 is missing, instead of skipping the Python-based checks"
+       OFF)
+if(SPINE_READER_REQUIRE_PYTHON)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+else()
+  find_package(Python3 COMPONENTS Interpreter QUIET)
+endif()
 if(Python3_Interpreter_FOUND)
   add_test(NAME spine_reader_generated_model
            COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/gen/generate.py --check
