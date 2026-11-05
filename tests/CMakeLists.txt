@@ -53,10 +53,21 @@ else()
   message(WARNING "No Python 3 interpreter: the generated-model checks are not registered")
 endif()
 
-# spine-dump on the Reader test files: what it prints, and its exit codes.
+# spine-dump on the Reader test files: what it prints, and its exit codes. The script compares
+# the versions it prints with the library's (project(VERSION)) and with the model's SPINE
+# release, read here from the generated model header; a regenerated header reconfigures.
 if(TARGET spine-dump)
+  set(model_header ${PROJECT_SOURCE_DIR}/include/spine/model.hpp)
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${model_header})
+  file(STRINGS ${model_header} model_version_line
+       REGEX "^#define SPINE_READER_MODEL_SPINE_VERSION ")
+  string(REGEX REPLACE ".*\"([^\"]*)\".*" "\\1" model_version "${model_version_line}")
+  if(NOT model_version MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+    message(FATAL_ERROR "no SPINE_READER_MODEL_SPINE_VERSION in ${model_header}")
+  endif()
   add_test(NAME spine_dump_output
            COMMAND ${CMAKE_COMMAND} -DSPINE_DUMP=$<TARGET_FILE:spine-dump>
                    -DDATA=${CMAKE_CURRENT_SOURCE_DIR}/data
+                   -DREADER_VERSION=${PROJECT_VERSION} -DMODEL_VERSION=${model_version}
                    -P ${CMAKE_CURRENT_SOURCE_DIR}/check_spine_dump.cmake)
 endif()

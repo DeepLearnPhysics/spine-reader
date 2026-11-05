@@ -9,6 +9,7 @@
 
 #include <spine/event.hpp>
 #include <spine/schema_report.hpp>
+#include <spine/version.hpp>
 
 namespace spine {
 

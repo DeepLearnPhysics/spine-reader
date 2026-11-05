@@ -1,5 +1,13 @@
 # Runs spine-dump on the Reader test files and checks what it prints and returns.
-#   cmake -DSPINE_DUMP=<exe> -DDATA=<tests/data> -P check_spine_dump.cmake
+#   cmake -DSPINE_DUMP=<exe> -DDATA=<tests/data> -DREADER_VERSION=<X.Y.Z> -DMODEL_VERSION=<X.Y.Z>
+#         -P check_spine_dump.cmake
+# READER_VERSION is project(VERSION); MODEL_VERSION is SPINE_READER_MODEL_SPINE_VERSION.
+
+foreach(var SPINE_DUMP DATA READER_VERSION MODEL_VERSION)
+  if(NOT DEFINED ${var} OR "${${var}}" STREQUAL "")
+    message(FATAL_ERROR "check_spine_dump.cmake: pass -D${var}=...")
+  endif()
+endforeach()
 
 function(run_dump output_var code_var)
   execute_process(COMMAND ${SPINE_DUMP} ${ARGN}
@@ -31,8 +39,11 @@ run_dump(text code --events 3 ${A} ${B} ${C})
 if(NOT code EQUAL 0)
   message(FATAL_ERROR "spine-dump failed with ${code}:\n${text}")
 endif()
-expect_in("${text}" "${A}\n  SPINE 1.4.0, format_version 1 (V1), read with model 1.4.0")
-expect_in("${text}" "${B}\n  SPINE 1.4.0, format_version 2 (V2Products), read with model 1.4.0")
+# "SPINE 1.4.0" is the writer of these frozen test files; the other two versions come from
+# the build.
+set(read_by "; read by spine-reader ${READER_VERSION} (model from SPINE ${MODEL_VERSION})")
+expect_in("${text}" "${A}\n  SPINE 1.4.0, format_version 1 (V1)${read_by}")
+expect_in("${text}" "${B}\n  SPINE 1.4.0, format_version 2 (V2Products)${read_by}")
 expect_in("${text}" "meta [Meta]: all model fields read")
 expect_in("${text}" "index: array product")
 string(CONCAT first_event
@@ -58,6 +69,15 @@ string(CONCAT b_second_event
   "event 1 (run 9, subrun 0, event 1): 2 reco interactions, 2 reco particles, "
   "0 truth interactions, 2 truth particles")
 expect_in("${text}" "${b_second_event}")
+
+# --version prints both versions and exits 0, even with a file on the command line, which it
+# does not read
+run_dump(text code --version ${A})
+if(NOT code EQUAL 0)
+  message(FATAL_ERROR "spine-dump --version returned ${code}, expected 0:\n${text}")
+endif()
+expect_in("${text}" "spine-dump: spine-reader ${READER_VERSION} (model from SPINE ${MODEL_VERSION})")
+expect_not_in("${text}" "events")
 
 # usage: no files is exit code 2
 run_dump(text code)

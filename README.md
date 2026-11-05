@@ -8,6 +8,21 @@ needs only the HDF5 C library, version 1.12 or newer.
 
 Status: under construction.
 
+## Versions
+
+- A spine-reader release is a git tag `vX.Y.Z` made from `project(spine-reader VERSION X.Y.Z)`
+  in `CMakeLists.txt`, which is the only place the number is written. Before pushing a tag, run
+  `ci/check_tag_version.sh vX.Y.Z`; CI runs it again on the tag push.
+- `spine::version()` (`spine/version.hpp`) and `spine-dump --version` print it. Each file's
+  `SchemaReport::summary()` prints it too, next to the SPINE version that wrote the file and the
+  SPINE version the model was generated from, for example
+  `SPINE 1.4.1, format_version 1 (V1); read by spine-reader 0.1.0 (model from SPINE 1.4.0)`.
+- `find_package(SpineReader X.Y)` accepts any X.Y.z (`SameMinorVersion`).
+- Between releases, builds of `main` report the last release number; production builds should
+  use a tag.
+- A published tag is never moved or deleted. A wrong release is followed by a fixed one, and is
+  listed here as withdrawn. No release has been withdrawn.
+
 ## Layout
 
 | Path | Contents |

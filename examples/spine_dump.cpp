@@ -1,9 +1,11 @@
 // spine-dump: print what spine-reader sees in SPINE HDF5 files.
 //
 //   spine-dump [--events N] file.h5 [more.h5 ...]
+//   spine-dump --version
 //
 // Prints each file's schema report, then per-event object counts and the first reco
-// particle of each event.
+// particle of each event. --version prints the spine-reader release and the SPINE release the
+// model was generated from, and exits 0, whatever other arguments are given.
 
 #include <cstdlib>
 #include <iostream>
@@ -14,6 +16,14 @@
 #include <spine/reader.hpp>
 
 int main(int argc, char** argv) {
+  for (int i = 1; i < argc; ++i) {
+    if (std::string(argv[i]) == "--version") {
+      std::cout << "spine-dump: spine-reader " << spine::version() << " (model from SPINE "
+                << SPINE_READER_MODEL_SPINE_VERSION << ")\n";
+      return 0;
+    }
+  }
+
   std::vector<std::string> paths;
   std::uint64_t max_events = 5;
   for (int i = 1; i < argc; ++i) {
@@ -25,7 +35,8 @@ int main(int argc, char** argv) {
     }
   }
   if (paths.empty()) {
-    std::cerr << "usage: spine-dump [--events N] file.h5 [more.h5 ...]\n";
+    std::cerr << "usage: spine-dump [--events N] file.h5 [more.h5 ...]\n"
+                 "       spine-dump --version\n";
     return 2;
   }
 
