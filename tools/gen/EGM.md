@@ -171,7 +171,8 @@ SPINE clone --dump_schema.py--> schema/spine-<version>.json --generate.py--> C++
   changed files (written or deleted).
 - `check_names.py` compiles a temporary `all.cpp` with
   `<cxx> -std=gnu++17 -dM -E -x c++` (`check=True`). It reads
-  `include/spine/model*` and `src/model/*`, and prints the clashes and a summary.
+  the `.hpp` and `.cpp` files of `include/spine/model*` and `src/model/` (not the `EGM.md`
+  files), and prints the clashes and a summary.
 
 ## Verification
 

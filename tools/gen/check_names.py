@@ -60,7 +60,7 @@ def main():
     macros = system_macros(args.cxx, args.include)
     files = sorted(
         [*(root / "include/spine").glob("model/*.hpp"), root / "include/spine/model.hpp"]
-        + [*(root / "src/model").glob("*")]
+        + [p for p in (root / "src/model").glob("*") if p.suffix in (".cpp", ".hpp")]
     )
     clashes = {}
     for path in files:

@@ -34,7 +34,7 @@ Status: under construction.
 | `src/model/` | Generated field tables. Do not edit by hand. |
 | `tools/gen/` | Generator: dumps SPINE `FieldMetadata` to `schema/` and writes the model. |
 | `tools/fixtures/` | Writes the test files in `tests/data/` with SPINE's own writer, plus expected values. |
-| `tools/release/` | Tooling for following SPINE releases: `scan_consumer_fields.py` lists the model fields a CAFMaker build reads. |
+| `tools/release/` | Tooling for following SPINE releases: `follow_spine.py` runs one SPINE tag end to end, `classify.py` proposes the version bump, `scan_consumer_fields.py` lists the model fields a CAFMaker build reads ([README](tools/release/README.md)). |
 | `tests/` | doctest unit tests (`test_*.cpp`). |
 
 ## Build
@@ -55,6 +55,7 @@ cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build --outpu
 | `spine_reader_real_files` | Reads every `*.h5` in `$SPINE_READER_REAL_FILES` (or `-DSPINE_READER_REAL_FILES=dir`). Without a directory it reports **Skipped**, never Passed. |
 | `spine_reader_generated_model` | `tools/gen/generate.py --check`: the generated model is what the committed SPINE schema produces. |
 | `spine_reader_golden_members` | `tests/golden_members.inc` (the member list that `test_golden.cpp` compares object by object, and that `test_model.cpp` and `test_contracts.cpp` walk) is current. |
+| `spine_reader_release_tools` | The unit tests of `tools/release` (`classify.py`, `follow_spine.py`), without SPINE or the network. Registered for Python 3.10 or newer. |
 | `spine_dump_output` | `spine-dump` prints what it should for the Reader test files. |
 
 When a CAFMaker starts reading a model field, add its row to the contract table.
@@ -71,6 +72,8 @@ CI (`.github/workflows/ci.yml`) builds and runs ctest on every push and pull req
 1.14 (LCG_110, Ubuntu 24.04) and HDF5 1.12 (LCG_105, Ubuntu 22.04) from the LCG views on CVMFS.
 Both jobs run `ci/github-ci.sh`, which configures with `-DSPINE_READER_REQUIRE_PYTHON=ON`: a missing
 Python 3 then fails the configuration instead of silently leaving out the Python-based checks.
+The 1.14 job then runs `tools/release/follow_spine.py` on the model's own SPINE tag, which must
+come out `identical`; its artifacts are uploaded when it fails.
 `ci/EGM.md` shows how to run the same jobs locally.
 
 ## Conventions

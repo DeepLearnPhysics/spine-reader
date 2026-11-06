@@ -10,6 +10,11 @@ SPINE clone at a tag --dump_schema.py--> schema/spine-<version>.json --generate.
 
 ## Regenerate for a new SPINE release
 
+`tools/release/follow_spine.py vX.Y.Z` does all of this, and checks the result: it dumps the
+tag, compares the schema with the model, writes and checks the tag's fixtures, builds and tests
+the regenerated model, and with `--apply` writes it into the working tree
+([../release/README.md](../release/README.md)). The manual commands below are what it runs:
+
 ```bash
 source /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh
 git clone -q --branch vX.Y.Z <SPINE repository> /some/dir/spine-X.Y.Z
@@ -50,7 +55,9 @@ mismatch also exits 1.
    enumerator by a trailing underscore (`NULL` -> `NULL_`; the descriptor keeps `"NULL"`) from its
    `RESERVED` list; if the checker finds a new clash, add the name there. `--include` adds headers
    (HDF5, ROOT) to the scan.
-4. **Build and test.** `cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build`.
+4. **Build and test.** Read `classification.md` from the `follow_spine.py` run first: it lists
+   what changed, kind by kind, and the proposed bump.
+   `cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build`.
    The `static_assert`s in `src/model/*.cpp` fail the build if a member's C++ type disagrees with
    its descriptor row. No test holds field counts, defaults or enum member counts: they follow
    the schema. Write the new tag's fixtures first (`tools/fixtures/make_fixtures.py --tag <tag>`),
