@@ -86,6 +86,13 @@ Build and packaging (`CMakeLists.txt`):
   `project(VERSION)`), `sanitize.sh` (ASan/UBSan or TSan on EL9) and `sl7-ups.sh` (SL7 container,
   UPS gcc 12 and HDF5 1.12.2).
 - tests (not documented by contract): doctest unit tests and the test data under `tests/data/`.
+- docs: design documents, prose only, no contract file.
+  [./docs/designs/following-spine-releases.md](./docs/designs/following-spine-releases.md) is
+  the design that pull requests 1 to 6 implemented: the library's version, the tests that
+  survive expected SPINE changes, the fixture and release tooling, and CI. Its section "As
+  built" records where the code differs from the plan. The companion
+  `following-spine-releases.cafmaker-fields.tsv` lists the 228 model fields the CAFMakers read,
+  from which `tests/test_contracts.cpp` was written.
 
 ## Global Invariants
 
