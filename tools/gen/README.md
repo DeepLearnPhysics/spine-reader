@@ -14,7 +14,8 @@ SPINE clone at a tag --dump_schema.py--> schema/spine-<version>.json --generate.
 source /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh
 git clone -q --branch vX.Y.Z <SPINE repository> /some/dir/spine-X.Y.Z
 
-PYTHONPATH=/some/dir/spine-X.Y.Z/src python3 tools/gen/dump_schema.py    # -> schema/spine-X.Y.Z.json
+PYTHONPATH=/some/dir/spine-X.Y.Z/src python3 tools/gen/dump_schema.py \
+    --spine-sha $(git -C /some/dir/spine-X.Y.Z rev-parse HEAD)              # -> schema/spine-X.Y.Z.json
 python3 tools/gen/generate.py --schema schema/spine-X.Y.Z.json           # -> include/spine/model*, src/model
 ```
 
@@ -26,6 +27,11 @@ one): the model describes one release.
 `generate.py --check` writes nothing and exits 1 if a committed generated file is stale. Output is
 deterministic, so a diff after regeneration is a real change.
 
+`dump_schema.py` exits 1 when SPINE cannot be imported or read, after one line on stderr:
+`dump_schema: <exception class>: <message>` (for example `dump_schema: AttributeError:
+'FieldMetadata' object has no attribute 'pdg'`). It writes nothing then. With `--strict`, a type
+mismatch also exits 1.
+
 ## What to check afterwards
 
 1. **The type check printed by `dump_schema.py`.** Each field's declared type (annotation, or
@@ -34,7 +40,9 @@ deterministic, so a diff after regeneration is a real change.
    under `type_check` in the JSON. The same section also lists any field whose dataclass default
    differs from the value on an instance. `--strict` makes mismatches an error.
 2. **`git diff schema/`.** Fields added, removed or retyped, enum members, new `FieldMetadata`
-   flags. A class SPINE started storing is added to `DEFAULT_CLASSES` in `dump_schema.py`; the
+   flags. A change of `writer_format` (for example a new default layout) or a new entry under
+   `warnings` (an attribute the dumper does not map, a class it does not list) has no effect on the
+   generated C++, and needs a look all the same. A class SPINE started storing is added to `DEFAULT_CLASSES` in `dump_schema.py`; the
    header, the source and the `SPINE_READER_FOR_EACH_CLASS` entry then appear by themselves. A
    field or class SPINE removed disappears and `generate.py` deletes the stale files.
 3. **`python3 tools/gen/check_names.py`.** No identifier of the model may be a macro of a common C,
@@ -58,6 +66,20 @@ deterministic, so a diff after regeneration is a real change.
    description, only its tags (for example `/// [units: MeV]`).
 
 ## What is in the JSON
+
+Top level:
+
+| key | meaning |
+| --- | --- |
+| `schema_format`, `generator`, `notes` | the format of this file (1), the tool, and notes on reading it |
+| `spine_version`, `spine_sha` | `spine.__version__`, and the commit given with `--spine-sha` (`null` without it) |
+| `classes`, `enums`, `scheme_tables` | the model: what `generate.py` reads |
+| `type_check` | the declared types against `HDF5Writer.get_object_dtype`, and dataclass defaults against instance values |
+| `writer_format` | `format_name`, `legacy_format_version`, `current_format_version` and `supported_format_versions` of `HDF5Writer`, and `default_format_version`, the default of its `format_version` parameter; each is `null` when SPINE has no such attribute or parameter |
+| `warnings` | `{kind, name, detail}` for what the dumper sees but does not map: `unmapped_attribute` (a `FieldMetadata` attribute outside `MAPPED_ATTRIBUTES`; at 1.4.0, `cat`) and `unlisted_class` (a class of `spine.data` with `attr_metadata` in neither `DEFAULT_CLASSES` nor `EXCLUDED_CLASSES`) |
+
+`generate.py` ignores `spine_sha`, `type_check`, `writer_format` and `warnings`: they describe the
+dump, for comparing two dumps, and do not change the generated C++.
 
 `classes.<Name>.fields[]`, in the order of `as_dict(lite=False)` (the order of the HDF5 compound
 members), minus fields with `skip=True`:

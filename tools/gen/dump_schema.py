@@ -4,6 +4,7 @@
 Usage (SPINE and its dependencies must be importable; the LCG view provides numpy and h5py)::
 
     PYTHONPATH=<spine clone>/src python3 tools/gen/dump_schema.py [--out-dir schema]
+        [--spine-sha SHA] [--strict]
 
 The output, ``schema/spine-<version>.json``, is the only input of ``generate.py``. Everything in
 it is read from SPINE itself:
@@ -18,6 +19,22 @@ it is read from SPINE itself:
 
 Each field's declared type is then compared with what ``HDF5Writer.get_object_dtype`` produces
 for a default-constructed object, and every disagreement is listed under ``type_check``.
+
+It also records what a comparison of two dumps needs beyond the model:
+
+* ``spine_sha``: the commit given with ``--spine-sha`` (``null`` without it);
+* ``writer_format``: the writer's format attributes (``format_name``, ``legacy_format_version``,
+  ``current_format_version``, ``supported_format_versions``) and ``default_format_version``, the
+  default of the ``format_version`` parameter of ``HDF5Writer.__init__``. Each is ``null`` when
+  SPINE has no such attribute or parameter, so a change of the default layout shows;
+* ``warnings``: ``{kind, name, detail}`` for what the dumper sees but does not map:
+  ``unmapped_attribute``, a ``FieldMetadata`` attribute outside ``MAPPED_ATTRIBUTES``; and
+  ``unlisted_class``, a class of ``spine.data`` with ``attr_metadata`` that is in neither
+  ``DEFAULT_CLASSES`` nor ``EXCLUDED_CLASSES``.
+
+Exit codes: 0 written; 1 SPINE could not be imported or read (one line on stderr,
+``dump_schema: <exception class>: <message>``), or ``--strict`` and a type mismatch; 2 usage
+error.
 """
 
 import argparse
@@ -39,9 +56,7 @@ from pathlib import Path
 #       the class name "Meta").
 #   Flash, CRTHit: measured optical flashes and CRT hits that the reco objects point at.
 #   FlashHypothesis: predicted light per interaction (RecoInteraction.flash_hypothesis_ids).
-# Not included: RecoFragment/TruthFragment (stored only in full, non-lite output; no CAFMaker reads
-# them), Neutrino (merged into TruthInteraction, never stored on its own), ImageMeta2D (the
-# detectors served by the CAFMakers are 3D). Add a name here to include another class.
+# Not included: the classes of EXCLUDED_CLASSES below. Add a name here to include another class.
 DEFAULT_CLASSES = [
     "RecoParticle",
     "TruthParticle",
@@ -53,6 +68,19 @@ DEFAULT_CLASSES = [
     "Flash",
     "CRTHit",
     "FlashHypothesis",
+]
+
+# Classes of spine.data with attr_metadata that are not dumped, on purpose. A class in neither list
+# is reported as an unlisted_class warning.
+EXCLUDED_CLASSES = [
+    "RecoFragment",  # stored only in full, non-lite output; no CAFMaker reads them
+    "TruthFragment",
+    "Neutrino",  # merged into TruthInteraction, never stored on its own
+    "ImageMeta2D",  # the detectors served by the CAFMakers are 3D
+    "Particle",  # larcv's truth particle; TruthParticle carries it in the output
+    "ParticleLabel",  # the compact particle record of cluster labels, not an output object
+    "DataBase",  # base classes
+    "PosDataBase",
 ]
 
 CLASS_ROLE = {
@@ -79,6 +107,28 @@ FLAG_NAMES = [
     "pdg_minus_one_valid",
     "pointwise",
     "lite_skip",
+]
+
+# FieldMetadata attributes this dumper reads: the flags (except "derived", which it computes) and
+# these.
+# Any other attribute is reported as an unmapped_attribute warning.
+MAPPED_ATTRIBUTES = [f for f in FLAG_NAMES if f != "derived"] + [
+    "return_type",
+    "length",
+    "dtype",
+    "units",
+    "enum",
+    "reference",
+    "reference_space",
+    "skip",
+]
+
+# HDF5Writer class attributes recorded under writer_format.
+WRITER_FORMAT_ATTRIBUTES = [
+    "format_name",
+    "legacy_format_version",
+    "current_format_version",
+    "supported_format_versions",
 ]
 
 SCALAR_ELEMENT = {int: "int64", float: "float64", bool: "bool", str: "string"}
@@ -473,6 +523,76 @@ def raw_attribute_class_summary(cls):
     return doc.split("\n\n")[0]
 
 
+# --------------------------------------------------------------------------------------
+# What a comparison of two dumps needs beyond the model
+# --------------------------------------------------------------------------------------
+
+
+def plain(value):
+    """JSON form of a writer attribute: tuples become lists, anything unusual its repr."""
+    if value is None or isinstance(value, (bool, int, float, str)):
+        return value
+    if isinstance(value, (list, tuple)):
+        return [plain(v) for v in value]
+    return repr(value)
+
+
+def writer_format(writer_class):
+    """The writer's format attributes and the default of its format_version parameter; null for
+    each one SPINE does not have."""
+    out = {name: plain(getattr(writer_class, name, None)) for name in WRITER_FORMAT_ATTRIBUTES}
+    parameter = inspect.signature(writer_class.__init__).parameters.get("format_version")
+    if parameter is None or parameter.default is inspect.Parameter.empty:
+        out["default_format_version"] = None
+    else:
+        out["default_format_version"] = plain(parameter.default)
+    return out
+
+
+def unmapped_attributes(classes):
+    """unmapped_attribute warnings: FieldMetadata attributes outside MAPPED_ATTRIBUTES."""
+    import spine.data as sd
+
+    from spine.data.field import FieldMetadata
+
+    default = FieldMetadata()
+    warnings = []
+    for f in dataclasses.fields(FieldMetadata):
+        if f.name in MAPPED_ATTRIBUTES:
+            continue
+        users = [
+            f"{name}.{field['name']}"
+            for name in classes
+            for field in classes[name]["fields"]
+            if getattr(getattr(sd, name).attr_metadata(field["name"]), f.name)
+            != getattr(default, f.name)
+        ]
+        detail = f"FieldMetadata.{f.name} is not read; "
+        detail += f"set on {', '.join(users)}" if users else "set on no dumped field"
+        warnings.append({"kind": "unmapped_attribute", "name": f.name, "detail": detail})
+    return warnings
+
+
+def unlisted_classes(dumped):
+    """unlisted_class warnings: classes of spine.data with attr_metadata in no list. An alias of a
+    listed class (SPINE's Meta is ImageMeta3D) is listed."""
+    import spine.data as sd
+
+    listed = {id(getattr(sd, n)) for n in DEFAULT_CLASSES + list(dumped) + EXCLUDED_CLASSES
+              if hasattr(sd, n)}
+    warnings = []
+    for name, obj in sorted(vars(sd).items()):
+        if isinstance(obj, type) and callable(getattr(obj, "attr_metadata", None)) and \
+                id(obj) not in listed:
+            warnings.append({
+                "kind": "unlisted_class",
+                "name": name,
+                "detail": f"{obj.__module__}.{obj.__name__} has attr_metadata, and is in neither "
+                          "DEFAULT_CLASSES nor EXCLUDED_CLASSES of dump_schema.py",
+            })
+    return warnings
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--spine-src", help="SPINE `src` directory to import (else PYTHONPATH)")
@@ -480,7 +600,19 @@ def main():
     parser.add_argument("--out", help="output file (overrides --out-dir)")
     parser.add_argument("--classes", nargs="*", default=DEFAULT_CLASSES)
     parser.add_argument("--strict", action="store_true", help="exit 1 on any type mismatch")
+    parser.add_argument("--spine-sha", help="commit of the SPINE checkout, recorded as spine_sha")
     args = parser.parse_args()
+    if args.spine_sha is not None and not re.fullmatch(r"[0-9a-f]{40}", args.spine_sha):
+        parser.error(f"--spine-sha: not a full commit SHA: {args.spine_sha!r}")
+    try:
+        return dump(args)
+    except Exception as e:  # one line, for a caller that maps it to an outcome
+        message = " ".join(str(e).split())
+        print(f"dump_schema: {type(e).__name__}: {message}", file=sys.stderr)
+        return 1
+
+
+def dump(args):
     if args.spine_src:
         sys.path.insert(0, args.spine_src)
 
@@ -500,7 +632,7 @@ def main():
     for name in args.classes:
         cls = getattr(sd, name, None)
         if cls is None:
-            sys.exit(f"dump_schema: spine.data has no class {name}")
+            raise LookupError(f"spine.data has no class {name}")
         classes[name] = dump_class(cls, writer, enums, mismatches)
 
     tables = scheme_tables(enums)
@@ -520,9 +652,12 @@ def main():
                     "enum_by_scheme": tables[entry["name"]],
                 }
 
+    warnings = unmapped_attributes(classes) + unlisted_classes(classes)
+
     result = {
         "schema_format": 1,
         "spine_version": __version__,
+        "spine_sha": args.spine_sha,
         "generator": "tools/gen/dump_schema.py",
         "notes": [
             "Field order is the order of as_dict(lite=False): the HDF5 compound member order.",
@@ -533,6 +668,10 @@ def main():
             "derived fields (SPINE stored_property) take as default the value on a "
             "default-constructed object (default_source = default_instance).",
             "float32/float64 defaults 'nan', 'inf' and '-inf' are strings in this file.",
+            "spine_sha is the commit given with --spine-sha (null without it).",
+            "writer_format: HDF5Writer's format attributes and the default of its format_version "
+            "parameter; null when SPINE has no such attribute or parameter.",
+            "warnings: what the dumper sees but does not map (unmapped_attribute, unlisted_class).",
         ],
         "classes": classes,
         "enums": enums,
@@ -541,6 +680,8 @@ def main():
             "method": "declared type vs numpy dtype of HDF5Writer.get_object_dtype(cls())",
             "mismatches": mismatches,
         },
+        "writer_format": writer_format(type(writer)),
+        "warnings": warnings,
     }
 
     out = Path(args.out) if args.out else Path(args.out_dir) / f"spine-{__version__}.json"
@@ -555,6 +696,10 @@ def main():
     print(f"type check: {len(mismatches)} mismatch(es)")
     for m in mismatches:
         print(f"  {m['class']}.{m['field']} [{m['what']}]: {m['detail']}")
+    print("writer format: " + ", ".join(f"{k} {v}" for k, v in result["writer_format"].items()))
+    print(f"warnings: {len(warnings)}")
+    for w in warnings:
+        print(f"  {w['kind']} {w['name']}: {w['detail']}")
     return 1 if (mismatches and args.strict) else 0
 
 

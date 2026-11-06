@@ -1,13 +1,17 @@
 {
  "schema_format": 1,
  "spine_version": "1.4.0",
+ "spine_sha": "4726e068f17e433e2fec068dc8ee498fa9a0658f",
  "generator": "tools/gen/dump_schema.py",
  "notes": [
   "Field order is the order of as_dict(lite=False): the HDF5 compound member order.",
   "Types are the declared ones (annotation or FieldMetadata.dtype), not read from files.",
   "interaction_mode and interaction_type are plain int64 with no enum: SPINE interprets them under interaction_scheme (see scheme_dependent_enum on those fields and enums[*].scheme_dependent).",
   "derived fields (SPINE stored_property) take as default the value on a default-constructed object (default_source = default_instance).",
-  "float32/float64 defaults 'nan', 'inf' and '-inf' are strings in this file."
+  "float32/float64 defaults 'nan', 'inf' and '-inf' are strings in this file.",
+  "spine_sha is the commit given with --spine-sha (null without it).",
+  "writer_format: HDF5Writer's format attributes and the default of its format_version parameter; null when SPINE has no such attribute or parameter.",
+  "warnings: what the dumper sees but does not map (unmapped_attribute, unlisted_class)."
  ],
  "classes": {
   "RecoParticle": {
@@ -8782,5 +8786,22 @@
  "type_check": {
   "method": "declared type vs numpy dtype of HDF5Writer.get_object_dtype(cls())",
   "mismatches": []
- }
+ },
+ "writer_format": {
+  "format_name": "spine_hdf5",
+  "legacy_format_version": 1,
+  "current_format_version": 2,
+  "supported_format_versions": [
+   1,
+   2
+  ],
+  "default_format_version": 1
+ },
+ "warnings": [
+  {
+   "kind": "unmapped_attribute",
+   "name": "cat",
+   "detail": "FieldMetadata.cat is not read; set on RecoParticle.index, RecoParticle.orig_index, RecoParticle.fragment_ids, TruthParticle.index_adapt, TruthParticle.index_g4, TruthParticle.index, TruthParticle.orig_index, TruthParticle.fragment_ids, RecoInteraction.index, RecoInteraction.orig_index, TruthInteraction.index_adapt, TruthInteraction.index_g4, TruthInteraction.index, TruthInteraction.orig_index"
+  }
+ ]
 }
