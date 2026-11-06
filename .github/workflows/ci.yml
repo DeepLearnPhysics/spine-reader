@@ -20,8 +20,19 @@ jobs:
       - uses: cvmfs-contrib/github-action-cvmfs@72f2a8d366043978d6aebee154bc9ed321c2f2a8 # v5.6
         with:
           cvmfs_repositories: sft.cern.ch
-      - name: Build and test
-        run: ci/github-ci.sh /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-ubuntu2404-gcc13-opt/setup.sh
+      # Also follows the model's own SPINE tag (tools/release/follow_spine.py), which must come
+      # out "identical"; its artifacts are uploaded when the job fails.
+      - name: Build and test, then follow the model's SPINE tag
+        run: >-
+          ci/github-ci.sh --follow-spine "$RUNNER_TEMP/artifacts"
+          /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-ubuntu2404-gcc13-opt/setup.sh
+      - name: Upload the follow_spine artifacts
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: follow-spine-artifacts
+          path: ${{ runner.temp }}/artifacts
+          if-no-files-found: ignore
       - name: Tag matches project(VERSION)
         if: startsWith(github.ref, 'refs/tags/')
         run: ci/check_tag_version.sh "$GITHUB_REF_NAME"

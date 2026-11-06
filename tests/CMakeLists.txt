@@ -54,6 +54,14 @@ if(Python3_Interpreter_FOUND)
   add_test(NAME spine_reader_golden_members
            COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/tools/fixtures/make_member_list.py
                    --check)
+  # The unit tests of tools/release (classify.py, follow_spine.py): no SPINE, no network. The
+  # release tools need Python 3.10, as SPINE does; older interpreters leave them out.
+  if(Python3_VERSION VERSION_GREATER_EQUAL 3.10)
+    add_test(NAME spine_reader_release_tools
+             COMMAND ${Python3_EXECUTABLE} -m unittest discover
+                     -s ${PROJECT_SOURCE_DIR}/tools/release/tests
+                     -t ${PROJECT_SOURCE_DIR}/tools/release)
+  endif()
 else()
   message(WARNING "No Python 3 interpreter: the generated-model checks are not registered")
 endif()

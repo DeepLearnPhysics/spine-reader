@@ -13,13 +13,17 @@ Every script finds the repository from its own location, so it can be run from a
 directory.
 
 ## Interface
-- `github-ci.sh <LCG view setup.sh> [build directory]`
+- `github-ci.sh [--follow-spine DIR] <LCG view setup.sh> [build directory]`
   - Sources the given LCG view, then configures `<repo>/<build directory>` (default `build-ci`)
     with `-DSPINE_READER_REQUIRE_PYTHON=ON`, builds with `-j$(nproc)`, and runs
     `ctest --output-on-failure`. No build type is given, so the project default
     (`RelWithDebInfo`) applies, as in CI.
+  - With `--follow-spine DIR`, it then reads `spine_version` from the one `schema/spine-*.json`
+    and runs `tools/release/follow_spine.py v<spine_version> --artifacts-dir DIR --jobs
+    $(nproc)`. It needs exit 0 (`identical`).
   - Prints the OS, the compiler (`$CXX`, set by the LCG view), CMake, Python and the view.
-  - Exit codes: 2 on bad arguments; otherwise the first failing command's code.
+  - Exit codes: 2 on bad arguments; otherwise the first failing command's code (for
+    `follow_spine.py`, its own: 10, 20, 30 or 2).
 - `check_tag_version.sh vX.Y.Z`
   - Reads `project(spine-reader VERSION X.Y.Z ...)` from `CMakeLists.txt`.
   - Exits 0 when the argument equals `vX.Y.Z`, 1 when it does not or when no version line is
@@ -29,13 +33,22 @@ directory.
   - Runs on every push (branches and tags), every pull request and manual dispatch, with
     `permissions: contents: read` and no secrets.
   - Job `hdf5-1_14`: `ubuntu-24.04`, LCG_110 `x86_64-ubuntu2404-gcc13-opt` (HDF5 1.14.6, gcc 13
-    from the runner, CMake 3.30, Python 3.13). On a tag push it also runs
-    `check_tag_version.sh "$GITHUB_REF_NAME"`.
+    from the runner, CMake 3.30, Python 3.13).
+    - It runs `github-ci.sh --follow-spine "$RUNNER_TEMP/artifacts"`: the build, ctest, then
+      `follow_spine.py` on the model's own SPINE tag, which clones SPINE from GitHub and must
+      give `identical`. The tag must still point at the schema's `spine_sha`, so CI only ever
+      runs that recorded SPINE commit.
+    - When the job fails, it uploads `$RUNNER_TEMP/artifacts` as `follow-spine-artifacts`
+      (`actions/upload-artifact`).
+    - On a tag push it also runs `check_tag_version.sh "$GITHUB_REF_NAME"`.
   - Job `hdf5-1_12`: `ubuntu-22.04`, LCG_105 `x86_64-ubuntu2204-gcc11-opt` (HDF5 1.12.2, gcc 11
     from the runner, CMake 3.26, Python 3.9).
   - Each job checks out the repository, mounts `sft.cern.ch` with
-    `cvmfs-contrib/github-action-cvmfs`, and runs `github-ci.sh` with its view. The two actions
-    are pinned by commit SHA, with the version in a comment.
+    `cvmfs-contrib/github-action-cvmfs`, and runs `github-ci.sh` with its view. The actions
+    (`actions/checkout`, the CVMFS action and `actions/upload-artifact`) are pinned by commit
+    SHA, with the version in a comment.
+  - The release-tool unit tests (`spine_reader_release_tools`) need Python 3.10, so they run in
+    the 1.14 job only; the 1.12 job (Python 3.9) registers six ctest entries.
 - `sanitize.sh [mode]`
   - With no argument (`mode=address`, the default) it configures with
     `-DSPINE_READER_SANITIZE=ON`, which enables ASan and UBSan with
@@ -84,6 +97,9 @@ directory.
 - Read from CVMFS: the LCG views, `setup_larsoft.sh` and UPS products, and the container
   images. `sl7-ups.sh` and the dry run below need `apptainer` on the host.
 - The workflow runs on GitHub's hosted runners, with read-only access to the repository.
+- `github-ci.sh --follow-spine DIR` clones SPINE (from GitHub, into
+  `$TMPDIR/spine-reader-fixtures`) and writes `DIR`: the artifacts, an export of HEAD and its
+  build.
 
 ## Verification
 - Run: `ci/sanitize.sh` (ASan and UBSan), `ci/sanitize.sh thread` (TSan), and
@@ -94,6 +110,7 @@ directory.
   ```bash
   img=/cvmfs/unpacked.cern.ch/gitlab-registry.cern.ch/sft/docker
   apptainer exec -B /cvmfs -B /tmp $img/ubuntu24:latest bash -e ci/github-ci.sh \
+    --follow-spine /tmp/follow-spine-artifacts \
     /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-ubuntu2404-gcc13-opt/setup.sh build-ci-1.14
   apptainer exec -B /cvmfs -B /tmp $img/ubuntu22:latest bash -e ci/github-ci.sh \
     /cvmfs/sft.cern.ch/lcg/views/LCG_105/x86_64-ubuntu2204-gcc11-opt/setup.sh build-ci-1.12

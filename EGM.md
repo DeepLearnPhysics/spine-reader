@@ -76,8 +76,10 @@ Build and packaging (`CMakeLists.txt`):
     own writer (the `current_*` set by any tag, the frozen cases by old releases), plus their
     expected JSON, `manifest.json` and `tests/golden_members.inc`.
   - [./tools/release/EGM.md](./tools/release/EGM.md) - Release tooling:
-    `scan_consumer_fields.py` (the model fields a CAFMaker build reads, against the contract
-    table of `tests/test_contracts.cpp`).
+    `follow_spine.py` (one SPINE tag, end to end: identical, changed, not followed or a
+    failure, with `status.json`; `--apply` writes a change into the tree), `classify.py` (the
+    change and the proposed bump) and `scan_consumer_fields.py` (the model fields a CAFMaker
+    build reads, against the contract table of `tests/test_contracts.cpp`).
 - examples: [./examples/EGM.md](./examples/EGM.md) - The `spine-dump` command-line tool.
 - ci: [./ci/EGM.md](./ci/EGM.md) - the GitHub Actions workflow and `github-ci.sh` (HDF5 1.14 and
   1.12 from LCG views on CVMFS), `check_tag_version.sh` (release tag against
@@ -118,8 +120,11 @@ Build and packaging (`CMakeLists.txt`):
 - Developer tools only: `tools/gen` rewrites the generated model; `tools/fixtures` clones SPINE
   commits and rewrites `tests/data/fixtures/` (cases and manifest) and `tests/golden_members.inc`;
   `tools/release/scan_consumer_fields.py` runs a CAFMaker's compile commands with
-  `-fsyntax-only` in a work folder; `ci/` scripts create `build-ci/`, `build-asan/`,
-  `build-tsan/` and `build-sl7/`.
+  `-fsyntax-only` in a work folder; `tools/release/follow_spine.py` clones SPINE, and builds
+  and tests an export in its artifacts folder. With `--apply`, after a `changed` outcome, it
+  writes the new `schema/spine-*.json`, the regenerated model, `tests/golden_members.inc`, the
+  current fixtures and the manifest into the working tree, and commits nothing. `ci/` scripts
+  create `build-ci/`, `build-asan/`, `build-tsan/` and `build-sl7/`.
 - CI: the GitHub Actions workflow builds and tests on GitHub's hosted runners, with read-only
   access to the repository and no secrets.
 
@@ -129,12 +134,16 @@ Build and packaging (`CMakeLists.txt`):
   `cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build --output-on-failure`
 - The ctest entries include `spine_reader_tests` (unit tests), `spine_reader_contracts` (what
   the CAFMakers rely on: `tests/test_contracts.cpp`), `spine_reader_generated_model`
-  (`tools/gen/generate.py --check`), `spine_reader_golden_members`, `spine_dump_output`, and
+  (`tools/gen/generate.py --check`), `spine_reader_golden_members`,
+  `spine_reader_release_tools` (the unit tests of `tools/release`), `spine_dump_output`, and
   `spine_reader_real_files` (skipped unless `SPINE_READER_REAL_FILES` names a directory).
 - `spine_reader_tests` excludes the `real files*` and `contract*` test cases, which
-  `spine_reader_real_files` and `spine_reader_contracts` run. `spine_reader_generated_model` and `spine_reader_golden_members` are registered only
-  when CMake finds Python 3 (with `SPINE_READER_REQUIRE_PYTHON=ON`, a missing Python fails the
-  configuration), and `spine_dump_output` only when the tools are built.
+  `spine_reader_real_files` and `spine_reader_contracts` run. `spine_reader_generated_model`
+  and `spine_reader_golden_members` are registered only when CMake finds Python 3 (with
+  `SPINE_READER_REQUIRE_PYTHON=ON`, a missing Python fails the configuration),
+  `spine_reader_release_tools` only for Python 3.10 or newer, and `spine_dump_output` only
+  when the tools are built.
 - CI: `.github/workflows/ci.yml` runs `ci/github-ci.sh` with HDF5 1.14 (LCG_110, Ubuntu 24.04)
-  and HDF5 1.12 (LCG_105, Ubuntu 22.04) on every push and pull request.
+  and HDF5 1.12 (LCG_105, Ubuntu 22.04) on every push and pull request. The 1.14 job then runs
+  `tools/release/follow_spine.py` on the model's own SPINE tag and requires `identical`.
 - Other toolchains: `ci/sl7-ups.sh`, `ci/sanitize.sh`, `ci/sanitize.sh thread`.
