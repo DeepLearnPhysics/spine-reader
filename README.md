@@ -36,6 +36,7 @@ Status: under construction.
 | `tools/fixtures/` | Writes the test files in `tests/data/` with SPINE's own writer, plus expected values. |
 | `tools/release/` | Tooling for following SPINE releases: `follow_spine.py` runs one SPINE tag end to end, `classify.py` proposes the version bump, `scan_consumer_fields.py` lists the model fields a CAFMaker build reads ([README](tools/release/README.md)). |
 | `tests/` | doctest unit tests (`test_*.cpp`). |
+| `docs/designs/` | Design documents: [following SPINE releases](docs/designs/following-spine-releases.md) (the version, the tests, the fixture and release tooling, CI), with the table of the model fields the CAFMakers read. |
 
 ## Build
 

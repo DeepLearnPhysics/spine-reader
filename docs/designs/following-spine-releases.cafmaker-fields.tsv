@@ -1,0 +1,233 @@
+# Fields of the spine-reader model (SPINE 1.4.0) that the CAFMakers read.
+# Found by compiling each port's sources against model headers whose members and Field enumerators are marked [[deprecated]].
+# Ports: ND DUNE/ND_CAFMaker#213 at fbda59e, SBN justinjmueller/sbn_ml_cafmaker#8 at 6cc8bb6, FD DUNE/dune_ml_cafmaker#1 at 666443e.
+# unit and default: from schema/spine-1.4.0.json. Locations: first use, with the number of further uses in brackets.
+class	field	unit	default	default_source	readers	nd_first_use	sbn_first_use	fd_first_use
+RecoParticle	is_truth		false	dataclass	SBN		src/Base/record_fillers.cc:130	
+RecoParticle	id		-1	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:565 (+6)	src/Base/record_fillers.cc:123	
+RecoParticle	is_contained		false	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:571 (+4)	src/Base/record_fillers.cc:126	src/record_fillers.cc:46
+RecoParticle	is_time_contained		false	dataclass	SBN		src/Base/record_fillers.cc:129	
+RecoParticle	is_cathode_crosser		false	dataclass	SBN		src/Base/record_fillers.cc:125	
+RecoParticle	is_matched		false	dataclass	SBN		src/Base/record_fillers.cc:127	
+RecoParticle	cathode_offset	cm	nan	dataclass	SBN		src/Base/record_fillers.cc:113	
+RecoParticle	match_ids		[]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:598 (+12)	src/Base/record_fillers.cc:135	src/record_fillers.cc:49 (+1)
+RecoParticle	match_overlaps		[]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:662 (+3)	src/Base/record_fillers.cc:136	src/record_fillers.cc:61 (+1)
+RecoParticle	interaction_id		-1	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:669 (+6)	src/Base/record_fillers.cc:124	
+RecoParticle	chi2_pid		-1	dataclass	SBN		src/Base/record_fillers.cc:115	
+RecoParticle	is_primary		false	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:568 (+1)	src/Base/record_fillers.cc:128	src/record_fillers.cc:40
+RecoParticle	is_valid		true	dataclass	SBN		src/Base/record_fillers.cc:131	
+RecoParticle	length	instance	nan	dataclass	SBN		src/Base/record_fillers.cc:133	
+RecoParticle	calo_ke	MeV	nan	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:593 (+3)	src/Base/record_fillers.cc:112	
+RecoParticle	csda_ke	MeV	nan	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:582 (+2)	src/Base/record_fillers.cc:116	
+RecoParticle	mcs_ke	MeV	nan	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:587 (+2)	src/Base/record_fillers.cc:137	
+RecoParticle	shape		-1	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:578 (+3)	src/Base/record_fillers.cc:148	
+RecoParticle	pid		-1	dataclass	SBN		src/Base/record_fillers.cc:144	
+RecoParticle	fragment_ids	instance	[]	dataclass	SBN		src/Base/record_fillers.cc:122	
+RecoParticle	start_point	instance	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:569 (+4)	src/Base/record_fillers.cc:152	src/record_fillers.cc:44
+RecoParticle	end_point	instance	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:570 (+3)	src/Base/record_fillers.cc:121	src/record_fillers.cc:45
+RecoParticle	chi2_per_pid		["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:114	
+RecoParticle	csda_ke_per_pid	MeV	["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:117	
+RecoParticle	mcs_ke_per_pid	MeV	["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:138	
+RecoParticle	start_dedx	MeV/cm	nan	dataclass	SBN		src/Base/record_fillers.cc:150	
+RecoParticle	vertex_distance	instance	nan	dataclass	SBN		src/Base/record_fillers.cc:154	
+RecoParticle	start_straightness		nan	dataclass	SBN		src/Base/record_fillers.cc:153	
+RecoParticle	directional_spread		nan	dataclass	SBN		src/Base/record_fillers.cc:119	
+RecoParticle	axial_spread		nan	dataclass	SBN		src/Base/record_fillers.cc:111	
+RecoParticle	start_dir		["nan", "nan", "nan"]	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:65 (+2)	src/Base/record_fillers.cc:151	
+RecoParticle	end_dir		["nan", "nan", "nan"]	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:65 (+1)	src/Base/record_fillers.cc:120	
+RecoParticle	pid_scores		["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:145	
+RecoParticle	primary_scores		["nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:147	
+RecoParticle	ppn_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:146	
+RecoParticle	pdg_code		0	default_instance	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:573 (+1)	src/Base/record_fillers.cc:143	src/record_fillers.cc:41
+RecoParticle	mass	MeV/c^2	nan	default_instance	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:596 (+1)	src/Base/record_fillers.cc:134	
+RecoParticle	ke	MeV	nan	default_instance	SBN FD		src/Base/record_fillers.cc:132	src/record_fillers.cc:42
+RecoParticle	momentum	MeV/c	["nan", "nan", "nan"]	default_instance	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:574 (+3)	src/Base/record_fillers.cc:140	src/record_fillers.cc:43
+RecoParticle	p	MeV/c	nan	default_instance	SBN		src/Base/record_fillers.cc:142	
+RecoParticle	num_fragments		0	default_instance	SBN		src/Base/record_fillers.cc:141	
+RecoParticle	size		0	default_instance	SBN		src/Base/record_fillers.cc:149	
+RecoParticle	depositions_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:118	
+RecoParticle	module_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:139	
+TruthParticle	orig_id		-1	dataclass	SBN		src/Base/record_fillers.cc:78	
+TruthParticle	is_truth		true	dataclass	SBN		src/Base/record_fillers.cc:59	
+TruthParticle	id		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:605 (+6)	src/Base/record_fillers.cc:51	src/record_fillers.cc:140 (+3)
+TruthParticle	is_contained		false	dataclass	SBN		src/Base/record_fillers.cc:55	
+TruthParticle	is_time_contained		false	dataclass	SBN		src/Base/record_fillers.cc:58	
+TruthParticle	is_cathode_crosser		false	dataclass	SBN		src/Base/record_fillers.cc:54	
+TruthParticle	is_matched		false	dataclass	SBN		src/Base/record_fillers.cc:56	
+TruthParticle	cathode_offset	cm	nan	dataclass	SBN		src/Base/record_fillers.cc:27	
+TruthParticle	match_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:65	
+TruthParticle	match_overlaps		[]	dataclass	SBN		src/Base/record_fillers.cc:66	
+TruthParticle	interaction_id		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:607 (+9)	src/Base/record_fillers.cc:52	src/record_fillers.cc:32
+TruthParticle	is_primary		false	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:608 (+3)	src/Base/record_fillers.cc:57	
+TruthParticle	is_valid		true	dataclass	SBN		src/Base/record_fillers.cc:60	
+TruthParticle	length	instance	nan	dataclass	SBN		src/Base/record_fillers.cc:63	
+TruthParticle	calo_ke	MeV	nan	dataclass	SBN		src/Base/record_fillers.cc:26	
+TruthParticle	csda_ke	MeV	nan	dataclass	SBN		src/Base/record_fillers.cc:31	
+TruthParticle	mcs_ke	MeV	nan	dataclass	SBN		src/Base/record_fillers.cc:67	
+TruthParticle	shape		-1	dataclass	SBN		src/Base/record_fillers.cc:96	
+TruthParticle	pid		-1	dataclass	SBN		src/Base/record_fillers.cc:89	
+TruthParticle	fragment_ids	instance	[]	dataclass	SBN		src/Base/record_fillers.cc:48	
+TruthParticle	start_point	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:101	
+TruthParticle	end_point	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:42	
+TruthParticle	csda_ke_per_pid	MeV	["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:32	
+TruthParticle	mcs_ke_per_pid	MeV	["nan", "nan", "nan", "nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:68	
+TruthParticle	parent_id		-1	dataclass	SBN		src/Base/record_fillers.cc:83	
+TruthParticle	group_id		-1	dataclass	SBN		src/Base/record_fillers.cc:49	
+TruthParticle	nu_id		-1	dataclass	SBN		src/Base/record_fillers.cc:73	
+TruthParticle	children_id		[]	dataclass	SBN		src/Base/record_fillers.cc:29	
+TruthParticle	mct_index		-1	dataclass	SBN		src/Base/record_fillers.cc:70	
+TruthParticle	mcst_index		-1	dataclass	SBN		src/Base/record_fillers.cc:69	
+TruthParticle	group_primary		-1	dataclass	SBN		src/Base/record_fillers.cc:50	
+TruthParticle	interaction_primary		-1	dataclass	SBN		src/Base/record_fillers.cc:53	
+TruthParticle	track_id		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:383 (+16)	src/Base/record_fillers.cc:103	src/record_fillers.cc:188 (+1)
+TruthParticle	parent_track_id		-1	dataclass	SBN		src/Base/record_fillers.cc:87	
+TruthParticle	ancestor_track_id		-1	dataclass	SBN		src/Base/record_fillers.cc:25	
+TruthParticle	pdg_code		0	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:382 (+4)	src/Base/record_fillers.cc:88	src/record_fillers.cc:140 (+1)
+TruthParticle	parent_pdg_code		0	dataclass	SBN		src/Base/record_fillers.cc:84	
+TruthParticle	ancestor_pdg_code		0	dataclass	SBN		src/Base/record_fillers.cc:22	
+TruthParticle	num_voxels		-1	dataclass	SBN		src/Base/record_fillers.cc:75	
+TruthParticle	t	ns	nan	dataclass	SBN		src/Base/record_fillers.cc:102	
+TruthParticle	end_t	ns	nan	dataclass	SBN		src/Base/record_fillers.cc:44	
+TruthParticle	parent_t	ns	nan	dataclass	SBN		src/Base/record_fillers.cc:86	
+TruthParticle	ancestor_t	ns	nan	dataclass	SBN		src/Base/record_fillers.cc:24	
+TruthParticle	energy_init	MeV	nan	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:421 (+5)	src/Base/record_fillers.cc:46	src/record_fillers.cc:140 (+1)
+TruthParticle	energy_deposit	MeV	nan	dataclass	SBN		src/Base/record_fillers.cc:45	
+TruthParticle	distance_travel	cm	nan	dataclass	SBN		src/Base/record_fillers.cc:38	
+TruthParticle	creation_process			dataclass	SBN		src/Base/record_fillers.cc:30	
+TruthParticle	parent_creation_process			dataclass	SBN		src/Base/record_fillers.cc:82	
+TruthParticle	ancestor_creation_process			dataclass	SBN		src/Base/record_fillers.cc:21	
+TruthParticle	position	instance	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:407 (+3)	src/Base/record_fillers.cc:90	src/record_fillers.cc:29
+TruthParticle	end_position	instance	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:411 (+3)	src/Base/record_fillers.cc:43	src/record_fillers.cc:30
+TruthParticle	parent_position	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:85	
+TruthParticle	ancestor_position	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:23	
+TruthParticle	first_step	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:47	
+TruthParticle	last_step	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:62	
+TruthParticle	momentum	MeV/c	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:415 (+3)	src/Base/record_fillers.cc:72	src/record_fillers.cc:24 (+2)
+TruthParticle	end_momentum	MeV/c	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:40	
+TruthParticle	orig_interaction_id		-1	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:385 (+1)	src/Base/record_fillers.cc:79	
+TruthParticle	orig_parent_id		-1	dataclass	SBN		src/Base/record_fillers.cc:80	
+TruthParticle	orig_group_id		-1	dataclass	SBN		src/Base/record_fillers.cc:77	
+TruthParticle	reco_length		nan	dataclass	SBN		src/Base/record_fillers.cc:93	
+TruthParticle	orig_children_id		[]	dataclass	SBN		src/Base/record_fillers.cc:76	
+TruthParticle	children_counts		[]	dataclass	SBN		src/Base/record_fillers.cc:28	
+TruthParticle	reco_start_dir		["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:95	
+TruthParticle	reco_end_dir		["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:91	
+TruthParticle	start_dir		["nan", "nan", "nan"]	default_instance	SBN		src/Base/record_fillers.cc:100	
+TruthParticle	end_dir		["nan", "nan", "nan"]	default_instance	SBN		src/Base/record_fillers.cc:39	
+TruthParticle	ke	MeV	nan	default_instance	SBN		src/Base/record_fillers.cc:61	
+TruthParticle	reco_ke	MeV	nan	default_instance	SBN		src/Base/record_fillers.cc:92	
+TruthParticle	reco_momentum	MeV/c	["nan", "nan", "nan"]	default_instance	SBN		src/Base/record_fillers.cc:94	
+TruthParticle	p	MeV/c	nan	default_instance	SBN		src/Base/record_fillers.cc:81	
+TruthParticle	end_p	MeV/c	nan	default_instance	SBN		src/Base/record_fillers.cc:41	
+TruthParticle	mass	MeV/c^2	nan	default_instance	SBN		src/Base/record_fillers.cc:64	
+TruthParticle	num_fragments		0	default_instance	SBN		src/Base/record_fillers.cc:74	
+TruthParticle	size		0	default_instance	SBN		src/Base/record_fillers.cc:97	
+TruthParticle	depositions_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:37	
+TruthParticle	depositions_q_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:36	
+TruthParticle	module_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:71	
+TruthParticle	size_adapt		0	default_instance	SBN		src/Base/record_fillers.cc:98	
+TruthParticle	size_g4		0	default_instance	SBN		src/Base/record_fillers.cc:99	
+TruthParticle	depositions_adapt_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:34	
+TruthParticle	depositions_adapt_q_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:33	
+TruthParticle	depositions_g4_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:35	
+RecoInteraction	is_truth		false	dataclass	SBN		src/Base/record_fillers.cc:247	
+RecoInteraction	id		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:479 (+1)	src/Base/record_fillers.cc:240	src/record_fillers.cc:100 (+1)
+RecoInteraction	is_contained		false	dataclass	SBN		src/Base/record_fillers.cc:242	
+RecoInteraction	is_time_contained		false	dataclass	SBN		src/Base/record_fillers.cc:246	
+RecoInteraction	is_cathode_crosser		false	dataclass	SBN		src/Base/record_fillers.cc:241	
+RecoInteraction	is_matched		false	dataclass	SBN		src/Base/record_fillers.cc:245	
+RecoInteraction	cathode_offset	cm	nan	dataclass	SBN		src/Base/record_fillers.cc:232	
+RecoInteraction	match_ids		[]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:484 (+5)	src/Base/record_fillers.cc:248	src/record_fillers.cc:110 (+1)
+RecoInteraction	match_overlaps		[]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:532 (+1)	src/Base/record_fillers.cc:249	src/record_fillers.cc:122
+RecoInteraction	is_fiducial		false	dataclass	SBN		src/Base/record_fillers.cc:243	
+RecoInteraction	is_flash_matched		false	dataclass	SBN		src/Base/record_fillers.cc:244	
+RecoInteraction	flash_total_pe		nan	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:543 (+1)	src/Base/record_fillers.cc:238	
+RecoInteraction	flash_hypo_pe		nan	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:544 (+1)	src/Base/record_fillers.cc:234	
+RecoInteraction	particle_ids		[]	dataclass	SBN FD		src/Base/record_fillers.cc:254	src/record_fillers.cc:103 (+1)
+RecoInteraction	vertex	instance	["nan", "nan", "nan"]	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:480 (+1)	src/Base/record_fillers.cc:259	src/record_fillers.cc:101
+RecoInteraction	flash_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:235	
+RecoInteraction	flash_volume_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:239	
+RecoInteraction	flash_times	us	[]	dataclass	SBN		src/Base/record_fillers.cc:237	
+RecoInteraction	flash_scores		[]	dataclass	SBN		src/Base/record_fillers.cc:236	
+RecoInteraction	primary_particle_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:256	
+RecoInteraction	num_particles		0	default_instance	SBN		src/Base/record_fillers.cc:251	
+RecoInteraction	num_primary_particles		0	default_instance	SBN		src/Base/record_fillers.cc:252	
+RecoInteraction	particle_counts		[0, 0, 0, 0, 0, 0]	default_instance	SBN		src/Base/record_fillers.cc:253	
+RecoInteraction	primary_particle_counts		[0, 0, 0, 0, 0, 0]	default_instance	SBN		src/Base/record_fillers.cc:255	
+RecoInteraction	topology			default_instance	SBN		src/Base/record_fillers.cc:258	
+RecoInteraction	size		0	default_instance	SBN		src/Base/record_fillers.cc:257	
+RecoInteraction	depositions_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:233	
+RecoInteraction	module_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:250	
+TruthInteraction	orig_id		-1	dataclass	ND SBN	src/reco/MLNDLArRecoBranchFiller.cxx:505 (+5)	src/Base/record_fillers.cc:206	
+TruthInteraction	is_truth		true	dataclass	SBN		src/Base/record_fillers.cc:191	
+TruthInteraction	id		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:445 (+3)	src/Base/record_fillers.cc:181	src/record_fillers.cc:212 (+3)
+TruthInteraction	is_contained		false	dataclass	SBN		src/Base/record_fillers.cc:186	
+TruthInteraction	is_time_contained		false	dataclass	SBN		src/Base/record_fillers.cc:190	
+TruthInteraction	is_cathode_crosser		false	dataclass	SBN		src/Base/record_fillers.cc:185	
+TruthInteraction	is_matched		false	dataclass	SBN		src/Base/record_fillers.cc:189	
+TruthInteraction	cathode_offset	cm	nan	dataclass	SBN		src/Base/record_fillers.cc:163	
+TruthInteraction	match_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:195	
+TruthInteraction	match_overlaps		[]	dataclass	SBN		src/Base/record_fillers.cc:196	
+TruthInteraction	is_fiducial		false	dataclass	SBN		src/Base/record_fillers.cc:187	
+TruthInteraction	is_flash_matched		false	dataclass	SBN		src/Base/record_fillers.cc:188	
+TruthInteraction	flash_total_pe		nan	dataclass	SBN		src/Base/record_fillers.cc:178	
+TruthInteraction	flash_hypo_pe		nan	dataclass	SBN		src/Base/record_fillers.cc:174	
+TruthInteraction	particle_ids		[]	dataclass	SBN FD		src/Base/record_fillers.cc:208	src/record_fillers.cc:204 (+3)
+TruthInteraction	vertex	instance	["nan", "nan", "nan"]	dataclass	SBN FD		src/Base/record_fillers.cc:222	src/record_fillers.cc:76
+TruthInteraction	flash_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:175	
+TruthInteraction	flash_volume_ids		[]	dataclass	SBN		src/Base/record_fillers.cc:179	
+TruthInteraction	flash_times	us	[]	dataclass	SBN		src/Base/record_fillers.cc:177	
+TruthInteraction	flash_scores		[]	dataclass	SBN		src/Base/record_fillers.cc:176	
+TruthInteraction	current_type		-1	dataclass	SBN		src/Base/record_fillers.cc:165	
+TruthInteraction	interaction_mode		-1	dataclass	SBN		src/Base/record_fillers.cc:183	
+TruthInteraction	interaction_type		-1	dataclass	SBN		src/Base/record_fillers.cc:184	
+TruthInteraction	mct_index		-1	dataclass	SBN		src/Base/record_fillers.cc:197	
+TruthInteraction	track_id		-1	dataclass	SBN		src/Base/record_fillers.cc:221	
+TruthInteraction	lepton_track_id		-1	dataclass	SBN		src/Base/record_fillers.cc:194	
+TruthInteraction	pdg_code		0	dataclass	SBN FD		src/Base/record_fillers.cc:209	src/record_fillers.cc:70 (+1)
+TruthInteraction	lepton_pdg_code		0	dataclass	SBN		src/Base/record_fillers.cc:193	
+TruthInteraction	target		0	dataclass	SBN		src/Base/record_fillers.cc:218	
+TruthInteraction	nucleon		0	dataclass	SBN		src/Base/record_fillers.cc:203	
+TruthInteraction	quark		0	dataclass	SBN		src/Base/record_fillers.cc:213	
+TruthInteraction	energy_init	GeV	nan	dataclass	SBN FD		src/Base/record_fillers.cc:172	src/record_fillers.cc:70 (+1)
+TruthInteraction	hadronic_invariant_mass	GeV/c^2	nan	dataclass	SBN		src/Base/record_fillers.cc:180	
+TruthInteraction	momentum_transfer	(GeV/c)^2	nan	dataclass	SBN		src/Base/record_fillers.cc:200	
+TruthInteraction	momentum_transfer_mag	GeV/c	nan	dataclass	SBN		src/Base/record_fillers.cc:201	
+TruthInteraction	energy_transfer	GeV	nan	dataclass	SBN		src/Base/record_fillers.cc:173	
+TruthInteraction	lepton_p	GeV/c	nan	dataclass	SBN		src/Base/record_fillers.cc:192	
+TruthInteraction	distance_travel	instance	nan	dataclass	SBN		src/Base/record_fillers.cc:171	
+TruthInteraction	theta	rad	nan	dataclass	SBN		src/Base/record_fillers.cc:219	
+TruthInteraction	bjorken_x		nan	dataclass	SBN		src/Base/record_fillers.cc:162	
+TruthInteraction	inelasticity		nan	dataclass	SBN		src/Base/record_fillers.cc:182	
+TruthInteraction	creation_process			dataclass	SBN		src/Base/record_fillers.cc:164	
+TruthInteraction	position	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:210	
+TruthInteraction	momentum	MeV/c	["nan", "nan", "nan"]	dataclass	SBN FD		src/Base/record_fillers.cc:199	src/record_fillers.cc:77
+TruthInteraction	nu_id		-1	dataclass	SBN		src/Base/record_fillers.cc:202	
+TruthInteraction	reco_vertex	instance	["nan", "nan", "nan"]	dataclass	SBN		src/Base/record_fillers.cc:214	
+TruthInteraction	primary_particle_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:212	
+TruthInteraction	num_particles		0	default_instance	SBN		src/Base/record_fillers.cc:204	
+TruthInteraction	num_primary_particles		0	default_instance	SBN		src/Base/record_fillers.cc:205	
+TruthInteraction	particle_counts		[0, 0, 0, 0, 0, 0]	default_instance	SBN		src/Base/record_fillers.cc:207	
+TruthInteraction	primary_particle_counts		[0, 0, 0, 0, 0, 0]	default_instance	SBN		src/Base/record_fillers.cc:211	
+TruthInteraction	topology			default_instance	SBN		src/Base/record_fillers.cc:220	
+TruthInteraction	size		0	default_instance	SBN		src/Base/record_fillers.cc:215	
+TruthInteraction	depositions_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:170	
+TruthInteraction	depositions_q_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:169	
+TruthInteraction	module_ids		[]	default_instance	SBN		src/Base/record_fillers.cc:198	
+TruthInteraction	size_adapt		0	default_instance	SBN		src/Base/record_fillers.cc:216	
+TruthInteraction	size_g4		0	default_instance	SBN		src/Base/record_fillers.cc:217	
+TruthInteraction	depositions_adapt_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:167	
+TruthInteraction	depositions_adapt_q_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:166	
+TruthInteraction	depositions_g4_sum		0.0	default_instance	SBN		src/Base/record_fillers.cc:168	
+RunInfo	run		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:261 (+1)	src/Apps/make_standalone.cc:150 (+1)	make_standalone.cc:91
+RunInfo	subrun		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:262 (+1)	src/Apps/make_standalone.cc:151 (+1)	make_standalone.cc:92
+RunInfo	event		-1	dataclass	ND SBN FD	src/reco/MLNDLArRecoBranchFiller.cxx:263 (+1)	src/Apps/make_standalone.cc:152 (+1)	make_standalone.cc:93
+Trigger	id		-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:88 (+2)		
+Trigger	type		-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:88 (+2)		
+Trigger	time_s	s	-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:88 (+1)		
+Trigger	time_ns	ns	-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:88 (+1)		
+Flash	id		-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:83 (+1)		
+Flash	volume_id		-1	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:83 (+1)		
+Flash	time	us	nan	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:83 (+1)		
+Flash	time_width	us	nan	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:84 (+1)		
+Flash	total_pe		nan	dataclass	ND	src/reco/MLNDLArRecoBranchFiller.cxx:84 (+1)		
