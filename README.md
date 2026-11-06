@@ -34,6 +34,7 @@ Status: under construction.
 | `src/model/` | Generated field tables. Do not edit by hand. |
 | `tools/gen/` | Generator: dumps SPINE `FieldMetadata` to `schema/` and writes the model. |
 | `tools/fixtures/` | Writes the test files in `tests/data/` with SPINE's own writer, plus expected values. |
+| `tools/release/` | Tooling for following SPINE releases: `scan_consumer_fields.py` lists the model fields a CAFMaker build reads. |
 | `tests/` | doctest unit tests (`test_*.cpp`). |
 
 ## Build
@@ -49,11 +50,17 @@ cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build --outpu
 
 | ctest entry | What it does |
 | --- | --- |
-| `spine_reader_tests` | The doctest unit tests (`tests/test_*.cpp`), a few seconds. |
+| `spine_reader_tests` | The doctest unit tests (`tests/test_*.cpp`), a few seconds. They hold for any SPINE tag once its fixtures are written: the golden test checks the model's fields against the columns of the current fixtures. |
+| `spine_reader_contracts` | What the CAFMakers rely on (`tests/test_contracts.cpp`): the unit and default of each model field a CAFMaker reads, and the enum values they use. A failure means the SPINE change is reviewed with the CAFMaker maintainers before a release. |
 | `spine_reader_real_files` | Reads every `*.h5` in `$SPINE_READER_REAL_FILES` (or `-DSPINE_READER_REAL_FILES=dir`). Without a directory it reports **Skipped**, never Passed. |
 | `spine_reader_generated_model` | `tools/gen/generate.py --check`: the generated model is what the committed SPINE schema produces. |
-| `spine_reader_golden_members` | `tests/golden_members.inc` (the member list `test_golden.cpp` compares object by object) is current. |
+| `spine_reader_golden_members` | `tests/golden_members.inc` (the member list that `test_golden.cpp` compares object by object, and that `test_model.cpp` and `test_contracts.cpp` walk) is current. |
 | `spine_dump_output` | `spine-dump` prints what it should for the Reader test files. |
+
+When a CAFMaker starts reading a model field, add its row to the contract table.
+`tools/release/scan_consumer_fields.py --contracts tests/test_contracts.cpp`, run on that
+CAFMaker's build in its own environment, lists the fields it reads that have no row
+([tools/release/EGM.md](tools/release/EGM.md)).
 
 The test files in `tests/data/` come with the scripts that write them: `core/make_edge_cases.py`,
 `core/make_audit_cases.py`, `core/make_expected.py`, `reader/make_reader_cases.py` (SPINE's own

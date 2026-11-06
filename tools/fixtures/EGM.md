@@ -11,7 +11,8 @@ They are then decoded by an independent h5py-only decoder into
 one tag, by default the model's SPINE tag; and the frozen cases, written by old
 releases and never rewritten by a new tag. `manifest.json` records each case's tag
 and commit. The directory also generates `tests/golden_members.inc`, the per-class
-member list from `schema/`. The hand-written [README.md](./README.md) is the
+member list from `schema/` that `tests/test_golden.cpp`, `tests/test_model.cpp` and
+`tests/test_contracts.cpp` walk. The hand-written [README.md](./README.md) is the
 detailed reference for the cases, the manifest, the expected JSON format and the
 findings about the real writers. This file is the contract summary; it does not
 replace that README.

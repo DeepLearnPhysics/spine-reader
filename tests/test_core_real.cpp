@@ -151,7 +151,11 @@ TEST_CASE("real files: through the Reader, the relations SPINE guarantees hold" 
     for (const ProductReport& product : report.products) {
       INFO("product " << product.product << "\n" << report.summary());
       CHECK(product.mismatched.empty());  // the file and the model agree on every shared column
-      CHECK(product.missing.empty());
+      // a file of the model's SPINE release has every model field; an older one lacks the fields
+      // SPINE added since
+      if (report.spine_version == SPINE_READER_MODEL_SPINE_VERSION) {
+        CHECK(product.missing.empty());
+      }
     }
 
     for (std::uint64_t e = 0; e < reader.num_events(); ++e) {

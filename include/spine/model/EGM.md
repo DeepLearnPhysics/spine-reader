@@ -3,9 +3,9 @@
 ## Overview
 
 **Generated code. Do not edit the headers here by hand.** Every `.hpp` in this directory is
-written by `tools/gen/generate.py` from the SPINE schema dump `schema/spine-1.4.0.json`. Each
-file starts with the banner `// GENERATED from SPINE 1.4.0 by tools/gen/generate.py. Do not
-edit.` To change the model, update the schema dump and run
+written by `tools/gen/generate.py` from the one committed SPINE schema dump,
+`schema/spine-<version>.json`. Each file starts with the banner `// GENERATED from SPINE
+<version> by tools/gen/generate.py. Do not edit.` To change the model, update the schema dump and run
 `python3 tools/gen/generate.py` from the repository root. `--check` writes nothing and exits 1
 if the files on disk differ from what it would generate. The generator also writes the
 matching field tables and `descriptor()` definitions in `src/model/*.cpp` and
@@ -15,21 +15,26 @@ The generator deletes only stale `.hpp`/`.cpp` files in this directory and in `s
 this `EGM.md` is safe from regeneration.
 
 The headers hold the C++ mirror of SPINE's output object model: one plain struct per SPINE
-class, plus SPINE's enumerations.
+class, plus SPINE's enumerations. The classes, their fields and the fields' order, types,
+units and defaults all come from the schema, so they follow SPINE's tag. The golden test
+(`tests/test_golden.cpp`) checks the fields against the columns of the current fixtures, which
+that tag writes; `tests/test_contracts.cpp` checks the units and defaults of the fields the
+CAFMakers read.
 
 ## Interface
 
-- Class structs (namespace `spine`), each `struct X : Object<N>` with N public data members:
-  - `reco_particle.hpp`: `RecoParticle` (55 fields)
-  - `truth_particle.hpp`: `TruthParticle` (98 fields)
-  - `reco_interaction.hpp`: `RecoInteraction` (40 fields)
-  - `truth_interaction.hpp`: `TruthInteraction` (79 fields)
-  - `run_info.hpp`: `RunInfo` (3 fields: `run`, `subrun`, `event`)
-  - `trigger.hpp`: `Trigger` (6 fields)
-  - `image_meta3d.hpp`: `ImageMeta3D` (4 fields)
-  - `flash.hpp`: `Flash` (14 fields)
-  - `crt_hit.hpp`: `CRTHit` (14 fields)
-  - `flash_hypothesis.hpp`: `FlashHypothesis` (8 fields)
+- Class structs (namespace `spine`), each `struct X : Object<N>` with N public data members,
+  one per field of the class in the schema (`X::kNumFields` is N):
+  - `reco_particle.hpp`: `RecoParticle`
+  - `truth_particle.hpp`: `TruthParticle`
+  - `reco_interaction.hpp`: `RecoInteraction`
+  - `truth_interaction.hpp`: `TruthInteraction`
+  - `run_info.hpp`: `RunInfo` (`run`, `subrun`, `event`)
+  - `trigger.hpp`: `Trigger`
+  - `image_meta3d.hpp`: `ImageMeta3D`
+  - `flash.hpp`: `Flash`
+  - `crt_hit.hpp`: `CRTHit`
+  - `flash_hypothesis.hpp`: `FlashHypothesis`
 - Every class struct has:
   - `enum class Field : std::uint16_t`, one enumerator per member, in the order SPINE's HDF5
     writer stores them.

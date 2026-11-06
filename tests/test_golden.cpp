@@ -4,7 +4,9 @@
 //
 // The cases are the *.expected.json files of the directory: the current set (current_*, written
 // by the model's SPINE tag) and the frozen cases (written by older releases, never rewritten).
-// tools/fixtures/make_fixtures.py writes them.
+// tools/fixtures/make_fixtures.py writes them. The current set is also checked against the model
+// column by column (column_problems), so a field SPINE adds, removes or retypes shows here once
+// the new tag's fixtures are in place.
 
 #include <doctest.h>
 #include <json.hpp>
@@ -19,7 +21,6 @@
 #include <mutex>
 #include <set>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 #include <spine/detail/assign.hpp>
@@ -28,6 +29,7 @@
 #include <spine/reader.hpp>
 
 #include "core/source.hpp"
+#include "member_compare.hpp"
 
 namespace {
 
@@ -269,46 +271,7 @@ namespace {
 // Model objects against the decoded fixture, member by member (golden_members.inc lists them)
 // ---------------------------------------------------------------------------------------------
 
-template <class T>
-struct is_std_array : std::false_type {};
-template <class T, std::size_t N>
-struct is_std_array<std::array<T, N>> : std::true_type {};
-template <class T>
-struct is_std_vector : std::false_type {};
-template <class T, class A>
-struct is_std_vector<std::vector<T, A>> : std::true_type {};
-
-/// True if `value` is what the fixture holds. Floats compare as the member's own type: the
-/// fixture stores the exact double of a float32, and a float64 column read into a float member
-/// is rounded to float.
-template <class M>
-bool equal_member(const M& value, const json& want) {
-  if constexpr (std::is_same_v<M, std::string>) {
-    return want.is_string() && want.get<std::string>() == value;
-  } else if constexpr (std::is_same_v<M, bool>) {
-    return want.is_boolean() ? want.get<bool>() == value : (want.get<double>() != 0) == value;
-  } else if constexpr (std::is_enum_v<M>) {
-    return want.is_number_integer() && want.get<std::int64_t>() == static_cast<std::int64_t>(value);
-  } else if constexpr (std::is_floating_point_v<M>) {
-    if (want.is_string()) {
-      const std::string text = want.get<std::string>();
-      if (text == "nan") return std::isnan(value);
-      if (text == "inf") return std::isinf(value) && value > 0;
-      if (text == "-inf") return std::isinf(value) && value < 0;
-      return false;
-    }
-    return want.is_number() && static_cast<M>(want.get<double>()) == value;
-  } else if constexpr (std::is_arithmetic_v<M>) {
-    return want.is_number_integer() && static_cast<M>(want.get<std::int64_t>()) == value;
-  } else {
-    static_assert(is_std_array<M>::value || is_std_vector<M>::value, "unsupported member");
-    if (!want.is_array() || want.size() != value.size()) return false;
-    for (std::size_t i = 0; i < value.size(); ++i) {
-      if (!equal_member(value[i], want[i])) return false;
-    }
-    return true;
-  }
-}
+using spine_test::equal_member;
 
 #include "golden_members.inc"
 
@@ -364,13 +327,78 @@ const json* by_id(const json& rows, std::int64_t id) {
   return nullptr;
 }
 
+// ---------------------------------------------------------------------------------------------
+// The model against the columns of the current set
+// ---------------------------------------------------------------------------------------------
+
+/// How a product was written: every field, or SPINE's lite mode (which drops the lite_skip ones).
+enum class Role { Full, Lite };
+
+struct ColumnCheck {
+  std::vector<std::string> problems;  ///< each one fails the golden test
+  std::vector<std::string> notes;     ///< width differences: printed, never a failure
+};
+
+/// bool, integer, float or string, from a type name ("float32", "uint8", ...) of either side.
+std::string kind_of(const std::string& type) {
+  if (type == "bool" || type == "string") return type;
+  if (type.rfind("int", 0) == 0 || type.rfind("uint", 0) == 0) return "integer";
+  if (type.rfind("float", 0) == 0) return "float";
+  return "unknown type " + type;
+}
+
+/// What differs between the fields of `d` and the decoded columns of `product`, a product of a
+/// current fixture written in `role`:
+///   * a full product has a column for every field, and a lite one for every field that is not
+///     lite_skip, and no column for a lite_skip field;
+///   * no column is outside the model;
+///   * each field has the element kind of its column. SPINE's writer picks float widths from the
+///     first object's Python value, so widths are only notes.
+/// Field order is not compared: binding is by name.
+ColumnCheck column_problems(const spine::ClassDescriptor& d, const json& product, Role role) {
+  ColumnCheck out;
+  const json& columns = product["columns"];
+  for (std::size_t i = 0; i < d.num_fields; ++i) {
+    const spine::FieldDescriptor& f = d.fields[i];
+    const std::string name(f.name);
+    const bool lite_skip = (f.flags & spine::kLiteSkip) != 0;
+    if (!columns.contains(name)) {
+      if (!(role == Role::Lite && lite_skip)) out.problems.push_back(name + ": no column");
+      continue;
+    }
+    if (role == Role::Lite && lite_skip) {
+      out.problems.push_back(name + ": lite_skip in the model, but the lite file has the column");
+    }
+    const std::string model_type(spine::to_string(f.type));
+    const std::string file_type = columns[name]["type"].get<std::string>();
+    if (kind_of(model_type) != kind_of(file_type)) {
+      out.problems.push_back(name + ": the model stores " + model_type + ", the file " + file_type);
+    } else if (model_type != file_type) {
+      out.notes.push_back(name + ": the model stores " + model_type + ", the file " + file_type);
+    }
+  }
+  for (const auto& [column, unused] : columns.items()) {
+    if (d.find(column) == nullptr) {
+      out.problems.push_back(column + ": a column the model does not have");
+    }
+  }
+  return out;
+}
+
 }  // namespace
 
 TEST_CASE("the reader fills every member of every model object as the fixtures say") {
   std::size_t objects_checked = 0;
-  for (const std::string& name : complete_cases()) {
+  std::map<std::string, std::set<std::string>> width_notes;  // note -> the cases that have it
+  std::set<std::string> checked_classes;  // the classes compared with a current fixture's columns
+  for (const Case& c : all_cases()) {
+    if (!c.complete) continue;
+    const std::string& name = c.name;
     INFO("fixture " << name);
     const json want = expected(name);
+    // current_v2_fixed_only holds a subset of the columns by design
+    const bool check_columns = c.current && name != "current_v2_fixed_only";
+    const Role role = want["writer"]["lite"].get<bool>() ? Role::Lite : Role::Full;
     spine::Reader reader(fixture(name, ".h5"));
     REQUIRE(reader.num_events() == want["num_events"].get<std::uint64_t>());
     REQUIRE(reader.num_files() == 1);
@@ -409,6 +437,17 @@ TEST_CASE("the reader fills every member of every model object as the fixtures s
       CHECK(std::set<std::string>(found->extra.begin(), found->extra.end()) == want_extra);
       CHECK(found->mismatched.empty());
       CHECK(found->complete() == want_missing.empty());  // extra columns do not count
+
+      if (check_columns) {
+        const ColumnCheck columns = column_problems(cls, product, role);
+        for (const std::string& problem : columns.problems) {
+          FAIL_CHECK(cls.name << "." << problem);
+        }
+        for (const std::string& note : columns.notes) {
+          width_notes[std::string(cls.name) + "." + note].insert(name);
+        }
+        checked_classes.insert(std::string(cls.name));
+      }
     }
     CHECK(report.products.size() == reported);
 
@@ -429,6 +468,84 @@ TEST_CASE("the reader fills every member of every model object as the fixtures s
     }
   }
   CHECK(objects_checked > 300);  // the loops above are not empty (about 50 objects per fixture)
+
+  CHECK_FALSE(checked_classes.empty());
+  for (const auto& [note, cases] : width_notes) {
+    std::string where;
+    for (const std::string& name : cases) where += (where.empty() ? "" : ", ") + name;
+    MESSAGE("width differs (not a failure): " << note << " (" << where << ")");
+  }
+  for (const auto& [class_name, tools] : class_tools()) {
+    if (checked_classes.count(class_name) == 0) {
+      MESSAGE("not checked against a file: " << class_name << " (no current fixture writes it)");
+    }
+  }
+}
+
+TEST_CASE("column_problems reports what differs between the model and a product's columns") {
+  const json want = expected("current_v1");
+  const json& product = want["products"]["reco_particles"];
+  const spine::ClassDescriptor& d =
+      *class_tools().at(product["class_name"].get<std::string>()).descriptor;
+  REQUIRE(column_problems(d, product, Role::Full).problems.empty());
+
+  // A column picked at run time, so that no SPINE change of one field breaks this test: the first
+  // model field that has a column and is not lite_skip.
+  std::string picked;
+  std::vector<std::string> lite_skip;
+  for (std::size_t i = 0; i < d.num_fields; ++i) {
+    const std::string name(d.fields[i].name);
+    if ((d.fields[i].flags & spine::kLiteSkip) != 0) {
+      lite_skip.push_back(name);
+    } else if (picked.empty() && product["columns"].contains(name)) {
+      picked = name;
+    }
+  }
+  REQUIRE_FALSE(picked.empty());
+  INFO("column " << picked);
+
+  // removed: reported, and nothing else
+  json removed = product;
+  removed["columns"].erase(picked);
+  CHECK(column_problems(d, removed, Role::Full).problems ==
+        std::vector<std::string>{picked + ": no column"});
+
+  // a column the model does not have
+  std::string unknown = "not_a_model_field";
+  while (d.find(unknown) != nullptr) unknown += "_";
+  json extra = product;
+  extra["columns"][unknown] = product["columns"][picked];
+  CHECK(column_problems(d, extra, Role::Full).problems ==
+        std::vector<std::string>{unknown + ": a column the model does not have"});
+
+  // another kind of element is a problem; another width of the same kind is a note
+  const std::string model_type(spine::to_string(d.find(picked)->type));
+  json retyped = product;
+  retyped["columns"][picked]["type"] = model_type == "string" ? "int64" : "string";
+  CHECK(column_problems(d, retyped, Role::Full).problems.size() == 1);
+  if (kind_of(model_type) == "integer" || kind_of(model_type) == "float") {
+    json widened = product;
+    widened["columns"][picked]["type"] = kind_of(model_type) == "float"
+                                             ? (model_type == "float32" ? "float64" : "float32")
+                                             : (model_type == "int8" ? "int16" : "int8");
+    const ColumnCheck widths = column_problems(d, widened, Role::Full);
+    CHECK(widths.problems.empty());
+    CHECK(widths.notes.size() == 1);
+  }
+
+  // a lite product: the lite_skip fields are missing, both ways
+  if (lite_skip.empty()) {
+    MESSAGE("no lite_skip field in " << d.name << ": the lite checks are not exercised");
+  } else {
+    CHECK(column_problems(d, product, Role::Lite).problems.size() == lite_skip.size());
+    json lite = product;
+    for (const std::string& name : lite_skip) lite["columns"].erase(name);
+    CHECK(column_problems(d, lite, Role::Lite).problems.empty());
+    CHECK(column_problems(d, lite, Role::Full).problems.size() == lite_skip.size());
+    lite["columns"].erase(picked);
+    CHECK(column_problems(d, lite, Role::Lite).problems ==
+          std::vector<std::string>{picked + ": no column"});
+  }
 }
 
 namespace {
