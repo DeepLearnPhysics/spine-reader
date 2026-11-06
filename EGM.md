@@ -22,11 +22,11 @@ SPINE HDF5 file
 ```
 
 The model is generated at build-maintenance time, not at configure time:
-`tools/gen/dump_schema.py` (imports SPINE at a tag) -> `schema/spine-1.4.0.json` ->
+`tools/gen/dump_schema.py` (imports SPINE at a tag) -> `schema/spine-<version>.json` ->
 `tools/gen/generate.py` -> `include/spine/model/`, `include/spine/model.hpp`, `src/model/`.
 
 The root folder holds no source files: only `CMakeLists.txt`, `cmake/SpineReaderConfig.cmake.in`,
-`schema/spine-1.4.0.json`, `README.md`, `EGM.md`, `LICENSE`, `.gitignore` and the GitHub Actions
+`schema/spine-<version>.json`, `README.md`, `EGM.md`, `LICENSE`, `.gitignore` and the GitHub Actions
 workflow `.github/workflows/ci.yml` (documented in [./ci/EGM.md](./ci/EGM.md)).
 
 Build and packaging (`CMakeLists.txt`):
@@ -53,7 +53,7 @@ Build and packaging (`CMakeLists.txt`):
   - [./include/spine/EGM.md](./include/spine/EGM.md) - `Reader`, `ReaderOptions`, `Event`,
     `Match<T>`, `SchemaReport`/`ProductReport`, descriptors, `Object<N>`, `spine::Error`,
     `spine::version()`.
-  - [./include/spine/model/EGM.md](./include/spine/model/EGM.md) - Generated SPINE 1.4.0
+  - [./include/spine/model/EGM.md](./include/spine/model/EGM.md) - Generated SPINE
     classes (`RecoParticle`, `TruthParticle`, `RecoInteraction`, `TruthInteraction`, `RunInfo`,
     `Trigger`, `ImageMeta3D`, `Flash`, `CRTHit`, `FlashHypothesis`) and enums. Do not edit.
   - [./include/spine/detail/EGM.md](./include/spine/detail/EGM.md) - `ColumnBuffer` and
@@ -75,6 +75,9 @@ Build and packaging (`CMakeLists.txt`):
   - [./tools/fixtures/EGM.md](./tools/fixtures/EGM.md) - Golden test files written by SPINE's
     own writer (the `current_*` set by any tag, the frozen cases by old releases), plus their
     expected JSON, `manifest.json` and `tests/golden_members.inc`.
+  - [./tools/release/EGM.md](./tools/release/EGM.md) - Release tooling:
+    `scan_consumer_fields.py` (the model fields a CAFMaker build reads, against the contract
+    table of `tests/test_contracts.cpp`).
 - examples: [./examples/EGM.md](./examples/EGM.md) - The `spine-dump` command-line tool.
 - ci: [./ci/EGM.md](./ci/EGM.md) - the GitHub Actions workflow and `github-ci.sh` (HDF5 1.14 and
   1.12 from LCG views on CVMFS), `check_tag_version.sh` (release tag against
@@ -113,8 +116,10 @@ Build and packaging (`CMakeLists.txt`):
 - Temporarily changes HDF5's library-global automatic error printing (`h5::ErrorSilencer`),
   restoring it afterwards.
 - Developer tools only: `tools/gen` rewrites the generated model; `tools/fixtures` clones SPINE
-  commits and rewrites `tests/data/fixtures/` (cases and manifest) and `tests/golden_members.inc`; `ci/` scripts
-  create `build-ci/`, `build-asan/`, `build-tsan/` and `build-sl7/`.
+  commits and rewrites `tests/data/fixtures/` (cases and manifest) and `tests/golden_members.inc`;
+  `tools/release/scan_consumer_fields.py` runs a CAFMaker's compile commands with
+  `-fsyntax-only` in a work folder; `ci/` scripts create `build-ci/`, `build-asan/`,
+  `build-tsan/` and `build-sl7/`.
 - CI: the GitHub Actions workflow builds and tests on GitHub's hosted runners, with read-only
   access to the repository and no secrets.
 
@@ -122,11 +127,12 @@ Build and packaging (`CMakeLists.txt`):
 
 - Run (EL9, after `source /cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh`):
   `cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build --output-on-failure`
-- The ctest entries include `spine_reader_tests` (unit tests), `spine_reader_generated_model`
+- The ctest entries include `spine_reader_tests` (unit tests), `spine_reader_contracts` (what
+  the CAFMakers rely on: `tests/test_contracts.cpp`), `spine_reader_generated_model`
   (`tools/gen/generate.py --check`), `spine_reader_golden_members`, `spine_dump_output`, and
   `spine_reader_real_files` (skipped unless `SPINE_READER_REAL_FILES` names a directory).
-- `spine_reader_tests` excludes the `real files*` test cases, which `spine_reader_real_files`
-  runs. `spine_reader_generated_model` and `spine_reader_golden_members` are registered only
+- `spine_reader_tests` excludes the `real files*` and `contract*` test cases, which
+  `spine_reader_real_files` and `spine_reader_contracts` run. `spine_reader_generated_model` and `spine_reader_golden_members` are registered only
   when CMake finds Python 3 (with `SPINE_READER_REQUIRE_PYTHON=ON`, a missing Python fails the
   configuration), and `spine_dump_output` only when the tools are built.
 - CI: `.github/workflows/ci.yml` runs `ci/github-ci.sh` with HDF5 1.14 (LCG_110, Ubuntu 24.04)

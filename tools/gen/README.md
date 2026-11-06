@@ -44,15 +44,18 @@ deterministic, so a diff after regeneration is a real change.
    (HDF5, ROOT) to the scan.
 4. **Build and test.** `cmake -S . -B build && cmake --build build -j8 && ctest --test-dir build`.
    The `static_assert`s in `src/model/*.cpp` fail the build if a member's C++ type disagrees with
-   its descriptor row. `tests/test_model.cpp` then needs the new field counts, the `LAST_FIELD`
-   list and the enum member counts; its default-value checks should be regenerated from SPINE by
-   printing `getattr(Class(), name)`.
+   its descriptor row. No test holds field counts, defaults or enum member counts: they follow
+   the schema. Write the new tag's fixtures first (`tools/fixtures/make_fixtures.py --tag <tag>`),
+   since the golden test checks the model's fields against their columns. If
+   `spine_reader_contracts` fails, SPINE changed a unit, a default or an enum value that a
+   CAFMaker relies on: talk to the CAFMaker maintainers before editing its row in
+   `tests/test_contracts.cpp`.
 5. **gcc 12, C++17** in the SL7 container (`-fsyntax-only` of every `src/model/*.cpp` and header
    with `-Wall -Wextra -Wpedantic -Werror` is enough).
 6. **Docs and units.** `doc_source` in the JSON says which class docstring a field's description
    came from; SPINE copies some docs between classes (for example `TruthInteraction.id` says
-   "Index of the neutrino"). Missing docs are empty strings, and the test requires every field to
-   have one.
+   "Index of the neutrino"). Missing docs are empty strings; the generated member then has no
+   description, only its tags (for example `/// [units: MeV]`).
 
 ## What is in the JSON
 

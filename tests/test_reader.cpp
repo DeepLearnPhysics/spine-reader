@@ -23,6 +23,7 @@
 #include <limits>
 #include <set>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -36,6 +37,7 @@
 #include <spine/reader.hpp>
 
 #include "core/source.hpp"
+#include "member_compare.hpp"
 
 #ifndef SPINE_READER_TEST_DATA
 #error "SPINE_READER_TEST_DATA is set by tests/CMakeLists.txt"
@@ -92,14 +94,7 @@ using Overlaps = std::vector<float>;
 constexpr float kNaN = std::numeric_limits<float>::quiet_NaN();
 
 /// Same values, with NaN equal to NaN.
-bool same_overlaps(const Overlaps& a, const Overlaps& b) {
-  if (a.size() != b.size()) return false;
-  for (std::size_t i = 0; i < a.size(); ++i) {
-    if (std::isnan(a[i]) != std::isnan(b[i])) return false;
-    if (!std::isnan(a[i]) && a[i] != b[i]) return false;
-  }
-  return true;
-}
+bool same_overlaps(const Overlaps& a, const Overlaps& b) { return spine_test::nan_equal(a, b); }
 
 }  // namespace
 
@@ -502,7 +497,14 @@ TEST_CASE("the old class name Meta is read as ImageMeta3D") {
                                  [](const ProductReport& p) { return p.product == "meta"; });
   REQUIRE(meta != report.products.end());
   CHECK(meta->class_name == "Meta");  // as the file spells it
-  CHECK(meta->complete());
+  // every column binds; fields SPINE adds later are missing from this frozen file, not these
+  CHECK(meta->mismatched.empty());
+  CHECK(meta->extra.empty());
+  for (std::string_view field : {"lower", "upper", "size", "count"}) {
+    CHECK_MESSAGE(std::find(meta->missing.begin(), meta->missing.end(), field) ==
+                      meta->missing.end(),
+                  field);
+  }
   CHECK(std::none_of(report.skipped.begin(), report.skipped.end(),
                      [](const std::string& s) { return contains(s, "meta"); }));
   REQUIRE(reader.event(0).meta() != nullptr);
@@ -561,7 +563,14 @@ TEST_CASE("non-object products and products of unknown classes are listed as not
                               " (model from SPINE " + SPINE_READER_MODEL_SPINE_VERSION + ")\n";
   const std::string summary = report.summary();
   CHECK(contains(summary, three_files()[0] + "\n  SPINE 1.4.0, format_version 1 (V1)" + read_by));
-  CHECK(contains(summary, "\n  reco_particles [RecoParticle]: all model fields read\n"));
+  // a model with fields this frozen file lacks says so instead
+  const auto reco =
+      std::find_if(report.products.begin(), report.products.end(),
+                   [](const ProductReport& p) { return p.product == "reco_particles"; });
+  REQUIRE(reco != report.products.end());
+  CHECK(contains(summary, std::string("\n  reco_particles [RecoParticle]: ") +
+                              (reco->complete() ? "all model fields read\n"
+                                                : "some model fields missing")));
   const std::string tail = "  not read:\n    index: array product\n";
   REQUIRE(summary.size() > tail.size());
   CHECK(summary.compare(summary.size() - tail.size(), tail.size(), tail) == 0);
@@ -604,10 +613,11 @@ TEST_CASE("strict mode refuses a product that lacks model fields, and only then"
     }
   }
 
-  // strict only looks at the products it was asked to read
+  // strict only looks at the products it was asked to read: a lite file lacks fields in other
+  // products, never in run_info
   ReaderOptions only_runs = strict;
   only_runs.products = {"run_info"};
-  CHECK_NOTHROW(Reader(fixture_file("v0.11.1_v1.h5"), only_runs));
+  CHECK_NOTHROW(Reader(fixture_file("current_v1_lite.h5"), only_runs));
 }
 
 TEST_CASE("incomplete files are refused unless ReaderOptions::allow_incomplete") {
@@ -669,13 +679,15 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
   CHECK(p.product == "reco_particles");
   CHECK(p.class_name == "RecoParticle");
   CHECK_FALSE(p.complete());
+  const std::string model_shower = std::to_string(static_cast<std::int64_t>(ParticleShape::SHOWER));
+  const std::string model_track = std::to_string(static_cast<std::int64_t>(ParticleShape::TRACK));
   CHECK(p.mismatched ==
         std::vector<std::string>{"shape: enum numbering differs: file SHOWER=1 and TRACK=0, "
-                                 "model SHOWER=0 and TRACK=1",
+                                 "model SHOWER=" + model_shower + " and TRACK=" + model_track,
                                  "start_point: file float64[4] vs model float32[3]"});
   CHECK(p.extra == std::vector<std::string>{"brand_new"});
-  // 55 fields; 5 bound, 2 mismatched
-  CHECK(p.missing.size() == 55 - 5 - 2);
+  // 5 bound, 2 mismatched
+  CHECK(p.missing.size() == RecoParticle::kNumFields - 5 - 2);
   CHECK(std::find(p.missing.begin(), p.missing.end(), "end_point") != p.missing.end());
   CHECK(std::find(p.missing.begin(), p.missing.end(), "length") != p.missing.end());
   for (const char* bound :
@@ -715,9 +727,9 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
   CHECK_FALSE(b.is_valid);
   CHECK(c.is_valid);
   // the crossed enum keeps its default
-  CHECK(a.shape == ParticleShape::UNKNOWN);
-  CHECK(b.shape == ParticleShape::UNKNOWN);
-  CHECK(c.shape == ParticleShape::UNKNOWN);
+  CHECK(a.shape == RecoParticle{}.shape);
+  CHECK(b.shape == RecoParticle{}.shape);
+  CHECK(c.shape == RecoParticle{}.shape);
   CHECK(a.units == "cm");
   CHECK(b.units == "px");
   CHECK(a.match_ids == std::vector<std::int32_t>{1, 2});
@@ -733,10 +745,11 @@ TEST_CASE("a product with every kind of difference binds as the report says") {
     CHECK_MESSAGE(!a.has(field), "field " << static_cast<int>(field));
   }
   // a mismatched or missing field keeps SPINE's default
-  CHECK(std::isnan(a.start_point[0]));
-  CHECK(std::isnan(a.length));
-  CHECK(a.interaction_id == -1);
-  CHECK(a.pid == ParticlePID::UNKNOWN);
+  const RecoParticle defaults;
+  CHECK(spine_test::nan_equal(a.start_point, defaults.start_point));
+  CHECK(spine_test::nan_equal(a.length, defaults.length));
+  CHECK(a.interaction_id == defaults.interaction_id);
+  CHECK(a.pid == defaults.pid);
 
   // strict: this product is incomplete
   ReaderOptions strict;

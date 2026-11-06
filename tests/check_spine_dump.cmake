@@ -44,7 +44,8 @@ endif()
 set(read_by "; read by spine-reader ${READER_VERSION} (model from SPINE ${MODEL_VERSION})")
 expect_in("${text}" "${A}\n  SPINE 1.4.0, format_version 1 (V1)${read_by}")
 expect_in("${text}" "${B}\n  SPINE 1.4.0, format_version 2 (V2Products)${read_by}")
-expect_in("${text}" "meta [Meta]: all model fields read")
+# only the prefix: fields SPINE adds later are missing from this frozen file
+expect_in("${text}" "\n  meta [Meta]: ")
 expect_in("${text}" "index: array product")
 string(CONCAT first_event
   "6 events\n"

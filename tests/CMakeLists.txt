@@ -10,8 +10,13 @@ target_include_directories(spine_reader_tests PRIVATE
 target_compile_definitions(spine_reader_tests PRIVATE
   SPINE_READER_TEST_DATA="${CMAKE_CURRENT_SOURCE_DIR}/data")
 
-# The unit tests. The real-file test is left to its own entry below.
-add_test(NAME spine_reader_tests COMMAND spine_reader_tests "--test-case-exclude=real files*")
+# The unit tests. The real-file test and the consumer contracts are left to their own entries.
+add_test(NAME spine_reader_tests COMMAND spine_reader_tests
+         "--test-case-exclude=real files*,contract*")
+
+# What the CAFMakers rely on (test_contracts.cpp): the units and defaults of the fields they read,
+# and the enum values. A failure means the SPINE change is reviewed with the CAFMaker maintainers.
+add_test(NAME spine_reader_contracts COMMAND spine_reader_tests "--test-case=contract*")
 
 # Real SPINE output. Point SPINE_READER_REAL_FILES (a CMake variable, or an environment variable
 # when ctest runs) at a directory of *.h5 files. Without it this entry reports "Skipped" instead

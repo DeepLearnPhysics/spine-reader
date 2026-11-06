@@ -1,5 +1,6 @@
 // GENERATED from schema/spine-1.4.0.json by tools/fixtures/make_member_list.py. Do not edit.
-// The members of each model class, in SPINE's order, for tests/test_golden.cpp.
+// The members of each model class, in SPINE's order, for tests/test_golden.cpp,
+// tests/test_model.cpp and tests/test_contracts.cpp.
 
 #define GOLDEN_MEMBERS_RecoParticle(X) \
     X(is_truth) X(units) X(id) X(is_contained) X(is_time_contained) X(is_cathode_crosser) \

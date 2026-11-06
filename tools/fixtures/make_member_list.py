@@ -6,8 +6,10 @@
 
 tests/test_golden.cpp expands GOLDEN_MEMBERS_<Class>(X) to compare every member of every object
 the Reader returns with the value h5py decoded from the fixture, so that a field whose table
-row assigns the wrong member, or whose type or default is wrong, cannot go unnoticed. The names
-come from the committed schema, which was dumped from SPINE: the list is not the model's own.
+row assigns the wrong member, or whose type or default is wrong, cannot go unnoticed.
+tests/test_model.cpp walks it to check that field i has the name of enumerator i, and
+tests/test_contracts.cpp to find the members the contract table lists. The names come from the
+committed schema, which was dumped from SPINE: the list is not the model's own.
 """
 import argparse
 import json
@@ -26,7 +28,8 @@ def render():
     lines = [
         f"// GENERATED from schema/{schema_files[0].name} by tools/fixtures/make_member_list.py. "
         "Do not edit.",
-        "// The members of each model class, in SPINE's order, for tests/test_golden.cpp.",
+        "// The members of each model class, in SPINE's order, for tests/test_golden.cpp,",
+        "// tests/test_model.cpp and tests/test_contracts.cpp.",
     ]
     for cls, info in schema["classes"].items():
         lines.append("")

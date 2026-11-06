@@ -3,15 +3,21 @@
 ## Overview
 
 Python developer tools for spine-reader. None of them is built into the C++
-library. Both subsystems are tied to SPINE and to the single committed
+library. They are tied to SPINE and to the single committed
 `schema/spine-*.json`. `gen` turns SPINE's object model into the generated C++
 model. `fixtures` produces the golden HDF5 files and their decoded expectations,
-which the C++ tests read. Each subsystem registers a ctest check:
+which the C++ tests read. `release` holds the tooling for following SPINE
+releases; today `scan_consumer_fields.py`, which lists the model fields a
+CAFMaker build reads. `gen` and `fixtures` each register a ctest check:
 `spine_reader_generated_model` (`gen/generate.py --check`) and
-`spine_reader_golden_members` (`fixtures/make_member_list.py --check`), registered
-only when CMake finds a Python 3 interpreter. Run them
-in the LCG_110 view (`source
-/cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh`).
+`spine_reader_golden_members` (`fixtures/make_member_list.py --check`).
+`tests/CMakeLists.txt` registers them when CMake finds a Python 3 interpreter;
+with `-DSPINE_READER_REQUIRE_PYTHON=ON` (CI turns it on) a missing interpreter
+fails the configuration instead of leaving them out. Run the tools in the
+LCG_110 view (`source
+/cvmfs/sft.cern.ch/lcg/views/LCG_110/x86_64-el9-gcc13-opt/setup.sh`), except
+`scan_consumer_fields.py`, which needs only Python 3.9 and runs in the
+CAFMaker's environment.
 
 ## Subdirectories & Boundaries
 
@@ -30,3 +36,7 @@ in the LCG_110 view (`source
   resolves tags and clones commits. `make_member_list.py` writes or checks
   `tests/golden_members.inc` from the schema. Legacy notes:
   [./fixtures/README.md](./fixtures/README.md).
+- release: [./release/EGM.md](./release/EGM.md) - `scan_consumer_fields.py`
+  (compiles a CAFMaker's sources with `-fsyntax-only` against model headers whose
+  members are marked `[[deprecated]]`, and lists the fields read; with
+  `--contracts`, the ones that have no row in `tests/test_contracts.cpp`).
