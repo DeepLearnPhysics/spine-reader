@@ -24,14 +24,26 @@ SPINE clone --dump_schema.py--> schema/spine-<version>.json --generate.py--> C++
   - `--out FILE` (overrides `--out-dir`)
   - `--classes NAME...` (default `DEFAULT_CLASSES`)
   - `--strict`
+  - `--spine-sha SHA` (40 hexadecimal characters, recorded as `spine_sha`)
 - `DEFAULT_CLASSES`: RecoParticle, TruthParticle, RecoInteraction,
   TruthInteraction, RunInfo, Trigger, ImageMeta3D, Flash, CRTHit, FlashHypothesis.
+- `EXCLUDED_CLASSES`: the classes of `spine.data` with `attr_metadata` that are
+  not dumped on purpose: RecoFragment, TruthFragment, Neutrino, ImageMeta2D,
+  Particle (larcv), ParticleLabel, and the bases DataBase and PosDataBase.
 - `CLASS_ROLE`, `FLAG_NAMES` (derived, position, vector, index, categorical, pdg,
-  pdg_minus_one_valid, pointwise, lite_skip), `SCALAR_ELEMENT`.
+  pdg_minus_one_valid, pointwise, lite_skip), `MAPPED_ATTRIBUTES` (the flags but
+  `derived`, plus return_type, length, dtype, units, enum, reference,
+  reference_space, skip), `WRITER_FORMAT_ATTRIBUTES`, `SCALAR_ELEMENT`.
 - Helpers: `declared_type`, `dump_class`, `collect_enums`, `scheme_tables`,
-  `field_doc`, `compare_writer`.
-- Output keys: `schema_format` (1), `spine_version`, `generator`, `notes`,
-  `classes`, `enums`, `scheme_tables`, `type_check {method, mismatches}`.
+  `field_doc`, `compare_writer`, `writer_format`, `unmapped_attributes`,
+  `unlisted_classes`.
+- Output keys: `schema_format` (1), `spine_version`, `spine_sha` (`null` without
+  `--spine-sha`), `generator`, `notes`, `classes`, `enums`, `scheme_tables`,
+  `type_check {method, mismatches}`, `writer_format {format_name,
+  legacy_format_version, current_format_version, supported_format_versions,
+  default_format_version}` and `warnings [{kind, name, detail}]`.
+- Exit codes: 0 written; 1 SPINE could not be imported or read, or `--strict` and
+  a type mismatch; 2 usage error.
 
 ### `generate.py` (CLI; standard library only)
 
@@ -80,6 +92,9 @@ SPINE clone --dump_schema.py--> schema/spine-<version>.json --generate.py--> C++
   `<root>/schema/spine-*.json`, otherwise it exits with
   `generate: pass --schema (found N files in schema/)` [generate.py:main]. The
   model describes one SPINE release.
+- The model version (`SPINE_READER_MODEL_SPINE_VERSION`, the descriptors'
+  `schema_version`) names the schema the model was generated from, not the newest
+  SPINE it reads [generate.py:generate].
 - Output is deterministic: generated files and globs are processed in sorted
   order, so a diff after regeneration is a real change [generate.py:main].
 - Stale-file rule: any `.hpp`/`.cpp` directly under `include/spine/model/` or
@@ -111,13 +126,33 @@ SPINE clone --dump_schema.py--> schema/spine-<version>.json --generate.py--> C++
   dataclass defaults are checked against instance values. Mismatches are recorded
   under `type_check.mismatches`. They fail the run (exit 1) only with `--strict`
   [dump_schema.py:declared_type, dump_class, main].
-- `dump_schema.py` stops on:
-  - an unknown `--classes` name (`dump_schema: spine.data has no class <NAME>`);
+- `dump_schema.py` stops, writing nothing, on any exception while it imports or
+  reads SPINE. It prints one line to stderr, `dump_schema: <exception class>:
+  <message>`, and exits 1. The cases it raises itself:
+  - an unknown `--classes` name (`LookupError: spine.data has no class <NAME>`);
   - a field type it cannot map (`TypeError`: an enum not declared `int`, an array
     without a declared dtype, an unsupported type);
   - a stored name that is neither a field nor a stored property (`RuntimeError`);
-  - a scheme whose interaction enum cannot be identified uniquely (`RuntimeError`)
+  - a scheme whose interaction enum cannot be identified uniquely (`RuntimeError`).
+
+  A SPINE that lacks an attribute the dumper reads gives `AttributeError` (for
+  example a `FieldMetadata` without `pdg`, or a SPINE older than `attr_metadata`)
   [dump_schema.py:declared_type, dump_class, scheme_tables, main].
+- `writer_format` reads each attribute with `getattr(HDF5Writer, name, None)`, and
+  `default_format_version` from the signature of `HDF5Writer.__init__`, so a
+  missing attribute or parameter is `null`, not an error. A renamed
+  `format_version` parameter gives `null` [dump_schema.py:writer_format].
+- `warnings` lists, first the unmapped attributes in the order `FieldMetadata`
+  declares them, then the unlisted classes sorted by name:
+  - `unmapped_attribute`: each `FieldMetadata` attribute outside
+    `MAPPED_ATTRIBUTES`; `detail` names the dumped fields that set it (at SPINE
+    1.4.0, only `cat`);
+  - `unlisted_class`: each class of `vars(spine.data)` with `attr_metadata` that is
+    in neither `DEFAULT_CLASSES`, `--classes` nor `EXCLUDED_CLASSES`; an alias of a
+    listed class (`Meta` is `ImageMeta3D`) is listed.
+
+  A comparison of two dumps compares warnings by `(kind, name)`
+  [dump_schema.py:unmapped_attributes, unlisted_classes].
 - Fields that `as_dict` does not store go to `skipped_fields`; fields dropped by
   `as_dict(lite=True)` go to `lite_dropped` [dump_schema.py:dump_class].
 - `check_names.py` exits 1 if any model identifier, after comments and strings are
@@ -128,8 +163,8 @@ SPINE clone --dump_schema.py--> schema/spine-<version>.json --generate.py--> C++
 
 - `dump_schema.py` imports `spine.data`, `spine.version`, `HDF5Writer` and
   `spine.constants.enums`. It reads SPINE source files (for the docstrings) and
-  writes the JSON with `mkdir(parents=True)`. It prints field counts and the
-  mismatch list to stdout.
+  writes the JSON with `mkdir(parents=True)`. It prints field counts, the
+  mismatch list, the writer format and the warnings to stdout.
 - `generate.py` reads the schema. Unless `--check` is given, it deletes stale
   files and writes only the files whose content changed. It prints
   `SPINE <version>: N files, M written (C classes, E enums)`, where M counts the
